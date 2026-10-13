@@ -1,0 +1,329 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="主席树的定义 主席树，也称可持久化线段树，什么是可持久化线段树呢，即为一颗记录了所有更新过程的线段树。能够处理出从第 \(i\) 次更新到第 \(j\) 次更新的线段树变化。 前置知识 值域线段树 值域线段树的区间存的并不是节点信息，而是在值在某一范围内的数的个数。 如图就是一棵值域线段树。 1号节点存储的是 大于等于1小于等于"><title>可持久化线段树学习笔记 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17790618.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>可持久化线段树学习笔记</h1><p class="hero-meta"><time datetime="2023-10-26T22:17+08:00">2023-10-26 22:17</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17790618.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h1 id="主席树的定义">主席树的定义</h1>
+<p>主席树，也称可持久化线段树，什么是可持久化线段树呢，即为一颗记录了所有更新过程的线段树。能够处理出从第 <span class="math inline">\(i\)</span> 次更新到第 <span class="math inline">\(j\)</span> 次更新的线段树变化。</p>
+<h1 id="前置知识">前置知识</h1>
+<h2 id="值域线段树">值域线段树</h2>
+<p>值域线段树的区间存的并不是节点信息，而是在值在某一范围内的数的个数。</p>
+<p>如图就是一棵值域线段树。</p>
+<p><a class="unavailable-media" href="https://ae02.alicdn.com/kf/Hc4f10ce01f604edeaadb0535191f7123m.png" rel="noopener noreferrer">原图暂不可用 · 输入图片说明</a><br/>
+1号节点存储的是 <strong>大于等于1小于等于4的数字个数</strong></p>
+<p>2号节点存储的是 <strong>大于等于1小于等于2的数字个数</strong></p>
+<p>3号节点存储的是 <strong>大于等于3小于等于4的数字个数</strong></p>
+<p>4号节点存储的是 <strong>等于1的数字个数</strong></p>
+<p>5号节点存储的是 <strong>等于2的数字个数</strong></p>
+<p>6号节点存储的是 <strong>等于3的数字个数</strong></p>
+<p>7号节点存储的是 <strong>等于4的数字个数</strong></p>
+<p>查询该区间第 <span class="math inline">\(k\)</span> 大与平衡树相类似，此处不再赘述。</p>
+<h2 id="动态开点线段树">动态开点线段树</h2>
+<p>原本的线段树我们根据父亲节点为<code>k</code> 子树为<code>k&lt;&lt;1</code>,<code>k&lt;&lt;1|1</code>.</p>
+<p>空间复杂度为<code>4N</code>。</p>
+<p>现在我们直接存储每个节点的左右儿子。可以有效减少空间消耗</p>
+<p>动态开点实现的线段树1</p>
+<details>
+<summary> $code$</summary>
+<pre><code class="language-cpp">struct node{
+	int ls,rs,sum,tag;
+}tr[N];
+int n,m,cnt=1;//一定要赋值成1
+inline void push_up(int k){
+	tr[k].sum=tr[tr[k].ls].sum+tr[tr[k].rs].sum;
+}
+inline void push_down(int k,int l,int r){
+    if(tr[k].tag){
+        if(!tr[k].ls)tr[k].ls=++cnt;
+        if(!tr[k].rs)tr[k].rs=++cnt;
+        tr[tr[k].ls].tag+=tr[k].tag;
+       	tr[tr[k].rs].tag+=tr[k].tag;
+        int mid=(l+r)&gt;&gt;1;
+        tr[tr[k].ls].sum+=(mid-l+1)*tr[k].tag;
+        tr[tr[k].rs].sum+=(r-mid)*tr[k].tag;
+        tr[k].tag=0;
+    }
+}
+inline void change(int &amp;k,int l,int r,int x,int y,int val){
+	if(!k)k=++cnt;
+	if(x&lt;=l&amp;&amp;r&lt;=y) {
+        tr[k].tag+=val;
+		tr[k].sum+=val*(r-l+1);
+        return;
+    }
+    int mid=(l+r)&gt;&gt;1;
+    push_down(k,l,r);
+    if(x&lt;=mid)change(tr[k].ls,l,mid,x,y,val);
+    if(y&gt;mid)change(tr[k].rs,mid+1,r,x,y,val);
+    push_up(k);
+}
+inline int ask(int k,int l,int r,int x,int y){
+    if(!k)return 0;
+    if(x&lt;=l&amp;&amp;y&gt;=r)return tr[k].sum;
+    push_down(k,l,r);
+    int mid=(l+r)&gt;&gt;1,res=0;
+    if(x&lt;=mid)res+=ask(tr[k].ls,l,mid,x,y);
+    if(y&gt;mid)res+=ask(tr[k].rs,mid+1,r,x,y);
+    return res;
+}
+signed main(){
+	n=read();m=read();
+	int x;
+	up(i,1,n){
+		x=read();
+		int temp=1;
+		change(temp,1,n,i,i,x);
+	}
+	//cout&lt;&lt;tr[1].sum&lt;&lt;endl;
+	int op,l,r,t;
+	while(m--){
+		op=read();
+		if(op==1){
+			l=read();r=read();t=read();
+			int temp=1;
+			change(temp,1,n,l,r,t);
+		}
+		if(op==2){
+			l=read();r=read();
+			printf("%lld\n",ask(1,1,n,l,r));
+		}
+	}
+    return 0;
+}
+</code></pre>
+</details>
+<h1 id="主席树">主席树</h1>
+<p>由前面的两种知识，如何转化成主席树。</p>
+<p>主席树经典问题1：求区间第k大/小。</p>
+<p>考虑建 <span class="math inline">\(n\)</span> 棵值域线段树，每棵值域线段树存储区间 <span class="math inline">\([1,i]\)</span>  的信息，这样一来，要查询 <span class="math inline">\([l,r]\)</span> 的第 <span class="math inline">\(k\)</span> 大时，只要在查询的过程中，将第<span class="math inline">\(r\)</span>  棵值域线段树的信息减去第 <span class="math inline">\(l−1\)</span> 棵值域线段树的信息即可，这利用了<strong>前缀和</strong>的思想。</p>
+<p>但是建 <span class="math inline">\(k\)</span> 棵值域线段树，不论是时间还是空间，复杂度都是相当劣的。怎样优化呢？</p>
+<blockquote>
+<p>3  5  8  6  7  2   1  4</p>
+</blockquote>
+<p>建立值域线段树。</p>
+<p><a class="unavailable-media" href="https://ae01.alicdn.com/kf/H141828c5898a4c2cbc627e9916db4a0fX.png" rel="noopener noreferrer">原图暂不可用 · 输入图片说明</a></p>
+<p><a class="unavailable-media" href="https://ae01.alicdn.com/kf/H29c2de2abd134b20a0ce50b348c4d5aeU.png" rel="noopener noreferrer">原图暂不可用 · 查看博客园原始图片链接</a></p>
+<p>我们发现每次加入一个新的元素时更改的部分只会是一条链，而其他的部分则是无用的节点，自然的我们就想到能否让这两棵树共用这部分节点来减少节点的数量和建树的时间。</p>
+<p>怎么操作呢？我们先建根结点，递归去看左孩子和右孩子，会发现左孩子的信息和上一棵树的是一样的，所以让他的左孩子直接指向上一棵树的左孩子，体现在代码中就是<code>tr[k].ls=tr[last].ls</code></p>
+<p>继续地递归且按照这种方式操作一直到叶子节点，这样我们就初步完成一颗最简单的主席树了。</p>
+<p>当然，可持久化线段树难以支持大部分“区间修改”。</p>
+<h2 id="求区间第k大"><a href="https://www.luogu.com.cn/problem/P3834" rel="noopener noreferrer" target="_blank">求区间第k大</a></h2>
+<p><code>[l,r]</code>可以看做<code>[1,r]-[1,l-1]</code>。</p>
+<p>两边双重递归，相减得出来的值就是答案。</p>
+<p><strong>code</strong></p>
+<pre><code class="language-cpp">int n,m;
+int rt[N];
+struct node{
+	int ls,rs,sum;
+}tr[N&lt;&lt;5];
+int a[N],cnt,b[N];
+inline void build(int &amp;k,int l,int r){
+	k=++cnt;
+	if(l==r){
+		tr[k].sum=a[l];
+		return;
+	}
+	int mid=(l+r)&gt;&gt;1;
+	build(tr[k].ls,l,mid);
+	build(tr[k].rs,mid+1,r);
+}
+inline void change(int &amp;k,int pre,int l,int r,int x,int y){
+	k=++cnt;
+	tr[k]=tr[pre];tr[k].sum++;
+	if(l==r)return;
+	int mid=(l+r)&gt;&gt;1;
+	if(x&lt;=mid)change(tr[k].ls,tr[pre].ls,l,mid,x,y);
+	if(y&gt;mid)change(tr[k].rs,tr[pre].rs,mid+1,r,x,y);
+}
+inline int ask(int ll,int rr,int l,int r,int kth){
+	int x=tr[tr[rr].ls].sum-tr[tr[ll].ls].sum;
+    if(l==r) return b[l];
+    int mid=(l+r)&gt;&gt;1;
+    if(x&gt;=kth) return ask(tr[ll].ls,tr[rr].ls,l,mid,kth);
+    return ask(tr[ll].rs,tr[rr].rs,mid+1,r,kth-x);
+}
+signed main(){
+	n=read();m=read();
+	up(i,1,n){
+		a[i]=read();
+		b[i]=a[i];
+	}
+	sort(b+1,b+1+n);
+	int maxl=unique(b+1,b+1+n)-b-1;
+	up(i,1,n){
+		int x=lower_bound(b+1,b+1+maxl,a[i])-b;
+		change(rt[i],rt[i-1],1,maxl,x,x);
+	}
+	int op,l,r,pre,x;
+    while(m--){
+        int l=read(),r=read(),k=read();
+        write(ask(rt[l-1],rt[r],1,maxl,k),1);
+    }
+    return 0;
+}
+</code></pre>
+<h1 id="可持久化线段树经典问题">可持久化线段树经典问题</h1>
+<h2 id="可持久化线段树1"><a href="https://www.luogu.com.cn/problem/P3919" rel="noopener noreferrer" target="_blank">可持久化线段树1</a></h2>
+<p>对区间历史进行修改，访问。</p>
+<p><strong>code</strong></p>
+<pre><code class="language-cpp">int n,m;
+int rt[N];
+struct node{
+   int ls,rs,sum,tag;
+}tr[N&lt;&lt;5];
+int a[N],cnt;
+inline void build(int &amp;k,int l,int r){
+   k=++cnt;
+   if(l==r){
+   	tr[k].sum=a[l];
+   	return;
+   }
+   int mid=(l+r)&gt;&gt;1;
+   build(tr[k].ls,l,mid);
+   build(tr[k].rs,mid+1,r);
+}
+inline void change(int &amp;k,int pre,int l,int r,int x,int y,int val){
+   k=++cnt;
+   tr[k].ls=tr[pre].ls;tr[k].rs=tr[pre].rs;
+   tr[k].sum=tr[pre].sum;
+   if(l==r){
+   	tr[k].sum=val;
+   	return;
+   }
+   int mid=(l+r)&gt;&gt;1;
+   if(x&lt;=mid)change(tr[k].ls,tr[pre].ls,l,mid,x,y,val);
+   if(y&gt;mid)change(tr[k].rs,tr[pre].rs,mid+1,r,x,y,val);
+}
+inline int ask(int k,int l,int r,int x,int y){
+   if(l==r)return tr[k].sum;
+   int mid=(l+r)&gt;&gt;1;
+   if(mid&gt;=x)return ask(tr[k].ls,l,mid,x,y);
+   else return ask(tr[k].rs,mid+1,r,x,y);
+}
+signed main(){
+   n=read();m=read();
+   up(i,1,n)a[i]=read();
+   build(rt[0],1,n);
+   int op,l,r,pre,x;
+   up(i,1,m){
+   	pre=read();op=read();
+   	if(op==1){
+   		l=read();x=read();
+   		change(rt[i],rt[pre],1,n,l,l,x);
+   	}
+   	if(op==2){
+   		l=read();
+   		write(ask(rt[pre],1,n,l,l),1);
+   		rt[i]=rt[pre];
+   	}
+   }
+   return 0;
+}
+</code></pre>
+<h2 id="询问区间某种颜色数量可修">询问区间某种颜色数量（可修）</h2>
+<p>以每一种颜色建一棵树，<code>sum</code>表示这个区间这种颜色有多少个，这样就可以很轻松的查询了。<br/>
+<strong>code</strong></p>
+<pre><code class="language-cpp">struct node{
+	int l,r,sum;
+}tr[N&lt;&lt;6];
+int cnt,n,m,a[N],rk[N];
+inline void push_up(int p){
+	tr[p].sum=tr[tr[p].l].sum+tr[tr[p].r].sum;
+}
+inline void update(int &amp;p,int k,int l,int r,int val){
+	if(!p) p=++cnt;
+    if(l==r){
+        tr[p].sum+=val;
+        return ;
+    }
+    int mid=(l+r)&gt;&gt;1;
+    if(k&lt;=mid) update(tr[p].l,k,l,mid,val);
+    else update(tr[p].r,k,mid+1,r,val);
+	push_up(p);
+}
+
+inline int ask(int p,int l,int r,int x,int y){
+    if(!p) return 0;
+    if(x&lt;=l&amp;&amp;r&lt;=y)return tr[p].sum;
+    int mid=(l+r)&gt;&gt;1,ans=0;
+    if(x&lt;=mid) ans+=ask(tr[p].l,l,mid,x,y);
+    if(mid&lt;y) ans+=ask(tr[p].r,mid+1,r,x,y);
+    return ans;
+}
+signed main(){
+	n=read();m=read();
+    up(i,1,n){
+        a[i]=read();
+        update(rk[a[i]],i,1,n,1);
+    }
+    while(m--){
+        int op=read(),l,r,x;
+        if(op==1){
+            l=read(),r=read(),x=read();
+            int ans=ask(rk[x],1,n,l,r);
+            printf("%d\n",ans);
+        }
+        else{
+            x=read();
+            update(rk[a[x]],x,1,n,-1);
+            update(rk[a[x+1]],x+1,1,n,-1);
+            update(rk[a[x]],x+1,1,n,1);
+            update(rk[a[x+1]],x,1,n,1);
+        	int t=a[x];
+			a[x]=a[x+1];
+			a[x+1]=t;
+		}
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="询问静态区间不同数的数量">询问静态区间不同数的数量</h2>
+<p>这种问题一般是用莫队来解决，不过如果强制在线的话，就必须要用主席树或者是树套树，树套树支持动态修改但是比较慢，如果是静态区间可以用主席树。</p>
+<p>如何用主席树对这种东西进行维护？</p>
+<p>令<code>tr[k].sum</code> 表示 <span class="math inline">\(k\)</span> 所代表的区间的答案。<br/>
+我们记录一个 <span class="math inline">\(last\)</span> 表示该数上一次出现是在那里。</p>
+<p>如果这是第一次出现，当前版本答案加一，否则，新建一个版本为减去前一次出现的版本，再把当前版本加一。</p>
+<p>询问就直接查询<code>sum</code>就可以了。<br/>
+<strong>code</strong></p>
+<pre><code class="language-cpp">int n,m;
+int a[N],lst[N],pos[N];
+int rt[N];
+struct node{
+	int ls,rs,sum;
+}tr[N&lt;&lt;5];
+int cnt;
+inline void change(int&amp;k,int pre,int p,int val,int l,int r){
+	k=++cnt;
+	tr[k]=tr[pre];
+	tr[k].sum+=val;
+	if(l==r)return;
+	int mid=(l+r)&gt;&gt;1;
+	if(p&lt;=mid)change(tr[k].ls,tr[pre].ls,p,val,l,mid);
+	else change(tr[k].rs,tr[pre].rs,p,val,mid+1,r);
+}
+inline int ask(int idx,int k,int l,int r) {
+	if(l==r)return tr[k].sum;
+	int mid=(l+r)&gt;&gt;1;
+	if (idx&lt;=mid) return ask(idx,tr[k].ls,l,mid)+tr[tr[k].rs].sum;
+	else return ask(idx,tr[k].rs,mid+1,r);
+}
+signed main(){
+    n=read();
+	up(i,1,n){
+		a[i]=read();
+		if(lst[a[i]]==0){
+			change(rt[i],rt[i-1],i,1,1,n);
+		}
+		else{
+			int x;
+			change(x,rt[i-1],lst[a[i]],-1,1,n);
+			change(rt[i],x,i,1,1,n);
+		}
+		lst[a[i]]=i;
+	}
+	m=read();
+	int l,r;
+	while(m--){
+		l=read();r=read();
+		write(ask(l,rt[r],1,n),1);
+	}
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17790618.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17787885.html"><small>← 上一篇</small><span>OI模板库</span></a><a href="17792352.html"><small>下一篇 →</small><span>李超线段树</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

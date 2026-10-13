@@ -1,0 +1,171 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="D - Reconstruct Chocolate 水题，不讲不讲。 int h,w,n; pii ans[N]; struct node{ int h,w,id; }a[N],b[N]; bool cmp1(node u,node v){ return u.w&gt;v.w; } bool cmp2(node u,node v){ "><title>AtCoder Beginner Contest 445题解 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/19697301.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>AtCoder Beginner Contest 445题解</h1><p class="hero-meta"><time datetime="2026-03-10T15:25+08:00">2026-03-10 15:25</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/19697301" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="d---reconstruct-chocolate">D - Reconstruct Chocolate</h2>
+<p>水题，不讲不讲。</p>
+<pre><code class="language-cpp">int h,w,n;
+pii ans[N];
+struct node{
+    int h,w,id;
+}a[N],b[N];
+bool cmp1(node u,node v){
+    return u.w&gt;v.w;
+}
+bool cmp2(node u,node v){
+    return u.h&gt;v.h;
+}
+void print(){
+    up(i,1,n){
+        cout&lt;&lt;ans[i].fi&lt;&lt;" "&lt;&lt;ans[i].se&lt;&lt;endl;
+    }
+}
+void dfs(int x,int y,int ida,int idb){
+    if(ida==n+1||idb==n+1){
+        print();
+        exit(0);
+    }
+    if(a[ida].w==w-y+1){
+        int res=0;
+        while(ida&lt;=n){
+            if(ans[a[ida].id].fi==0){
+                ans[a[ida].id]={x+res,y};
+                //cout&lt;&lt;ans[a[ida].id].fi&lt;&lt;" "&lt;&lt;ans[a[ida].id].se&lt;&lt;endl;
+                res+=a[ida].h;
+            }
+            ida++;
+            if(a[ida].w!=w-y+1)break;
+        }
+        dfs(x+res,y,ida,idb);
+    }
+    else{
+        int res=0;
+        while(idb&lt;=n){
+            if(ans[b[idb].id].fi==0){
+                ans[b[idb].id]={x,y+res};
+                res+=b[idb].w;
+            }
+            idb++;
+            if(b[idb].h!=h-x+1)break;
+        }
+        dfs(x,y+res,ida,idb);
+    }
+}
+void solve(){
+    cin&gt;&gt;h&gt;&gt;w&gt;&gt;n;
+    int u,v;
+    up(i,1,n){
+        cin&gt;&gt;u&gt;&gt;v;
+        a[i]={u,v,i};
+        b[i]={u,v,i};
+    }
+    sort(a+1,a+1+n,cmp1);
+    sort(b+1,b+1+n,cmp2);
+    dfs(1,1,1,1);
+}
+</code></pre>
+<h2 id="e---many-lcms">E - Many LCMs</h2>
+<p>这个题还是有点意思的。<br/>
+核心是预处理出1e7范围内所有数最小的质因子。<br/>
+然后对给出的2e5个数进行处理，记录每个出现的因子最大的次数和第二大的次数。</p>
+<pre><code class="language-cpp">int n,a[N];
+int bp[M+1];
+vector&lt;int&gt;pri;
+void init(){
+    iota(bp, bp+M+1, 0);
+    for (int x = 2; x &lt;= M; x++){
+        if (bp[x] == x) pri.push_back(x);
+        for (auto p : pri) {
+            if (p * x &gt; M || p &gt; bp[x]) break;
+            bp[p * x] = p;
+        }
+    }
+}
+int ksm(int a,int b){
+    int res=1;
+    while(b){
+        if(b&amp;1)res=res*a%mod;
+        a=a*a%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+void solve(){
+    cin&gt;&gt;n;
+    up(i,1,n){
+        cin&gt;&gt;a[i];
+    }
+    map&lt;int,int&gt;e1,e2;
+    up(i,1,n){
+        int x=a[i];
+        while(x&gt;1){
+            int p=bp[x],cnt=0;
+            while(x%p==0){
+                x/=p;
+                cnt++;
+            }   
+            if(cnt&gt;e1[p])e2[p]=e1[p],e1[p]=cnt;
+            else if(cnt&gt;e2[p])e2[p]=cnt;
+        }
+    }
+    int lcm=1;
+    for(auto [p,e]:e1)lcm=lcm*ksm(p,e)%mod;
+    up(i,1,n){
+        int x=a[i],ans=lcm;
+        while(x&gt;1){
+            int p=bp[x],cnt=0;
+            while(x%p==0){
+                x/=p;cnt++;
+            }   
+            if(cnt==e1[p]){
+                ans=ans*ksm(ksm(p,cnt-e2[p]),mod-2)%mod;
+            }
+        }
+        cout&lt;&lt;ans&lt;&lt;" ";
+    }
+    cout&lt;&lt;endl;
+}
+</code></pre>
+<h2 id="f---exactly-k-steps-2">F - Exactly K Steps 2</h2>
+<p>min-plus 矩阵乘法。<br/>
+一个有趣的知识点。</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;ranges&gt;
+#include &lt;algorithm&gt;
+
+int main() {
+    using namespace std;
+    unsigned N, K;
+    cin &gt;&gt; N &gt;&gt; K;
+    vector C(N, vector&lt;unsigned long&gt;(N));
+
+    for (auto&amp;&amp; row : C)
+        for (auto&amp;&amp; c : row)
+            cin &gt;&gt; c;
+
+    // Finds results of (a + b) moves, given results of a moves and b moves
+    const auto prod{[N, inf{ranges::max(C | views::join) * K}](const auto&amp; lhs, const auto&amp; rhs) {
+        // Initialize with a sufficiently large value
+        vector ret(N, vector(N, inf));
+        for (const auto i : views::iota(0U, N))
+            for (const auto j : views::iota(0U, N))
+                for (const auto k : views::iota(0U, N))
+                    ret[i][k] = min(ret[i][k], lhs[i][j] + rhs[j][k]);
+        return ret;
+    }};
+
+    auto ans(C);
+    --K;
+
+    // Fast exponentiation
+    while (K) {
+        if (K &amp; 1)
+            ans = prod(ans, C);
+        C = prod(C, C);
+        K /= 2;
+    }
+
+    for (const auto i : views::iota(0U, N))
+        cout &lt;&lt; ans[i][i] &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/19697301" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="19673597.html"><small>← 上一篇</small><span>AtCoder Beginner Contest 446题解</span></a><a href="19718955.html"><small>下一篇 →</small><span>AtCoder Beginner Contest 443题解</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

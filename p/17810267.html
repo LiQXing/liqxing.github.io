@@ -1,0 +1,342 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="T1 简单题，可以做到 \(n^2\) 但是没必要， \(n^3\) 已经很快了。 int n,m; char a[550][550]; int h[550][550],ans; signed main(){ n=read();m=read(); up(i,1,n){ scanf(&quot;%s&quot;,a[i]+1); } up(i,1,n"><title>test20231104 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17810267.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231104</h1><p class="hero-meta"><time datetime="2023-11-05T10:02+08:00">2023-11-05 10:02</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17810267.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="t1">T1</h2>
+<p>简单题，可以做到 <span class="math inline">\(n^2\)</span> 但是没必要， <span class="math inline">\(n^3\)</span> 已经很快了。</p>
+<pre><code class="language-cpp">int n,m;
+char a[550][550];
+int h[550][550],ans;
+signed main(){
+	n=read();m=read();
+	up(i,1,n){
+		scanf("%s",a[i]+1);
+	}
+	up(i,1,n){
+		up(j,1,m){
+			if(a[i][j]=='.')h[i][j]=h[i-1][j]+1;
+			else h[i][j]=0;
+		}
+		up(j,1,m){
+			if(h[i][j]==0)continue;
+			int L=j,R=j,x=h[i][j];
+			while(R&lt;m&amp;&amp;h[i][R+1]&gt;=x)R++;
+			while(L&gt;1&amp;&amp;h[i][L-1]&gt;=x)L--;
+			ans=max(ans,2*(R-L+1+x)-1);
+		}
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<h2 id="t2">T2</h2>
+<p>tmd，看到只有五个数，想着直接推数学公式，然推退了两个小时，然后打了个 <span class="math inline">\(O(n)\)</span> 的 dp，然后看出来了要用矩阵快速幂，但是写挂了，而且也没有时间调代码了。</p>
+<p>先简单写一个暴力 dp。</p>
+<pre><code class="language-cpp">	cnt[0][1]=1;
+	cnt[0][0]=1;
+	g[0][0]=e;
+	g[0][1]=d;
+	up(i,1,30){
+		int pre1=i-a;
+		if(pre1&gt;=0){
+			cnt[i][1]=(cnt[i][1]+cnt[pre1][1])%mod;
+			g[i][1]=(g[i][1]+g[pre1][1]+cnt[pre1][1]*d)%mod;
+		} 
+		int pre2=i-b;
+		if(pre2&gt;=0){
+			cnt[i][1]=(cnt[i][1]+cnt[pre2][0])%mod;
+			cnt[i][0]=(cnt[i][0]+cnt[pre2][1])%mod;	
+			g[i][1]=(g[i][1]+g[pre2][0]+cnt[pre2][0]*d)%mod;
+			g[i][0]=(g[i][0]+g[pre2][1]+cnt[pre2][1]*e)%mod;		
+		} 
+		int pre3=i-c;
+		if(pre3&gt;=0){
+			cnt[i][0]=(cnt[i][0]+cnt[pre3][0])%mod;	
+			g[i][0]=(g[i][0]+g[pre3][0]+cnt[pre3][0]*e)%mod;		
+		} 
+	} 
+
+</code></pre>
+<p>我们发现 <span class="math inline">\(a,b,c\le30\)</span>，所以我们可以用一个矩阵把 <span class="math inline">\([i-30,i]\)</span> 的情况记录下来，然后构造转移矩阵。</p>
+<p>难吗？真的不难，只是繁琐而已。</p>
+<pre><code class="language-cpp">int n,a,b,c,d,e;
+int cnt[55][2],g[55][2];
+struct mat{
+	int a[205][205];
+	mat(){
+		memset(a,0,sizeof a);
+	}
+	inline mat operator*(const mat&amp;rhs)const{
+		mat res;
+		up(i,1,130){
+			up(j,1,130){
+				up(k,1,130){
+					res.a[i][j]=(res.a[i][j]+a[i][k]*rhs.a[k][j])%mod;
+				}
+			}
+		}
+		return res;
+	}
+	inline void init(){
+		up(i,1,190)a[i][i]=1;
+	}
+}A,B;
+inline mat ksm(mat a,int b){
+	mat res;
+	res.init();
+	while(b){
+		if(b&amp;1)res=res*a;
+		a=a*a;
+		b&gt;&gt;=1;
+	}
+	return res;
+}
+signed main(){
+	n=read();
+	a=read();b=read();c=read();
+	d=read();e=read();
+	
+	cnt[0][1]=1;
+	cnt[0][0]=1;
+	g[0][0]=e;
+	g[0][1]=d;
+	up(i,1,30){
+		int pre1=i-a;
+		if(pre1&gt;=0){
+			cnt[i][1]=(cnt[i][1]+cnt[pre1][1])%mod;
+			g[i][1]=(g[i][1]+g[pre1][1]+cnt[pre1][1]*d)%mod;
+		} 
+		int pre2=i-b;
+		if(pre2&gt;=0){
+			cnt[i][1]=(cnt[i][1]+cnt[pre2][0])%mod;
+			cnt[i][0]=(cnt[i][0]+cnt[pre2][1])%mod;	
+			g[i][1]=(g[i][1]+g[pre2][0]+cnt[pre2][0]*d)%mod;
+			g[i][0]=(g[i][0]+g[pre2][1]+cnt[pre2][1]*e)%mod;		
+		} 
+		int pre3=i-c;
+		if(pre3&gt;=0){
+			cnt[i][0]=(cnt[i][0]+cnt[pre3][0])%mod;	
+			g[i][0]=(g[i][0]+g[pre3][0]+cnt[pre3][0]*e)%mod;		
+		} 
+	} 
+	if(n&lt;=30){
+		cout&lt;&lt;(g[n][0]+g[n][1])%mod&lt;&lt;endl;
+		return 0;
+	}
+	n-=30;
+	up(i,1,31)A.a[1][i]=cnt[i-1][0];
+	up(i,32,62)A.a[1][i]=cnt[i-32][1];
+	up(i,63,93)A.a[1][i]=g[i-63][0];
+	up(i,94,124)A.a[1][i]=g[i-94][1];
+	up(i,0,3){
+		up(j,0,29){
+			B.a[i*31+1+j+1][i*31+1+j]=1;
+		}
+	}
+	B.a[31-c+1][31]=1;
+	B.a[31+31-b+1][31]=1;
+	B.a[31+31-a+1][62]=1;
+	B.a[31-b+1][62]=1;
+	B.a[31-c+1][93]=e;
+	B.a[31+31-b+1][93]=e;
+	B.a[31*2+31-c+1][93]=1;
+	B.a[31*3+31-b+1][93]=1;
+	B.a[31+31-a+1][124]=d;
+	B.a[31-b+1][124]=d;
+	B.a[31*3+31-a+1][124]=1;
+	B.a[31*2+31-b+1][124]=1;
+	A=A*ksm(B,n);
+	cout&lt;&lt;(A.a[1][93]+A.a[1][124])%mod;
+	return 0;
+}
+</code></pre>
+<h2 id="t3">T3</h2>
+<p>简单题，字典树上 dfs 就行了。</p>
+<pre><code class="language-cpp">int n;
+int tr[M][26],dep[M],tim[M];
+int cnt;
+inline void insert(string s){
+	int p=0;
+	up(i,0,s.size()-1){
+		int ch=s[i]-'a';
+		if(!tr[p][ch])tr[p][ch]=++cnt,dep[cnt]=dep[p]+1;
+		p=tr[p][ch];
+		tim[p]++;
+	}
+}
+int sz[M],del[M];
+inline void insert2(string s){
+	int p=0;
+	up(i,0,s.size()-1){
+		int ch=s[i]-'a';
+		if(!tr[p][ch])break;
+		p=tr[p][ch];
+	}
+	sz[p]++;
+}
+int ans;
+inline void dfs(int u){
+	up(i,0,25){
+		if(tr[u][i]==0)continue;
+		dfs(tr[u][i]);
+		sz[u]+=sz[tr[u][i]];
+		del[u]+=del[tr[u][i]];
+	}
+	tim[u]-=del[u];
+	if(sz[u]&gt;=tim[u]){
+		ans+=tim[u]*dep[u];
+		sz[u]-=tim[u];
+		del[u]+=tim[u];
+	}
+	else {
+		ans+=sz[u]*dep[u];
+		del[u]+=sz[u];
+		sz[u]=0;
+	} 
+}
+signed main(){
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n;
+	string s;
+	up(i,1,n){
+		cin&gt;&gt;s;
+		insert(s);
+	}
+	up(i,1,n){
+		cin&gt;&gt;s;
+		insert2(s);
+	}
+	dfs(0);
+	cout&lt;&lt;ans&lt;&lt;endl;;
+	return 0;
+}
+</code></pre>
+<h2 id="t4">T4</h2>
+<p>以 T4 的水准来说应该算是一道简单题，思维并不复杂。</p>
+<p>重点：抽屉原理，一个区间不会长度超过 <span class="math inline">\(14\)</span>。</p>
+<p>每次操作等于是把幂次乘上 <span class="math inline">\(3\)</span>。</p>
+<p>由于 <span class="math inline">\(a_i\)</span> 到最后一定是为 <span class="math inline">\(a_i^{3^k}\)</span>，所以我们可以直接暴力倍增，然后分解 <span class="math inline">\(k\)</span> 就行了。</p>
+<pre><code class="language-cpp">int n,m,v,phi;
+int a[N];
+int dp[N][22];
+inline void init(){
+    up(i,0,v-1)dp[i][0]=i*i*i%v;
+    up(j,1,20){
+        up(i,0,v-1){
+           dp[i][j]=dp[dp[i][j-1]][j-1];
+        }
+    }
+}
+struct SegmentTree{
+    struct node{
+        int l,r,tag;
+    }tr[N&lt;&lt;2];
+    inline void build(int k,int l,int r){
+        tr[k].l=l;tr[k].r=r;tr[k].tag=0;
+        if(l==r)return;
+        int mid=(l+r)&gt;&gt;1;
+        build(lc,l,mid);
+        build(rc,mid+1,r);
+    }
+    inline void push_down(int k){
+        if(tr[k].tag!=0){
+            tr[lc].tag=tr[k].tag+tr[lc].tag;
+            tr[rc].tag=tr[rc].tag+tr[k].tag;
+            tr[k].tag=0;
+        }
+    }
+    inline void plus(int k,int l,int r){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+            tr[k].tag++;
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)plus(lc,l,r);
+        if(mid&lt;r)plus(rc,l,r);
+    }
+    inline void clac(int&amp;ans,int&amp;r){
+        int j=20;
+        while(j&gt;=0){
+            if(r&gt;=(1&lt;&lt;j)){
+                ans=dp[ans][j];
+                r-=(1&lt;&lt;j);
+                if(r==0)break;
+            }
+            j--;
+        }
+        return;
+    }
+    inline void ask(int k,int l,int r){
+        if(tr[k].l==tr[k].r){
+            clac(a[tr[k].l],tr[k].tag);
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)ask(lc,l,r);
+        if(mid&lt;r)ask(rc,l,r);
+    }
+}T;
+bool flag;
+bool vis[N];
+int sta[N],cnt;
+inline void dfs1(int u,int lim,int sum,bool lead){
+    if(flag)return;
+    if(u==lim+1){
+        if(lead==1){
+            if(sum==0)flag=1;
+            else if(sum&gt;0&amp;&amp;!vis[sum]){
+                vis[sum]=1;
+                sta[++cnt]=sum;
+            }
+        }
+        return;
+    }
+    dfs1(u+1,lim,sum+a[u]+1,1);
+    dfs1(u+1,lim,sum-a[u]-1,1);
+    dfs1(u+1,lim,sum,lead);
+}
+inline void dfs2(int u,int lim,int sum,bool lead){
+    if(flag)return;
+    if(u==lim+1){
+        if(lead==1){
+            if(sum==0)flag=1;
+            else if(sum&gt;0&amp;&amp;vis[sum])flag=1;
+        }
+        return;
+    }
+    dfs2(u+1,lim,sum,lead);
+    dfs2(u+1,lim,sum+a[u]+1,1);
+    dfs2(u+1,lim,sum-a[u]-1,1);
+}
+signed main(){
+	n=read();m=read();v=read();
+    init();
+    up(i,1,n)a[i]=read();
+    T.build(1,1,n);
+    int l,r,op;
+    while(m--){
+        op=read();
+        if(op==1){
+            l=read();r=read();
+            if(r-l+1&gt;=14)puts("Yes");
+            else{
+                T.ask(1,l,r);
+                flag=0;cnt=0;
+                int mid=(l+r)&gt;&gt;1;
+                dfs1(l,mid,0,0);
+                dfs2(mid+1,r,0,0);
+                if(flag)puts("Yes");
+                else puts("No");
+                up(i,1,cnt)vis[sta[i]]=0;
+            }
+        }
+        else{
+            l=read(),r=read();
+            T.plus(1,l,r);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<p><a class="unavailable-media" href="https://img2023.cnblogs.com/blog/3020001/202311/3020001-20231106100104842-1965838208.jpg" rel="noopener noreferrer">原图暂不可用 · image</a></p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17810267.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17807304.html"><small>← 上一篇</small><span>CF练习题18</span></a><a href="17811391.html"><small>下一篇 →</small><span>test20231103</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

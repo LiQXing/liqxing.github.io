@@ -1,0 +1,498 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="平面最近点对 经典的分治问题，把所有的点按照 \(x\) 排序，然后分治处理两个子区间，然后枚举离中心少于已知最小值的点，判断能否出现更小值。 int n,temp[250000]; struct node{ int x,y; }a[500500]; bool cmp(node l,node r){ if(l.x==r.x)re"><title>NOIP[区间数据结构类问题] · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17795872.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>NOIP[区间数据结构类问题]</h1><p class="hero-meta"><time datetime="2023-10-29T14:34+08:00">2023-10-29 14:34</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17795872.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="平面最近点对"><a href="https://www.luogu.com.cn/problem/P1429" rel="noopener noreferrer" target="_blank" title="平面最近点对">平面最近点对</a></h2>
+<p>经典的分治问题，把所有的点按照 <span class="math inline">\(x\)</span> 排序，然后分治处理两个子区间，然后枚举离中心少于已知最小值的点，判断能否出现更小值。</p>
+<pre><code class="language-cpp">int n,temp[250000];
+struct node{
+	int x,y;
+}a[500500];
+bool cmp(node l,node r){
+	if(l.x==r.x)return l.y&lt;r.y;
+	return l.x&lt;r.x;
+}
+double dis(int l,int r){
+	return sqrt((a[l].x-a[r].x)*(a[l].x-a[r].x)+(a[l].y-a[r].y)*(a[l].y-a[r].y));
+}
+bool cmp2(int x,int y){
+	return a[x].y&lt;a[y].y;
+}
+double merge(int l,int r){
+	double d;
+	if(l==r){return 1e9;}
+	if(l==r-1){
+		return dis(l,r);
+	}
+	int mid=(l+r)&gt;&gt;1;
+	double d1=merge(l,mid);
+	double d2=merge(mid+1,r);
+	d=min(d1,d2);
+	int k=0;
+	for(int i=l;i&lt;=r;i++){
+		if(fabs(a[mid].x-a[i].x)&lt;d) 
+            temp[k++]=i;
+	}
+    sort(temp,temp+k,cmp2);
+    for(int i=0;i&lt;k;i++){
+    	for(int j = i + 1;j&lt;k&amp;&amp;a[temp[j]].y-a[temp[i]].y&lt;d;j++){
+            double d3=dis(temp[i],temp[j]);
+            if(d &gt; d3)d=d3;
+        }	
+    }
+    return d;
+}
+signed main() {
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		a[i].x=read();
+		a[i].y=read();
+	}
+	sort(a+1,a+1+n,cmp);
+	double k=merge(1,n);
+	printf("%.4lf",k);
+	return 0;
+}
+</code></pre>
+<h2 id="blue-marry开公司"><a href="https://www.luogu.com.cn/problem/P4254" rel="noopener noreferrer" target="_blank" title="Blue Marry">Blue Marry开公司</a></h2>
+<p>几乎是一道李超线段树的板子题。</p>
+<pre><code class="language-cpp">int n;
+struct line{
+    f96 k,b;
+}p[N];
+int cnt;
+int s[N&lt;&lt;2];
+inline f96 clac(int id,int x){
+    return p[id].k*(x-1)+p[id].b;
+}
+inline int cmp(f96 x,f96 y) {
+    if(x-y&gt;eps)return 1;
+    if(y-x&gt;eps)return -1;
+    return 0;
+}
+inline void change(int k,int l,int r,int p){
+    int &amp;q=s[k],mid=(l+r)&gt;&gt;1;
+    int bmid=cmp(clac(p,mid),clac(q,mid));
+    if(bmid==1||(!bmid&amp;&amp;p&lt;q))swap(p,q);
+    int bl=cmp(clac(p,l),clac(q,l)),br=cmp(clac(p,r),clac(q,r));
+    if(bl==1||(!bl&amp;&amp;p&lt;q))change(lc,l,mid,p);
+    if(br==1||(!br&amp;&amp;p&lt;q))change(rc,mid+1,r,p);
+}
+inline void insert(int k,int l,int r,int ql,int qr,int id){
+    if(l&gt;=ql&amp;&amp;r&lt;=qr){
+        change(k,l,r,id);
+        return;
+    }
+    int mid=(l+r)&gt;&gt;1;
+    if(l&gt;=mid)insert(lc,l,mid,ql,qr,id);
+    if(mid&lt;r)insert(rc,mid+1,r,ql,qr,id);
+}
+inline int ask(int k,int l,int r,int p){
+    if(l==r)return clac(s[k],p);
+    int mid=(l+r)&gt;&gt;1,res=clac(s[k],p);
+    if(mid&gt;=p)res=max(res,ask(lc,l,mid,p));
+    if(mid&lt;p)res=max(res,ask(rc,mid+1,r,p));
+    return res;
+}
+signed main(){
+	n=read();
+    char op[50];
+    f96 b,k;
+    int x;
+    up(i,1,n){
+        scanf("%s",op+1);
+        if(op[1]=='P'){
+            scanf("%Lf %Lf",&amp;b,&amp;k);
+            cnt++;
+            p[cnt].b=b;p[cnt].k=k;
+            insert(1,1,1e5+100,1,1e5+100,cnt);
+        }
+        else{
+            x=read();
+            cout&lt;&lt;ask(1,1,1e5+100,x)/100&lt;&lt;endl;;
+        }
+    }
+	return 0;
+}
+</code></pre>
+<h2 id="rmq-mex"><a href="https://www.luogu.com.cn/problem/P4137" rel="noopener noreferrer" target="_blank" title="Rmq mex">Rmq mex</a></h2>
+<p>看起来就非常莫队是吧。</p>
+<p>然而，如何快速找出 <span class="math inline">\(mex\)</span> 呢？</p>
+<p>如果直接加一位一位的查找，复杂度肯定会炸。</p>
+<p>有两种解决办法：</p>
+<ol>
+<li>
+<p>对着值域建一棵线段树，然后上二分。</p>
+</li>
+<li>
+<p>对值域分块。</p>
+</li>
+</ol>
+<pre><code class="language-cpp">int n,m;
+int a[N],block;
+int pos[N];
+int ans[N];
+struct node{
+    int l,r,id;
+}q[N];
+inline bool cmp(node x,node y){
+	if(pos[x.l]!=pos[y.l])return pos[x.l]&lt;pos[y.l];
+	if(pos[x.l]&amp;1)return x.r&gt;y.r;
+	return x.r&lt;y.r;
+}
+int K=500;
+int cnt[N],num[N];
+inline void add(int x){
+    if(!cnt[x])num[x/K]++;
+    cnt[x]++;
+}
+inline void del(int x){
+    if(cnt[x]==1)num[x/K]--;
+    cnt[x]--;
+}
+inline void ask(int x){
+    for(int i=1;i&lt;=K;i++){
+        if(num[i-1]!=K){
+            for(int j=(i-1)*K;j&lt;i*K;j++){
+                if(!cnt[j]){
+                    ans[q[x].id]=j;
+                    return;
+                }
+            }
+        }
+    }
+}
+signed main(){
+    n=read();m=read();
+    block=sqrt(n);
+    up(i,1,n){
+        a[i]=read();
+        pos[i]=(i-1)/block+1;
+    }
+    up(i,1,m){
+        q[i].l=read();
+        q[i].r=read();
+        q[i].id=i;
+    }
+    sort(q+1,q+1+m,cmp);
+    int l=q[1].l,r=q[1].r;
+    for(int i=l;i&lt;=r;i++)add(a[i]);
+    ask(1);
+    up(i,2,m){
+        while(l&lt;q[i].l)del(a[l++]);
+        while(l&gt;q[i].l)add(a[--l]);
+        while(r&lt;q[i].r)add(a[++r]);
+        while(r&gt;q[i].r)del(a[r--]);
+        ask(i);
+    }
+    up(i,1,m)cout&lt;&lt;ans[i]&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+<h2 id="楼房重建"><a href="https://www.luogu.com.cn/problem/P4198" rel="noopener noreferrer" target="_blank">楼房重建</a></h2>
+<p>很有意思的一道题，题意简化一下就是求最长上升斜率。</p>
+<p>既然是单调递增，那么我们线段树的每一个节点可以维护这个节点所对应的区间的最大值，与从这段区间开头可以看到的区间内的所有楼房。</p>
+<p>那么问题来了，该如何进行 <span class="math inline">\(push\_up\)</span> 操作。</p>
+<p>显然合并区间的所有楼房一定可以看到左边的区间第一个位置看到的所有楼房（这应该很显然吧）</p>
+<p>我们可以先查找右区间的左区间的最大值，如果这个最大值比左区间的最大值小，那么有区间的左区间的所有答案一定看不到，所以我们就可以递归查找右区间的右区间</p>
+<p>如果右区间的左区间的最大值比左区间的最大值大，那么原来被右区间的左区间挡住的现在一样会被挡住，我们就可以加上右区间的答案，所以我们可以递归查找右区间的左区间</p>
+<p>代码非常短。</p>
+<pre><code class="language-cpp">int n,m,ans[N&lt;&lt;2];
+db maxl[N&lt;&lt;2];
+inline int ask(int k,int l,int r,db maxx){
+    if(maxl[k]&lt;=maxx)return 0;
+    if(l==r)return maxl[k]&gt;maxx;
+    int mid=(l+r)&gt;&gt;1;
+    if(maxl[lc]&lt;=maxx)return ask(rc,mid+1,r,maxx);
+    return ask(lc,l,mid,maxx)+ans[k]-ans[lc];
+}
+inline void change(int k,int l,int r,int pos,db v){
+    if(l==r){
+        ans[k]=1;
+        maxl[k]=v;
+        return;
+    }
+    int mid=(l+r)&gt;&gt;1;
+    if(pos&lt;=mid)change(lc,l,mid,pos,v);
+    else change(rc,mid+1,r,pos,v);
+    maxl[k]=max(maxl[lc],maxl[rc]);
+    ans[k]=ans[lc]+ask(rc,mid+1,r,maxl[lc]);
+}
+signed main(){
+    n=read(),m=read();
+    int l,r;
+    up(i,1,m){
+        l=read(),r=read();
+        change(1,1,n,l,(db)r/l);
+        cout&lt;&lt;ans[1]&lt;&lt;endl;
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="cpu监控"><a href="https://www.luogu.com.cn/problem/P4314" rel="noopener noreferrer" target="_blank">CPU监控</a></h2>
+<p>查询历史版本最大。</p>
+<p>刚刚开始时，有一个非常 <span class="math inline">\(native\)</span> 的想法，直接考虑把所有的 <span class="math inline">\(\max\)</span> 取最大就行了。</p>
+<p>如果这样，你只能得 <span class="math inline">\(20\)</span>分。</p>
+<p>为什么？</p>
+<p>因为有 <span class="math inline">\(push\_down\)</span>，会改变你下传的值，也就是你的答案会因为没有及时下传而改变。</p>
+<p>那么该如何解决这个问题呢？</p>
+<p>想象一下，你给每个点开一个队列，把所有的标记按照顺序存在这个队列里，然后标记下传的时候就把父亲节点的队列传给儿子节点，然后答案就是儿子节点的前缀最大值。</p>
+<p>但是这样肯定是会炸的。</p>
+<p>我们发现，对于一个点，首次赋值操作之后的任何修改都可以看作赋值操作。<br/>
+于是操作序列化简为（重点）：加操作+赋值操作。</p>
+<pre><code class="language-cpp">struct SegmentTree{
+    struct node{
+        int l,r;
+        int ans,hisans;
+        int add,agn;
+        int maxadd,maxagn;
+        bool vis;
+    }tr[N&lt;&lt;2];
+    inline void push_up(int k){
+        tr[k].ans=max(tr[lc].ans,tr[rc].ans);
+        tr[k].hisans=max(tr[lc].hisans,tr[rc].hisans);
+    }
+    inline void build(int k,int l,int r){
+        tr[k].l=l;tr[k].r=r;
+        if(l==r){
+            tr[k].ans=tr[k].hisans=a[l];
+            return;
+        }
+        int mid=(l+r)&gt;&gt;1;
+        build(lc,l,mid);
+        build(rc,mid+1,r);
+        push_up(k);
+    }
+    inline void doadd(int k,int val,int max_val){
+        if(tr[k].vis){
+            tr[k].maxagn=max(tr[k].maxagn,tr[k].agn+max_val);
+            tr[k].hisans=max(tr[k].hisans,tr[k].ans+max_val);
+            tr[k].ans+=val;
+            tr[k].agn+=val;
+        }
+        else{
+            tr[k].maxadd=max(tr[k].maxadd,tr[k].add+max_val);
+            tr[k].hisans=max(tr[k].hisans,tr[k].ans+max_val);
+            tr[k].ans+=val;
+            tr[k].add+=val;
+        }
+    }
+    inline void doagn(int k,int val,int max_val){
+        if(tr[k].vis){
+            tr[k].hisans=max(tr[k].hisans,max_val);
+            tr[k].maxagn=max(tr[k].maxagn,max_val);
+        }
+        else{
+            tr[k].vis=1;
+            tr[k].maxagn=max_val;
+            tr[k].hisans=max(tr[k].hisans,max_val);
+        }
+        tr[k].ans=tr[k].agn=val;
+    }
+    inline void push_down(int k){
+        doadd(lc,tr[k].add,tr[k].maxadd);
+        doadd(rc,tr[k].add,tr[k].maxadd);
+        tr[k].add=tr[k].maxadd=0;
+        if(tr[k].vis){
+            doagn(lc,tr[k].agn,tr[k].maxagn);
+            doagn(rc,tr[k].agn,tr[k].maxagn);
+            tr[k].vis=0;
+            tr[k].agn=tr[k].maxagn=0;
+        }
+
+    }
+    inline int ask(int k,int l,int r){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].ans;
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1,res=-inf;
+        push_down(k);
+        if(mid&gt;=l)res=max(res,ask(lc,l,r));
+        if(mid&lt;r)res=max(res,ask(rc,l,r));
+        return res;
+    }
+    inline int askhis(int k,int l,int r){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].hisans;
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1,res=-inf;
+        push_down(k);
+        if(mid&gt;=l)res=max(res,askhis(lc,l,r));
+        if(mid&lt;r)res=max(res,askhis(rc,l,r));
+        return res;
+    }
+    inline void add(int k,int l,int r,int val){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+            doadd(k,val,val);
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)add(lc,l,r,val);
+        if(mid&lt;r)add(rc,l,r,val);
+        push_up(k);
+    }
+    inline void assign(int k,int l,int r,int val){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+            doagn(k,val,val);
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)assign(lc,l,r,val);
+        if(mid&lt;r)assign(rc,l,r,val);
+        push_up(k);
+    }
+}T;
+signed main(){
+    n=read();
+    up(i,1,n)a[i]=read();
+    T.build(1,1,n);
+    m=read();
+    char op[3];
+    int l,r,z;
+    while(m--){
+        scanf("%s",op+1);
+        if(op[1]=='A'){
+            l=read();r=read();
+            write(T.askhis(1,l,r),1);
+        }
+        if(op[1]=='Q'){
+            l=read();r=read();
+            write(T.ask(1,l,r),1);
+        }
+        if(op[1]=='P'){
+            l=read();r=read();z=read();
+            T.add(1,l,r,z);
+        }
+        if(op[1]=='C'){
+            l=read();r=read();z=read();
+            T.assign(1,l,r,z);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="cf718c"><a href="https://www.luogu.com.cn/problem/CF718C" rel="noopener noreferrer" target="_blank" title="CF718C">CF718C</a></h2>
+<p>这道题其实是很考验对矩阵的基本理解。</p>
+<p>矩阵满足交换律，结合律。</p>
+<p>所以可以线段树直接硬上。</p>
+<pre><code class="language-cpp">int n,m;
+int a[N];
+struct mat{
+    int a[3][3];
+    mat(){
+        memset(a,0,sizeof a);
+    }
+    friend mat operator+(mat a,mat b){
+		mat c;
+		up(i,1,2) {
+			up(j,1,2){
+                c.a[i][j]=(a.a[i][j]+b.a[i][j])%mod;
+            }
+		}
+		return c;
+	}
+    inline mat operator*(const mat&amp;rhs)const{
+        mat c;
+        up(i,1,2){
+            up(k,1,2){
+                up(j,1,2){
+                    c.a[i][j]=(c.a[i][j]+a[i][k]*rhs.a[k][j])%mod;
+                }
+            }
+        }
+        return c;
+    }
+    inline bool empty(){
+		if(a[1][1]!=1) return 0;
+		if(a[1][2]!=0) return 0;
+		if(a[2][1]!=0) return 0;
+		if(a[2][2]!=1) return 0;
+		return 1;
+	}
+    inline void clear(){
+        memset(a,0,sizeof a);
+        a[1][1]=1;a[2][2]=1;
+    }
+};
+mat ksm(mat a,int b){
+	mat ret; 
+    ret.clear();
+	while(b){
+		if(b&amp;1) ret=ret*a;
+		a=a*a;
+		b&gt;&gt;=1;
+	}
+	return ret;
+}
+mat base,fir;
+struct SegmentTree{
+    struct node{
+        int l,r;
+        mat sum,tag;
+    }tr[N&lt;&lt;2];
+    inline void push_up(int k){
+        tr[k].sum=tr[lc].sum+tr[rc].sum;
+        
+    }
+    inline void build(int k,int l,int r){
+        tr[k].l=l;tr[k].r=r;
+        tr[k].tag.clear(); 
+        if(l==r){
+            tr[k].sum=fir*ksm(base,a[l]-1);
+            return;
+        }
+        int mid=(l+r)&gt;&gt;1;
+        build(lc,l,mid);
+        build(rc,mid+1,r);
+        push_up(k);
+    }
+    inline void push_down(int k){
+        if(!tr[k].tag.empty()){
+            tr[lc].sum=tr[lc].sum*tr[k].tag;
+            tr[rc].sum=tr[rc].sum*tr[k].tag;
+            tr[lc].tag=tr[lc].tag*tr[k].tag;
+            tr[rc].tag=tr[rc].tag*tr[k].tag;
+            tr[k].tag.clear();
+        }
+    }
+    inline void add(int k,int l,int r,mat val){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+            tr[k].tag=tr[k].tag*val;
+            tr[k].sum=tr[k].sum*val;
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)add(lc,l,r,val);
+        if(mid&lt;r)add(rc,l,r,val);
+        push_up(k);
+    }
+    inline mat ask(int k,int l,int r){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].sum; 
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        mat x;
+        push_down(k);
+        if(mid&gt;=l)x=x+ask(lc,l,r);
+        if(mid&lt;r)x=x+ask(rc,l,r);
+        return x;
+    }
+}T;
+signed main(){
+    base.a[1][1]=1;base.a[1][2]=1;
+    base.a[2][1]=1;base.a[2][2]=0;
+	fir.a[1][1]=1;fir.a[1][2]=1;
+    n=read();m=read();
+    up(i,1,n)a[i]=read();
+    int op,l,r,x;
+    T.build(1,1,n);
+    while(m--){
+        op=read();
+        if(op==1){
+            l=read();r=read();x=read();
+            T.add(1,l,r,ksm(base,x));
+        }
+        else{
+            l=read();r=read();
+            write(T.ask(1,l,r).a[1][2]%mod,1);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="_"></h2>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17795872.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17795619.html"><small>← 上一篇</small><span>test20231026</span></a><a href="17797966.html"><small>下一篇 →</small><span>test20231030</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

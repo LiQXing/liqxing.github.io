@@ -1,0 +1,167 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="T1 经典题目加上一点变形。 如果说不是序列而是询问有多少个子串，那么有一个非常经典的方程： 令 \(f_{i,j}\) 为到第 \(i\) 位，前面有 \(j\) 个多的 ( ， $f_{i,j}=f_{i,j}+f_{i-1,j-1} \quad $ \(s_i=\) ( || ? 。 $f_{i,j}=f_{i,j}+f_"><title>test20231029 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17798990.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231029</h1><p class="hero-meta"><time datetime="2023-10-30T22:03+08:00">2023-10-30 22:03</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17798990.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="t1">T1</h2>
+<p>经典题目加上一点变形。</p>
+<p>如果说不是序列而是询问有多少个子串，那么有一个非常经典的方程：</p>
+<p>令 <span class="math inline">\(f_{i,j}\)</span> 为到第 <span class="math inline">\(i\)</span> 位，前面有 <span class="math inline">\(j\)</span> 个多的 <code>(</code>，</p>
+<p>$f_{i,j}=f_{i,j}+f_{i-1,j-1} \quad $ <span class="math inline">\(s_i=\)</span> <code>(</code>||<code>?</code>。</p>
+<p>$f_{i,j}=f_{i,j}+f_{i-1,j+1} \quad $ <span class="math inline">\(s_i=\)</span> <code>）</code>||<code>?</code>。</p>
+<p>那么，如果是询问子序列呢，想一想，其实只不过是多了一种转移：</p>
+<p><span class="math inline">\(f_{i,j}=f_{i-1,j}\)</span></p>
+<p>那么这道题就解决了。</p>
+<pre><code class="language-cpp">int f[5050][5050];
+char s[N];
+int n;
+int sum[5050][5050];
+signed main(){
+    freopen("bracket.in", "r", stdin);
+    freopen("bracket.out", "w", stdout);
+	n=read();
+    scanf("%s",s+1);
+    sum[0][0]=1;f[0][0]=1;
+    sum[1][0]=1;f[1][0]=1;
+    up(i,1,n){
+        up(j,0,n){
+            f[i][j]=f[i-1][j];
+            if(j!=0&amp;&amp;(s[i]=='('||s[i]=='?')){
+                f[i][j]=(sum[i-1][j-1]+f[i][j])%mod;
+            }
+            if((s[i]==')'||s[i]=='?')){
+                f[i][j]=(sum[i-1][j+1]+f[i][j])%mod;
+            }
+            sum[i][j]=f[i][j]%mod;
+        }
+    }
+    cout&lt;&lt;sum[n][0];
+    return 0;
+}
+</code></pre>
+<h2 id="t2">T2</h2>
+<p>蒸蒸日上。</p>
+<p>注意到 <span class="math inline">\(m\)</span> 十分的大， 如果把所有武将都全部升级肯定最优，因为每个武将都可以产生大于升级它所需代价的收益。</p>
+<p>正着算不是很好算，我们可以将全部收益减去升级之前的收益，也就是说如果一个装置在第 <span class="math inline">\(j\)</span> 分钟成功升了一级，那么就从总收益中减去 <span class="math inline">\(j\)</span> 的收益。</p>
+<p>题意转化为 <span class="math inline">\(n\)</span> 个数组 <span class="math inline">\(a_i\)</span>，要将所有元素重排进 长度为 <span class="math inline">\(\sum k_i\)</span> 数组 <span class="math inline">\(b\)</span>，使得 <span class="math inline">\(b\)</span> 数组中的元素顺序满足在 <span class="math inline">\(a_i\)</span> 数组中的顺序关系，并且使得 <span class="math inline">\(b\)</span> 数组的前缀和的和最小。</p>
+<p>如果不考虑 <span class="math inline">\(a\)</span> 数组的限制关系，显然是直接将所有数排个序，可以使前缀和的和最小。</p>
+<p>更一般的，我们设想 <span class="math inline">\(b\)</span> 数组中的两段数，第一段数排在第二段前的充要条件，显然是第一段数的平均值小于第二段数。</p>
+<p>所以我们要做的，是每次把所有 <span class="math inline">\(a_i\)</span> 中最小平均值的一段数拿出来，放到 <span class="math inline">\(b\)</span> 数组中去。</p>
+<p>将每个 <span class="math inline">\(a\)</span> 数组提前分好段，这样的段在每个 <span class="math inline">\(a\)</span> 数组中的平均值都是单调递增的，就转化为所有元素都递增的的情况，直接排序就好了。</p>
+<p>怎么分段呢？我们每次在当前段加入一个数，如果这一段平均值变小，就合并，否则继续。但这样的数列 <span class="math inline">\(9,8,7,6,10,1,1,1\)</span> 前四个数的平均值大于后四个数，还要再做一次，这样最劣要从前往后做 <span class="math inline">\(n\)</span> 次，复杂度 <span class="math inline">\(O(n^2)\)</span>。</p>
+<p>我们发现，当加入一个数时，如果平均值不变小，就可以和上一段比，如果上一段平均值比这一段平均值大，那么往前合并，然后将下一个数当做一个新段。因为每合并一次就会少一段，所以这这样做 <span class="math inline">\(O(n)\)</span> 的。</p>
+<p>瓶颈在排序，复杂度 <span class="math inline">\(O(nlogn)\)</span>。</p>
+<h2 id="t3">T3</h2>
+<p>看到序列，端点，两个限制条件，</p>
+<p>很一眼二维数点。</p>
+<p>先用单调栈维护出每一个点向左向右分别最多能够扩展的距离。</p>
+<p>以 <span class="math inline">\(i\)</span> 为左端点，所有的右端点需要满足条件 <span class="math inline">\(R_i\le j\le n\)</span>，<span class="math inline">\(i\le L_j\)</span>。</p>
+<p>所以我们建立二维平面，以 <span class="math inline">\(i\)</span> 为横坐标，<span class="math inline">\(L_i\)</span> 为纵坐标询问的区间就是 <span class="math inline">\([R_i,i,n,n]\)</span>。</p>
+<p>右端点的情况下同理。</p>
+<p>然而，由于一些玄学问题我这个题用 sort 无法通过，但是用 stable_sort 却可以通过。</p>
+<p>？？？？？？？？？</p>
+<p><img alt="image" decoding="async" loading="lazy" src="../assets/images/17f7b1a6604a958359fb.gif"/></p>
+<pre><code class="language-cpp">int n,id;
+int a[N];
+struct Bit{
+    int tr[M];
+    inline void add(int x,int val){
+        if(x==0)return;
+        for(;x&lt;n+10;x+=x&amp;(-x))tr[x]+=val;
+    }
+    inline int sum(int x){
+        int res=0;
+        for(;x;x-=x&amp;(-x))res+=tr[x];
+        return res;
+    }
+    inline void init(){
+        memset(tr,0,sizeof tr);
+    }
+}T; 
+int s[N],top;
+int Lmin[N],Lmax[N],Rmin[N],Rmax[N];
+int L[N],R[N];
+struct node{
+    int op,x,y,add,id;
+}p[N&lt;&lt;1];
+int cnt;
+inline bool cmp(node aa, node bb){
+    if (aa.x != bb.x)return aa.x&lt;bb.x;
+    else if (aa.op != bb.op)return aa.op&lt;bb.op;
+    return aa.y &lt; bb.y;
+}
+int ans1[N],ans2[N];
+inline void solve2(){
+	cnt=0;
+    up(i,1,n){
+        p[++cnt]={0,i,R[i]+1,0,0};
+    }
+    up(i,1,n){
+        if(L[i]&lt;1)continue;
+        p[++cnt]={1,L[i],i+1,1,i};
+    }
+    stable_sort(p+1,p+1+cnt,cmp);
+    T.init();
+    up(i,1,cnt){
+        if (!p[i].op)T.add(p[i].y,1);
+        else {
+            ans2[p[i].id]+=p[i].add*T.sum(p[i].y);
+        }
+    }
+}
+signed main(){
+    freopen("interval.in","r",stdin);
+	freopen("interval.out","w",stdout);
+    n=read();id=read();
+    up(i,1,n){
+        a[i]=read();
+    }
+    top=0;
+    up(i,1,n){
+        while(top&amp;&amp;a[s[top]]&lt;=a[i])top--;
+        Lmax[i]=s[top];
+        s[++top]=i;
+    }
+    top=0;
+    up(i,1,n){
+        while(top&amp;&amp;a[s[top]]&gt;=a[i])top--;
+        Lmin[i]=s[top];
+        s[++top]=i;
+    }
+    up(i,1,n)L[i]=min(Lmax[i],Lmin[i]);
+    top=0;
+    s[top]=n+1;
+    dn(i,n,1){
+        while(top&amp;&amp;a[s[top]]&lt;=a[i])top--;
+        Rmax[i]=s[top];
+        s[++top]=i;
+    }
+    top=0;
+    s[top]=n+1;
+    dn(i,n,1){
+        while(top&amp;&amp;a[s[top]]&gt;=a[i])top--;
+        Rmin[i]=s[top];
+        s[++top]=i;
+    }
+    up(i,1,n)R[i]=max(Rmax[i],Rmin[i]);
+    solve2();
+	cnt=0;
+    up(i,1,n){
+	 	p[++cnt]={0,n+1-i,n+1-L[i]+1,0,0};
+        if(n+1-R[i]&lt;1)continue;
+        p[++cnt]={1,n+1-R[i],n+1-i+1,1,i};
+    }
+    stable_sort(p+1,p+1+cnt,cmp);
+    T.init();
+	up(i,1,cnt){
+        if (!p[i].op)T.add(p[i].y,1);
+        else ans1[p[i].id]+=p[i].add*T.sum(p[i].y);
+    }
+    up(i,1,n){
+        write(ans1[i],0);
+    }
+    printf("\n");
+    up(i,1,n){
+        write(ans2[i],0);
+    }
+    return 0;
+}
+
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17798990.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17797966.html"><small>← 上一篇</small><span>test20231030</span></a><a href="17802653.html"><small>下一篇 →</small><span>CF练习题17(DP)</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

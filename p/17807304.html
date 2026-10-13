@@ -1,0 +1,233 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="这次的题都是什么怪物！！！ Short Colorful Strip 因为 \(n=m\) ，所以最终的形态一定是 \(n\) 的一个排列。 根据题意，发掘几个性质： 一个区间染色，一定最先对其中颜色最小的染色。 染色要求覆盖的点颜色完全相同。 对于第一次来说，先找到颜色为 \(1\) 的点，位置是 \(p\) 。 染色的区间是"><title>CF练习题18 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17807304.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>CF练习题18</h1><p class="hero-meta"><time datetime="2023-11-03T11:46+08:00">2023-11-03 11:46</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17807304.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<p>这次的题都是什么怪物！！！</p>
+<h2 id="short-colorful-strip"><a href="https://www.luogu.com.cn/problem/CF1178F1" rel="noopener noreferrer" target="_blank" title="Short Colorful Strip">Short Colorful Strip</a></h2>
+<p>因为 <span class="math inline">\(n=m\)</span>，所以最终的形态一定是 <span class="math inline">\(n\)</span> 的一个排列。</p>
+<p>根据题意，发掘几个性质：</p>
+<ol>
+<li>一个区间染色，一定最先对其中颜色最小的染色。</li>
+<li>染色要求覆盖的点颜色完全相同。</li>
+</ol>
+<p>对于第一次来说，先找到颜色为 <span class="math inline">\(1\)</span> 的点，位置是 <span class="math inline">\(p\)</span>。</p>
+<p>染色的区间是 <span class="math inline">\([l,r]\)</span>，<span class="math inline">\(l\le p\le r\)</span>。</p>
+<p>所以我们可以把答案分成四个区间 <span class="math inline">\([1,l]\)</span>，<span class="math inline">\([l+1,p-1]\)</span>，<span class="math inline">\([p+1,r]\)</span>，<span class="math inline">\([r+1,n]\)</span></p>
+<p><span class="math inline">\(ans=\sum_{l=1}^{p-1}f_{1,l}\times f_{l+1,p-1}\times \sum_{r=p}^{n}f_{p+1,r}\times f_{r+1,n}\)</span></p>
+<p>对于查询的每一个区间都可以用这种方法求得，所以做法就很显然了。</p>
+<pre><code class="language-cpp">int n,m;
+int a[N];
+int f[505][505];
+inline int dfs(int l,int r){
+    if(~f[l][r])return f[l][r];
+    if(l&gt;=r)return f[l][r]=1;
+    int p=l;
+    up(i,l,r)if(a[i]&lt;a[p])p=i;
+    int ans1=0,ans2=0;
+    up(i,l,p)ans1=(ans1+dfs(l,i-1)*dfs(i,p-1)%mod)%mod;
+    up(i,p,r)ans2=(ans2+dfs(p+1,i)*dfs(i+1,r)%mod)%mod;
+    return f[l][r]=ans1*ans2%mod;
+}
+signed main(){
+    memset(f,-1,sizeof f);
+    n=read();m=read();
+    up(i,1,m)a[i]=read();
+    cout&lt;&lt;dfs(1,m);
+    return 0;
+}
+</code></pre>
+<h2 id="long-colorful-strip"><a href="https://www.luogu.com.cn/problem/CF1178F2" rel="noopener noreferrer" target="_blank" title="Long Colorful Strip">Long Colorful Strip</a></h2>
+<p>似乎可以用同样的做法，对于每一种颜色，找出它 最左端的位置和最右端的位置，枚举 <span class="math inline">\(l,r\)</span> 然后把当前区间分成五段，进行区间 dp。</p>
+<p>然后一看， <span class="math inline">\(m\le 10^6\)</span> ，当场去世。</p>
+<p>那么有没有什么优化呢，我们考虑一下对于一段颜色相同的区间，我们可以选择把其压缩成一个点，但是这样似乎优化的很玄学，想一想有没有什么性质可以利用。</p>
+<p>考虑一下，我们每一次染色，似乎最多增加两个 <span class="math inline">\(c_i!=c_{i+1}\)</span>。</p>
+<p>所以如果压缩后的 <span class="math inline">\(m\le 2n\)</span>，可以直接判断不合法。</p>
+<p>复杂度 <span class="math inline">\(m^3\)</span>，但是能过。</p>
+<pre><code class="language-cpp">int n,m;
+int a[N],t;
+int f[1505][1505];
+int L[1540],R[1050];
+inline int dfs(int l,int r){
+    if(~f[l][r])return f[l][r];
+    if(l&gt;r)return 1;
+    int &amp;val=f[l][r];
+	val=0;
+	int minl=a[l];
+	up(j,l,r)minl=min(minl,a[j]);
+	int p=-1;
+	int ans1=1;
+	up(j,l,r){
+		if(a[j]==minl) {
+			if(p!=-1)ans1=ans1*dfs(p+1,j-1)%mod;
+			p=j;
+		}
+	}
+	int lans=0;
+	up(j,l,L[minl]){
+        lans=(lans+dfs(l,j-1)*dfs(j,L[minl]-1)%mod)%mod;
+    }
+	int rans=0;
+	up(j,R[minl],r){
+        rans=(rans+dfs(R[minl]+1,j)*dfs(j+1,r)%mod)%mod;
+    }
+	return val=ans1*lans%mod*rans%mod;
+}
+signed main(){
+    memset(f,-1,sizeof f);
+    n=read();m=read();
+    int x,pre=0;
+    up(i,1,m){
+        x=read();
+        if(x!=pre)a[++t]=x;
+        pre=x;
+    }
+    if(t&gt;2*n){
+        puts("0");
+        return 0;
+    }
+    up(i,1,n){
+        int l=t+1,r=0;
+        up(j,1,t){
+            if(a[j]==i){
+                l=min(l,j);
+                r=max(r,j);
+            }
+        }
+        up(j,l,r){
+            if(a[j]&lt;i){
+                puts("0");
+                return 0;
+            }
+        }
+        L[i]=l;R[i]=r;
+    }
+    cout&lt;&lt;dfs(1,t);
+    return 0;
+}
+</code></pre>
+<h2 id="palindrome"><a href="https://www.luogu.com.cn/problem/CF335B" rel="noopener noreferrer" target="_blank">Palindrome</a></h2>
+<p>很经典的一道题和性质。</p>
+<blockquote>
+<p>最长回文子序列等于原串和反串的最长公共子序列。</p>
+</blockquote>
+<p>但是求 LCS 是 <span class="math inline">\(n^2\)</span> 的。</p>
+<p>思考一下，因为全是小写字母，所以如果字符串的长度大于 <span class="math inline">\(2600\)</span> 那么一定有一个所有字符都相同的符合条件的串。</p>
+<p>不然的话就直接输出 LCS。</p>
+<pre><code class="language-cpp">int n;
+string s,t;
+int f[2600][2600];
+char ans[5050],ans2[5050];
+signed main(){
+    cin&gt;&gt;s;
+    n=s.size();
+    t=s;
+    reverse(t.begin(),t.end());
+    s=" "+s;t=" "+t;
+    if(n&lt;=2600){
+        up(i,1,n){
+            up(j,1,n){
+                if(s[i]==t[j]){
+                    f[i][j]=f[i-1][j-1]+1;
+                }
+                else{
+                    f[i][j]=max(f[i-1][j],f[i][j-1]);
+                }
+            }
+        }
+        int i=n,j=n;
+	    while(f[i][j]&gt;0){
+	    	if(s[i]==t[j]){
+                ans[f[i][j]]=s[i];
+                i--, j--;
+            }
+		    else{
+			    if(f[i][j]==f[i-1][j]) i--;
+			    else j--;
+		    }
+	    }
+        if(f[n][n]&lt;100){
+            printf("%s",ans+1);
+            return 0;
+        }
+        else{
+            int t=0;
+            up(i,1,50)ans2[++t]=ans[i];
+            dn(i,49,0)ans2[++t]=ans[f[n][n]-i];
+            printf("%s",ans2+1);
+        }
+    }
+    else{
+        up(j,'a','z'){
+            int t=0;
+            up(i,1,n){
+                if(s[i]==j)t++;
+            }
+            if(t&gt;=100){
+                up(i,1,100)putchar(j);
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="constrained-tree"><a href="https://www.luogu.com.cn/problem/CF513D2" rel="noopener noreferrer" target="_blank" title="Constrained Tree">Constrained Tree</a></h2>
+<p>首先，我们已经知道了这个东西的先序遍历的顺序。</p>
+<p>想一想如何判断一个点是在左子树还是右子树。</p>
+<p>可以对每一个点求左子树的最小值，最大值，右子树的最小值，最大值。</p>
+<p>然后递归求解。</p>
+<pre><code class="language-cpp">int n,m;
+int Lmax[N],Rmax[N],Lmin[N],Rmin[N];
+int cnt=0;
+bool flag=0;
+vector&lt;int&gt;res;
+inline void dfs(int l,int r){
+    if(flag) return;
+    ++cnt;
+    if(Lmax[l]){
+        if(Lmin[l]&lt;=cnt)flag=1;
+        dfs(cnt+1,Lmax[l]);
+    }
+    res.push_back(l);
+    if(Rmax[l]){
+        if(Rmin[l]&lt;=cnt)flag=1;
+        dfs(cnt+1,max(Rmax[l],r));
+    } 
+    else if(cnt&lt;r)dfs(cnt+1,r);
+}
+signed main(){
+    n=read();m=read();
+    up(i,1,n){
+        Lmin[i]=n+1;
+        Rmin[i]=n+1;
+    }
+    int x,y;
+    char s[10];
+    up(i,1,m){
+        x=read();y=read();
+        if(x&gt;=y){
+            puts("IMPOSSIBLE");
+            return 0;
+        }
+        scanf("%s",s+1);
+        if(s[1]=='L'){
+            Lmax[x]=max(Lmax[x],y);
+            Lmin[x]=min(Lmin[x],y);
+        }
+        else{
+            Rmax[x]=max(Rmax[x],y);
+            Rmin[x]=min(Rmin[x],y);
+        }
+    }
+    dfs(1,n);
+    if(!flag){
+        for(auto x:res){
+            cout&lt;&lt;x&lt;&lt;" ";
+        }
+    }
+    else puts("IMPOSSIBLE");
+    return 0;
+}
+</code></pre>
+<p>来一张阿卡多：</p>
+<p><img alt="image" decoding="async" loading="lazy" src="../assets/images/d7aeb9fe1e527ec8f402.jpg"/></p>
+<p>再来一张沃尔特：</p>
+<p><img alt="image" decoding="async" loading="lazy" src="../assets/images/a8a5d623a42ef92931bb.jpg"/></p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17807304.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17805309.html"><small>← 上一篇</small><span>test20231102</span></a><a href="17810267.html"><small>下一篇 →</small><span>test20231104</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

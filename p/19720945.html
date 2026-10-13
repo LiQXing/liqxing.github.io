@@ -1,0 +1,83 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="E - Laser Takahashi 我真的服了，e题卡我精度。第一次提交wa23个，加了eps，wa17个，改用f128，结果wa7个。不是哥们，明明做法都是一样的凭什么我的精度会挂掉。真的服了。 #include&lt;bits/stdc++.h&gt; #define int long long using namespace st"><title>AtCoder Beginner Contest 442题解 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/19720945.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>AtCoder Beginner Contest 442题解</h1><p class="hero-meta"><time datetime="2026-03-15T15:12+08:00">2026-03-15 15:12</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/19720945" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="e---laser-takahashi">E - Laser Takahashi</h2>
+<p>我真的服了，e题卡我精度。第一次提交wa23个，加了eps，wa17个，改用f128，结果wa7个。不是哥们，明明做法都是一样的凭什么我的精度会挂掉。真的服了。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+const int N(2e5+5);
+int n,q;
+int cnt[N],id[N],pre[N]; //cnt:每方向怪物数 id:怪物方向编号 pre:前缀和
+map&lt;pair&lt;int,int&gt;,vector&lt;int&gt;&gt;mp; //方向-&gt;怪物列表
+vector&lt;pair&lt;int,int&gt;&gt;dir; //全部方向向量
+bool cmp(pair&lt;int,int&gt;a,pair&lt;int,int&gt;b){
+    auto[x1,y1](a);
+    auto[x2,y2](b);
+    bool p(y1&gt;0 or !y1 and x1&gt;0); //a在上半平面或正x轴
+    bool q(y2&gt;0 or !y2 and x2&gt;0); //b在上半平面或正x轴
+    if(p!=q) return p&gt;q; //上半平面排前
+    else return x1*y2&gt;x2*y1; //同半平面逆时针排序(叉积)
+}
+signed main(){
+    cin&gt;&gt;n&gt;&gt;q;
+    for(int i=1,x,y;i&lt;=n;++i){
+        cin&gt;&gt;x&gt;&gt;y;
+        int g(__gcd(abs(x),abs(y))); //约分统一方向
+        if(g) x/=g,y/=g;
+        if(!mp[{x,y}].size()) dir.push_back({x,y}); //新方向进列表
+        mp[{x,y}].push_back(i); //怪物加入方向组
+    }
+    sort(dir.begin(),dir.end(),cmp); //逆时针排方向
+    for(int i=0;i&lt;dir.size();++i){
+        cnt[i+1]=mp[dir[i]].size(); //记方向怪物数
+        for(int k:mp[dir[i]]) id[k]=i+1; //记怪物方向编号
+    }
+    for(int i=1;i&lt;=dir.size();++i) pre[i]=pre[i-1]+cnt[i]; //前缀和
+    for(int a,b;q--;){
+        cin&gt;&gt;a&gt;&gt;b;
+        int x(id[a]),y(id[b]); //怪物方向编号
+        if(x==y) cout&lt;&lt;cnt[x]&lt;&lt;'\n'; //同方向即该方向所有怪物
+        else if(x&gt;y) cout&lt;&lt;pre[x]-pre[y-1]&lt;&lt;'\n'; //逆时针区间和
+        else cout&lt;&lt;pre[dir.size()]+pre[x]-pre[y-1]&lt;&lt;'\n'; //顺时针绕一圈
+    }
+}
+
+</code></pre>
+<h2 id="f---diagonal-separation-2">F - Diagonal Separation 2</h2>
+<p>简单优化dp，其实就是维护一个形状而已。</p>
+<pre><code class="language-cpp">void solve(){
+    cin&gt;&gt;n;
+    up(i,1,n){
+        cin&gt;&gt;s[i];
+        s[i]=" "+s[i];
+    }
+    memset(f,0x3f,sizeof f);
+    memset(minl,0x3f,sizeof minl);
+    up(i,1,n){
+        up(j,1,n){
+            pre[i][j]=pre[i][j-1]+(s[i][j]=='#');
+        }
+        dn(j,n,1){
+            suf[i][j]=suf[i][j+1]+(s[i][j]=='.');
+        }
+    }
+    up(j,0,n){
+        f[1][j]=min(f[1][j],pre[1][j]+suf[1][j+1]);
+    }
+    up(i,2,n){
+        memset(minl,0x3f,sizeof minl);
+        dn(j,n,0){
+            minl[j]=min(minl[j+1],f[i-1][j]);
+        }
+        up(j,0,n){
+            f[i][j]=minl[j]+pre[i][j]+suf[i][j+1];
+            //up(k,j,n)f[i][j]=min(f[i][j],f[i-1][k]+pre[i][j]+suf[i][j+1]);
+        }
+    }
+    int ans=inf;
+    up(i,0,n){
+        ans=min(ans,f[n][i]);
+    }
+    cout&lt;&lt;ans;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/19720945" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="19718955.html"><small>← 上一篇</small><span>AtCoder Beginner Contest 443题解</span></a><a href="19735995.html"><small>下一篇 →</small><span>AtCoder Beginner Contest 441题解</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

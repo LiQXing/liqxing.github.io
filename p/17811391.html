@@ -1,0 +1,350 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="T1 还算是一道简单题，通过二分可以轻松求解。(但是我因为没有判断左端点挂了 \(10pts\) ,不然我就是本场比赛的 \(rk1\) 了) 虽然题解上说单调性是错误的，但是而二分能过，那就二分水过去吧。 int n,k; int a[2050]; bool vis[2050]; inline int work(int x){"><title>test20231103 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17811391.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231103</h1><p class="hero-meta"><time datetime="2023-11-05T22:30+08:00">2023-11-05 22:30</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17811391.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="t1"><a href="http://47.94.97.204/contest/318/problem/1" rel="noopener noreferrer" target="_blank" title="T1">T1</a></h2>
+<p>还算是一道简单题，通过二分可以轻松求解。(但是我因为没有判断左端点挂了 <span class="math inline">\(10pts\)</span> ,不然我就是本场比赛的 <span class="math inline">\(rk1\)</span> 了)</p>
+<p>虽然题解上说单调性是错误的，但是而二分能过，那就二分水过去吧。</p>
+<pre><code class="language-cpp">int n,k;
+int a[2050];
+bool vis[2050];
+inline int work(int x){
+    memset(vis,0,sizeof vis);
+    int ans=0;
+    up(i,1,n){
+        int res=x,flg=0;
+        up(j,1,n){
+            if(vis[j])continue;
+            if(res&gt;=a[j]){
+                res-=a[j];
+                vis[j]=1;
+                flg=1;
+            }
+            if(res==0)break;
+        }
+        if(flg)ans++;
+    }
+    return ans;
+}
+inline bool cmp(int x,int y){
+    return x&gt;y;
+}
+signed main(){
+	n=read();k=read();
+    int maxl=0;
+    up(i,1,n){
+        a[i]=read();
+        maxl=max(maxl,a[i]);
+    }
+    sort(a+1,a+1+n,cmp);
+    int l=maxl,r=1e7,ans;
+    while(l&lt;=r){
+        int mid=(l+r)&gt;&gt;1;
+        if(work(mid)&lt;=k){
+            ans=mid;
+            r=mid-1;
+        }
+        else l=mid+1;
+    }
+    cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h2 id="t2"><a href="http://47.94.97.204/contest/318/problem/2" rel="noopener noreferrer" target="_blank" title="T2">T2</a></h2>
+<p>完成成就:考场干黑(?或许)。</p>
+<p>做题的时候还觉得没什么，考完后看一下题解，发现我怎么这么 nb，竟然搞出这道题。</p>
+<p>这还是一道博弈论(最近怎么这么多博弈论)。</p>
+<p>看着似乎很不好搞的样子。</p>
+<p>先推一推结论，如果总石块数是奇数，那么先手必胜，因为可以直接取一个石块。如果总石块数是偶数，那么问题就复杂了起来，不是很会。</p>
+<p>那么我是如何解决这道题的？</p>
+<p>答：观察大样例，发现第一个性质，每堆石块可取的石子个数与前一次会相差 <span class="math inline">\(2^k\)</span>，第二个性质，取走石子后，所有石子的前 <span class="math inline">\(k\)</span> 位异或和为 <span class="math inline">\(0\)</span>。</p>
+<pre><code class="language-cpp">int n,k;
+int a[N];
+int cnt2[N];
+int tot[50],sum;
+vector&lt;int&gt;ans[N];
+inline bool check(int p,int del,int lim){
+	int t=a[p]-del;
+	up(i,0,lim){
+		if(tot[i]%2==0&amp;&amp;(((a[p]&gt;&gt;i)&amp;1)!=((t&gt;&gt;i)&amp;1)))return 0;
+		if(tot[i]%2==1&amp;&amp;(((a[p]&gt;&gt;i)&amp;1)==((t&gt;&gt;i)&amp;1)))return 0;
+	}
+	return 1;
+}
+signed main(){
+	freopen("nim.in","r",stdin);
+	freopen("nim.out","w",stdout);
+    n=read();k=read();
+    up(i,1,n){
+        a[i]=read();
+        sum+=a[i];
+        dn(j,31,0){
+        	if((a[i]&gt;&gt;j)&amp;1){
+        		tot[j]++;	
+			}
+		}
+    }
+    bool flg=0;
+    up(i,1,n){
+        int res=0;
+        up(j,0,31){
+        	if(res+(1&lt;&lt;j)&gt;min(k,a[i]))break;
+        	if(check(i,res+(1ll&lt;&lt;j),j)){
+        		res+=(1&lt;&lt;j);
+        		flg=1;
+        		ans[i].push_back(res);
+			}
+		}
+    }
+    if(!flg){
+    	puts("0");
+    	return 0;
+	}
+    puts("1");
+    up(i,1,n){
+        for(auto v:ans[i]){
+            write(i,0);
+            write(v,1);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="t3"><a href="http://47.94.97.204/contest/318/problem/3" rel="noopener noreferrer" target="_blank" title="T3">T3</a></h2>
+<p>一道简单题，只要想到建立失配树就出来了。</p>
+<pre><code class="language-cpp">vector&lt;int&gt;g[N];
+char s[N];
+int nxt[N],n;
+inline void getnxt(){
+    int len=strlen(s+1),j=0;
+    up(i,2,len){
+        while(j&amp;&amp;s[i]!=s[j+1])j=nxt[j];
+        if(s[j+1]==s[i])j++;
+        nxt[i]=j;
+    }
+}
+struct treelca{
+    int siz[N],son[N],fa[N],dep[N],top[N];
+    inline void dfs1(int u,int from){
+        siz[u]=1;son[u]=0;
+        dep[u]=dep[from]+1;
+        for(auto v:g[u]){
+            if(v==from) continue;
+            fa[v]=u;dfs1(v,u);
+            if(siz[v]&gt;siz[son[u]])son[u]=v;
+            siz[u]+=siz[v];
+        }
+    }
+    inline void dfs2(int u,int tp){
+        top[u]=tp;
+        if(son[u]!=0)dfs2(son[u],tp);
+        for(auto v:g[u]){
+            if(v==fa[u]||v==son[u]) continue;
+            dfs2(v,v);
+        }
+    }
+    inline int lca(int x,int y){
+        while(top[x]!=top[y]){
+            if(dep[top[x]]&gt;dep[top[y]])x=fa[top[x]];
+            else y=fa[top[y]];
+        }
+        return dep[x]&lt;dep[y]?x:y;
+    }
+    inline void failtree(){
+        dn(i,n,1){
+            siz[i]++;
+            if(nxt[i])siz[nxt[i]]+=siz[i];
+            if(siz[i]&gt;=siz[son[nxt[i]]])son[nxt[i]]=i;
+        }
+        up(i,1,n){
+            dep[i]=dep[nxt[i]]+1;
+            if(son[nxt[i]]!=i)top[i]=i;
+            else top[i]=top[nxt[i]];
+            fa[i]=nxt[i];
+        }
+    }
+}T;
+bool vis[N];
+int fac[N],ifac[N];
+inline int ksm(int a,int b){
+    int res=1;
+    while(b){
+        if(b&amp;1)res=res*a%mod;
+        a=a*a%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+inline void init(){
+    fac[0]=1;ifac[0]=1;
+    up(i,1,n+10)fac[i]=fac[i-1]*i%mod;
+    ifac[n+10]=ksm(fac[n+10],mod-2);
+    dn(i,n+9,1)ifac[i]=ifac[i+1]*(i+1)%mod;
+}
+inline int C(int n,int m){
+    if(n&lt;m)return 0;
+    return fac[n]*ifac[m]%mod*ifac[n-m]%mod;
+}
+int k;
+int ans;
+signed main(){
+	freopen("string.in","r",stdin);
+    freopen("string.out","w",stdout);
+	k=read();
+    scanf("%s",s+1);
+    n=strlen(s+1);
+    init();
+    getnxt();
+    T.failtree();
+    ans=C(n+1,k);
+    int t=0;
+    up(i,1,n){
+        t=(t+C(T.siz[i],k)*(T.dep[i])%mod)%mod;
+        ans=(ans+C(T.siz[i],k))%mod;
+    }
+    cout&lt;&lt;(ans+t*2)%mod;
+    return 0;
+}
+
+</code></pre>
+<h2 id="t4"><a href="http://47.94.97.204/contest/318/problem/4" rel="noopener noreferrer" target="_blank" title="T4">T4</a></h2>
+<p>很古怪的一道题。</p>
+<p>想出了结论，但是没有做出 <span class="math inline">\(60pts\)</span> 的暴力，还是码力太低了。</p>
+<p>因为原图有 <span class="math inline">\(n-1\)</span> 条边，新图同样有 <span class="math inline">\(n-1\)</span> 条边，所以每次都必须要染上颜色。</p>
+<p>所以把地图上相邻的点都覆盖在原图上，然后寻找经过次数为 <span class="math inline">\(1\)</span> 的边，每一次找到这样的边，那么就可以把树分成两部分，然后进行递归到子树里进行查找。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int N=1e6+6,M=998244353;
+using ll=long long;
+using ul=unsigned long long;
+mt19937_64 rg(random_device{}());
+ul rp[N],vl[N];
+void NO(){puts("NO"),exit(0);}
+void YES(){puts("YES"),exit(0);}
+int n,f[N],lt[N],d[N],dfn[N],dlt;
+int sz[N],lc[N],c1[N],rev[N];
+int q[N],ql,qr;
+vector&lt;int&gt;lk[N];
+bitset&lt;N&gt;vs;
+void run(ul v){
+    int k=lower_bound(rp+1,rp+n,v)-rp;
+    if(k==n||vs[k])NO();
+    vs[q[++qr]=k]=1;
+    if(qr==n-1)YES();
+}
+void dfs(int x){
+    sz[x]=1;
+    for(int y:lk[x]){
+        auto it=lk[y].begin();
+        while(*it!=x)++it;
+        lk[y].erase(it);
+        d[y]=d[x]+1;
+        f[y]=x,dfs(y),sz[x]+=sz[y];
+        if(sz[y]&gt;sz[lc[x]])lc[x]=y;
+    }
+}
+void dfs2(int x){
+    rev[dfn[x]=++dlt]=x;
+    if(lc[x])lt[lc[x]]=lt[x],dfs2(lc[x]);
+    for(int y:lk[x])
+        if(y!=lc[x])lt[y]=y,dfs2(y);
+}
+int lca(int x,int y){
+    while(lt[x]!=lt[y]){
+        if(d[lt[x]]&gt;d[lt[y]])x=f[lt[x]];
+        else y=f[lt[y]];
+    }return d[x]&lt;d[y]?x:y;
+}
+struct Eg{int x,y;}g[N];
+void dfs3(int x){
+    for(int y:lk[x])
+        dfs3(y),vl[x]^=vl[y],c1[x]+=c1[y];
+}
+struct ZYFPSGT{
+#define ls x&lt;&lt;1
+#define rs x&lt;&lt;1|1
+    vector&lt;int&gt;mn,tg;
+    vector&lt;ul&gt;vr;
+    int D,U;
+    void build(int x,int l,int r){
+        if(l==r)mn[x]=c1[rev[l]];
+        else{
+            int md=l+r&gt;&gt;1;
+            build(ls,l,md),build(rs,md+1,r);
+            mn[x]=min(mn[ls],mn[rs]);
+        }
+    }
+    ul mst;
+    void atg(int x,int t1,ul t2){
+        tg[x]+=t1,mn[x]-=t1,vr[x]^=t2;
+    }
+    void pd(int x){
+        if(tg[x]){
+            atg(ls,tg[x],vr[x]);
+            atg(rs,tg[x],vr[x]);
+            vr[x]=tg[x]=0;
+        }
+    }
+    void rec(int x,int l,int r){
+        if(l==r)run(vl[rev[l]]^vr[x]),mn[x]=1e9;
+        else{
+            int md=l+r&gt;&gt;1;pd(x);
+            if(mn[ls]==1)rec(ls,l,md);
+            if(mn[rs]==1)rec(rs,md+1,r);
+            mn[x]=min(mn[ls],mn[rs]);
+        }
+    }
+    void add(int x,int l,int r,int L,int R){
+        if(l&gt;=L&amp;&amp;r&lt;=R){
+            atg(x,1,mst);
+            if(mn[x]==1)rec(x,l,r);
+        }else{
+            int md=l+r&gt;&gt;1;pd(x);
+            if(L&lt;=md)add(ls,l,md,L,R);
+            if(md&lt;R)add(rs,md+1,r,L,R);
+            mn[x]=min(mn[ls],mn[rs]);
+        }
+    }
+    void init(int _l,int _r){
+        D=_l,U=_r;int n=(1&lt;&lt;__lg(U-D+3)+2)+3;
+        mn.resize(n),tg.resize(n),vr.resize(n);
+        build(1,D,U);
+    }
+    void add(int l,int r,ul v){mst=v,add(1,D,U,l,r);}
+}tr[N];
+void run(int x,int y,ul v){
+    while(lt[x]!=lt[y]){
+        if(d[lt[x]]&lt;d[lt[y]])swap(x,y);
+        tr[lt[x]].add(dfn[lt[x]],dfn[x],v);
+        x=f[lt[x]];
+    }if(d[x]&gt;d[y])swap(x,y);
+    if(x!=y)tr[lt[x]].add(dfn[x]+1,dfn[y],v);
+}
+int main(){
+    freopen("ants.in","r",stdin);
+    freopen("ants.out","w",stdout);
+    ios::sync_with_stdio(false);
+    int i,j,k,l,r,x,y,z;
+    for(i=1,cin&gt;&gt;n;i&lt;n;++i){
+        cin&gt;&gt;x&gt;&gt;y,rp[i]=rg();
+        lk[x].push_back(y);
+        lk[y].push_back(x);
+    }if(n==1)YES();
+    dfs(1),lt[1]=ql=1,dfs2(1);
+    sort(rp+1,rp+n);
+    for(i=1;i&lt;n;++i){
+        cin&gt;&gt;x&gt;&gt;y,g[i]={x,y};
+        vl[x]^=rp[i],vl[y]^=rp[i];
+        z=lca(x,y);
+        ++c1[x],++c1[y],c1[z]-=2;
+    }dfs3(ql=1),c1[1]=1e9;
+    for(x=2;x&lt;=n;++x)
+        if(!c1[x])NO();
+        else if(c1[x]==1)c1[x]=1e9,run(vl[x]);
+    for(x=1;x&lt;=n;++x)
+        if(!lc[x])tr[lt[x]].init(dfn[lt[x]],dfn[x]);
+    while(ql&lt;=qr){
+        k=q[ql++],run(g[k].x,g[k].y,rp[k]);
+        if(clock()&gt;4.8*CLOCKS_PER_SEC)YES();
+    }NO();return 0;
+}
+</code></pre>
+<p><img alt="image" decoding="async" loading="lazy" src="../assets/images/e75e58748a6397b2e5ec.jpg"/></p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17811391.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17810267.html"><small>← 上一篇</small><span>test20231104</span></a><a href="17815427.html"><small>下一篇 →</small><span>test20231107</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

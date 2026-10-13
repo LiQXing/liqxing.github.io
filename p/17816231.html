@@ -1,0 +1,397 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Paths on the Tree 贪心题，因为对于每一个儿子，经过的路径数之差少于 \(1\) ，所以这道题可以理解为先把所有路径均分，然后把剩下的按照权值大小依次分布给那些儿子。 那么儿子传给父亲的权值又是如何处理呢？ 首先，我们需要把父亲首先传递过来的 \(k\) 条路径均分，然后把剩下的最大路径给传递上去。 int n,"><title>CF练习题19 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17816231.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>CF练习题19</h1><p class="hero-meta"><time datetime="2023-11-07T22:30+08:00">2023-11-07 22:30</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17816231.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="paths-on-the-tree"><a href="https://www.luogu.com.cn/problem/CF1746D" rel="noopener noreferrer" target="_blank" title="Paths on the Tree">Paths on the Tree</a></h2>
+<p>贪心题，因为对于每一个儿子，经过的路径数之差少于 <span class="math inline">\(1\)</span>，所以这道题可以理解为先把所有路径均分，然后把剩下的按照权值大小依次分布给那些儿子。</p>
+<p>那么儿子传给父亲的权值又是如何处理呢？</p>
+<p>首先，我们需要把父亲首先传递过来的 <span class="math inline">\(k\)</span> 条路径均分，然后把剩下的最大路径给传递上去。</p>
+<pre><code class="language-cpp">int n,m;
+vector&lt;int&gt;g[N];
+int ans=0,a[N];
+inline int dfs(int u,int k){
+    ans+=k*a[u];  
+    if(g[u].size()==0)return a[u];
+    int t=k/g[u].size(),res=k-t*g[u].size();
+    priority_queue&lt;int&gt;q;
+    for(auto v:g[u])q.push(dfs(v,t));
+    if(res){
+        while(res--){
+            ans+=q.top();
+            q.pop();
+        }
+    }
+    return q.top()+a[u];
+}
+inline void solve(){
+    n=read();m=read();
+    int x;
+    up(i,2,n){
+        x=read();
+        g[x].push_back(i);
+    }
+    up(i,1,n)a[i]=read();
+    dfs(1,m);
+    cout&lt;&lt;ans&lt;&lt;endl;
+}
+inline void clear(){
+    up(i,1,n)g[i].clear();
+    memset(a,0,sizeof a);
+    ans=0;
+}
+signed main(){
+    int T=read();
+    while(T--){
+        clear();
+        solve();
+    }    
+    return 0;
+}
+
+</code></pre>
+<h2 id="three-paths-on-a-tree"><a href="https://www.luogu.com.cn/problem/CF1294F" rel="noopener noreferrer" target="_blank" title="Three Paths on a Tree">Three Paths on a Tree</a></h2>
+<p>既然要求最长的并集，那么肯定有直径，然后再 bfs 出每个点离直径的距离。</p>
+<p>注意，有可能第三个点并不存在，那么就选择直径上任意一个非端点的点。</p>
+<pre><code class="language-cpp">int n,m,d;
+int p[N];
+vector&lt;int&gt;g[N];
+int idx[N],cnt,a[N];
+int dis1[N],dis2[N];
+bool vis[N];
+inline void dfs1(int u,int from){
+	dis1[u]=dis1[from]+1;
+	for(auto v:g[u]){
+		if(v==from)continue;
+        dfs1(v,u);
+	}
+}
+inline void dfs2(int u,int from){
+    for(auto v:g[u]){
+		if(v==from)continue;
+        dfs2(v,u);
+        if(vis[v])vis[u]=1;
+    }
+}
+int tmp,ans;
+int L,R;
+queue&lt;int&gt;q;
+signed main() {
+	n=read();
+    int u,v;
+    up(i,1,n-1){
+        u=read();v=read();
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    dfs1(1,0);
+	up(i,1,n)if(dis1[i]&gt;dis1[L])L=i;
+	dfs1(L,0);
+	up(i,1,n)if(dis1[i]&gt;dis1[R])R=i;
+	vis[L]=1;
+    dfs2(R,0);
+    memset(dis2,0x3f,sizeof dis2);
+    up(i,1,n)if(vis[i])q.push(i),dis2[i]=0;
+    while(q.size()){
+        int u=q.front();q.pop();
+        for(auto v:g[u]){
+            if(vis[v])continue;
+            dis2[v]=dis2[u]+1;
+            vis[v]=1;
+            q.push(v);
+        }
+    }
+    int T=0;
+    up(i,1,n){
+        if(ans&lt;dis2[i]){
+            ans=dis2[i];
+            T=i;
+        }
+    }
+    if(T==0){
+        T++;
+        while(T==L||T==R)T++;
+    } 
+    cout&lt;&lt;ans+dis1[R]-1&lt;&lt;endl;
+    cout&lt;&lt;L&lt;&lt;" "&lt;&lt;R&lt;&lt;" "&lt;&lt;T;
+    return 0;
+}
+</code></pre>
+<h2 id="work-group"><a href="https://www.luogu.com.cn/problem/CF533B" rel="noopener noreferrer" target="_blank" title="Work Group">Work Group</a></h2>
+<p>这个不是树上经典问题吗。</p>
+<pre><code class="language-cpp">int n;
+int val[N];
+vector&lt;int&gt;g[N];
+int f[N][2];
+inline void dfs(int u){
+	f[u][1]=-inf;
+	for(auto v:g[u]){
+		dfs(v);
+		int x=f[u][0],y=f[u][1];
+		f[u][0]=max(f[v][0]+x,f[v][1]+y);
+		f[u][1]=max(f[v][1]+x,f[v][0]+y);
+	}
+	f[u][1]=max(f[u][1],f[u][0]+val[u]);
+}
+signed main(){
+	n=read();
+	int u,v;
+	up(i,1,n){
+		u=read();v=read();
+		if(u!=-1)g[u].push_back(i);
+		val[i]=v;
+	}
+	dfs(1);
+	cout&lt;&lt;max(f[1][0],f[1][1]);
+	return 0;	
+}
+</code></pre>
+<h2 id="paint-the-tree"><a href="https://www.luogu.com.cn/problem/CF1223E" rel="noopener noreferrer" target="_blank" title="Paint the Tree">Paint the Tree</a></h2>
+<p>很有意思的一道树形 dp。</p>
+<p>本来我先想了一个贪心，优先选取最大的边，然后依次满足条件，结果发现假了。</p>
+<p>想一想 dp，令 <span class="math inline">\(f_{i,1}\)</span> 表示以 <span class="math inline">\(i\)</span> 为根的子树，能够和父亲连接上，<span class="math inline">\(f_{i,0}\)</span> 则不能连接上。</p>
+<p>先把所有不选的情况加上，然后用一个堆来替换，有点类似贪心的思想，注意一下，一个是前 <span class="math inline">\(k\)</span> 个，一个是前 <span class="math inline">\(k-1\)</span> 个。</p>
+<pre><code class="language-cpp">int n,m,k;
+vector&lt;pii&gt;g[N];
+int f[N][2];
+inline bool cmp(int x,int y){
+    return x&gt;y;
+}
+inline void dfs(int u,int from){
+    vector&lt;int&gt;d;
+    for(auto i:g[u]){
+        int v=i.fi,w=i.se;
+        if(v==from)continue;
+        dfs(v,u);
+        f[u][0]+=f[v][0];
+        f[u][1]+=f[v][0];
+        d.push_back(f[v][1]+w-f[v][0]);
+    }
+    sort(d.begin(),d.end(),cmp);
+    for(int i=0;i&lt;d.size()&amp;&amp;i&lt;k;i++){
+        if(d[i]&lt;=0)break;
+        if(i&lt;k-1)f[u][1]+=d[i];
+        f[u][0]+=d[i];
+    }
+}
+inline void solve(){
+    n=read();k=read();
+    int u,v,w;
+    up(i,1,n-1){
+        u=read();v=read();w=read();
+        g[u].push_back({v,w});
+        g[v].push_back({u,w});
+    }
+    dfs(1,0);
+    write(f[1][0],1);
+}
+inline void clear(){
+    up(i,1,n)g[i].clear();
+    up(i,1,n){
+        f[i][0]=0;
+        f[i][1]=0;
+    }
+}
+signed main(){
+    int T=read();
+    while(T--){
+        clear();
+        solve();
+    }    
+    return 0;
+}
+</code></pre>
+<h2 id="minimum-spanning-tree-for-each-edge"><a href="https://www.luogu.com.cn/problem/CF609E" rel="noopener noreferrer" target="_blank" title="Minimum spanning tree for each edge">Minimum spanning tree for each edge</a></h2>
+<p>先把最小生成树求出来，然后对于询问的边，如果它在生成树上，那么直接输出最小生成树，否则，与这条路径上的最大值替换。</p>
+<p>用树链剖分轻松实现。</p>
+<pre><code class="language-cpp">int n,m;
+vector&lt;pii&gt;g[N];
+struct treelca{
+    int siz[N],son[N],fa[N],dep[N],top[N];
+    int a[N];
+	inline void dfs1(int u,int from){
+        siz[u]=1;son[u]=0;
+        dep[u]=dep[from]+1;
+        for(auto [v,w]:g[u]){
+            if(v==from) continue;
+            a[v]=w;
+			fa[v]=u;dfs1(v,u);
+            if(siz[v]&gt;siz[son[u]])son[u]=v;
+            siz[u]+=siz[v];
+        }
+    }
+	int idx[N],cnt,dfn[N];
+    inline void dfs2(int u,int tp){
+        top[u]=tp;idx[u]=++cnt;
+		dfn[cnt]=u;
+        if(son[u]!=0) dfs2(son[u],tp);
+        for(auto [v,w]:g[u]){
+            if(v==fa[u]||v==son[u]) continue;
+            dfs2(v,v);
+        }
+    }
+    inline int lca(int x,int y){
+        while(top[x]!=top[y]){
+            if(dep[top[x]]&gt;dep[top[y]])x=fa[top[x]];
+            else y=fa[top[y]];
+        }
+        return dep[x]&lt;dep[y]?x:y;
+    }
+	int tr[N&lt;&lt;2];
+	inline void push_up(int k){
+		tr[k]=max(tr[lc],tr[rc]);
+	}
+	inline void build(int k=1,int l=1,int r=n){
+		if(l==r){
+			tr[k]=a[dfn[l]];
+			return;
+		}
+		int mid=(l+r)&gt;&gt;1;
+		build(lc,l,mid);
+		build(rc,mid+1,r);
+		push_up(k);
+	}
+	inline int ask(int x,int y,int k=1,int l=1,int r=n) {
+    	if (x &lt;= l &amp;&amp; r &lt;= y) return tr[k];
+    	int mid=(l+r)&gt;&gt;1,res=0;
+    	if (x&lt;=mid)res=max(res,ask(x,y,lc,l,mid));
+    	if (y&gt;mid)res=max(res,ask(x,y,rc,mid+1,r));
+    	return res;
+	}
+	inline int qmax(int x, int y) {
+    	int res=0; 
+    	while(top[x]^top[y]){
+        	if(dep[top[x]]&lt;dep[top[y]]) swap(x, y);
+        	res=max(res,ask(idx[top[x]],idx[x]));
+        	x=fa[top[x]];
+    	}
+    	if(dep[x]&gt;dep[y])swap(x, y);
+    	return max(res,ask(idx[x]+1,idx[y]));
+	}
+}T;
+struct edge{
+	int u,v,w,id;
+}e[N&lt;&lt;1];
+inline bool cmp(edge x,edge y){
+	return x.w&lt;y.w;
+}
+inline bool cmp2(edge x,edge y){
+	return x.id&lt;y.id;
+}
+int fa[N];
+inline int find(int x){
+	if(x==fa[x])return x;
+	return fa[x]=find(fa[x]);
+}
+bool vis[N];
+signed main(){
+	n=read();m=read();
+	int u,v,w;
+	up(i,1,m){
+		e[i].u=read();
+		e[i].v=read();
+		e[i].w=read();
+		e[i].id=i;
+	}
+	sort(e+1,e+1+m,cmp);
+	int ans=0;
+	up(i,1,n)fa[i]=i;
+	up(i,1,m){
+		int fu=find(e[i].u),fv=find(e[i].v);
+		if(fu==fv)continue;
+		vis[e[i].id]=1;
+		fa[fu]=fv;
+		g[e[i].u].push_back({e[i].v,e[i].w});
+		g[e[i].v].push_back({e[i].u,e[i].w});
+		ans+=e[i].w;
+	}
+	T.dfs1(1,0);
+	T.dfs2(1,0);
+	T.build();
+	sort(e+1,e+1+m,cmp2);
+	up(i,1,m) {
+        if(vis[i])write(ans,1);
+		else write(ans+e[i].w-T.qmax(e[i].u,e[i].v),1);
+    }
+	return 0;
+}
+</code></pre>
+<h2 id="paint-the-tree-1"><a href="https://www.luogu.com.cn/problem/CF1244D" rel="noopener noreferrer" target="_blank" title="Paint the Tree">Paint the Tree</a></h2>
+<p>诈骗题，你以为是一一棵树，其实是一条链。</p>
+<p>那么就可以直接枚举前两种颜色然后暴力。</p>
+<p>但是某个 sb 还是写了树形 dp。</p>
+<pre><code class="language-cpp">int n;
+int c[4][N];
+vector&lt;int&gt;g[N];
+int deg[N],s;
+int f[N][4][4],co[4][N],pre[N][4][4];
+int a[N],len,ans,ansx,ansy,go,res[N];
+inline void dfs(int u,int from){
+    a[++len]=u;
+    for(auto v:g[u]){
+        if(v==from)continue;
+        dfs(v,u);
+    }
+}
+signed main(){
+    n=read();
+    up(i,1,3){
+        up(j,1,n){
+            c[i][j]=read();
+        }
+    }
+    int u,v;
+    up(i,1,n-1){
+        u=read();v=read();
+        g[u].push_back(v);
+        g[v].push_back(u);
+        deg[u]++;deg[v]++;
+    }
+    int rt;
+    up(i,1,n){
+        if(deg[i]==1)rt=i;
+        else if(deg[i]&gt;=3){
+            cout&lt;&lt;-1;
+            exit(0);
+        }
+    }
+    memset(f,0x3f,sizeof f);
+    dfs(rt,0);
+    up(i,1,3) {
+        up(j,1,3){
+            if(i==j)continue;
+            f[2][i][j]=min(f[2][i][j],c[i][a[1]]+c[j][a[2]]);
+        }
+    }
+    up(i,3,n){ 
+        up(j,1,3) {
+            up(k,1,3) {
+                up(t,1,3) {
+                    if(j==k||j==t||k==t)continue;
+                    if(f[i][k][t]&gt;f[i-1][j][k]+c[t][a[i]]){
+                        f[i][k][t]=f[i-1][j][k]+c[t][a[i]];
+                        pre[i][k][t]=j;
+                    }
+                }
+            }
+        }
+    }
+    ans=uinf;
+    up(i,1,3){
+        up(j,1,3){
+            if(f[n][i][j] &lt; ans) {
+                ans=f[n][i][j];
+                ansx=i;ansy = j;
+            }
+        }
+    }
+    res[a[n-1]]=ansx;res[a[n]]=ansy;
+    for(register int i = n; i &gt;= 3; i--) {
+        int go=pre[i][ansx][ansy];
+        ansy=ansx; ansx = go;
+        res[a[i-2]]=go;
+    }
+    cout&lt;&lt;ans&lt;&lt;endl;
+    up(i,1,n)cout&lt;&lt;res[i]&lt;&lt;" ";
+    return 0;
+}
+</code></pre>
+<h2 id="maximum-weight-subset"><a href="https://www.luogu.com.cn/problem/CF1249F" rel="noopener noreferrer" target="_blank" title="Maximum Weight Subset">Maximum Weight Subset</a></h2>
+<h2 id="_"></h2>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17816231.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17815427.html"><small>← 上一篇</small><span>test20231107</span></a><a href="17826940.html"><small>下一篇 →</small><span>诡秘之主杂谈#1 塔罗牌</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

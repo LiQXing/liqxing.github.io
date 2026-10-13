@@ -1,0 +1,140 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="最 小丑的一回（好像并不是） T1 是个简单题，只要会高中基础几何就行了。 T2 看上去是个暴力，然后我也写了个暴力，结果跑大样例 dfs 进行到两万多层的时候 RE 了，完全不知道为什么，然后调调调调了一个多小时，到了十点放弃 T2 开始干 T3。 T3 看起来是个数学题，然后退式子，推推推大概半个小时过去了，有了点眉目，然后"><title>test20231028 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17794328.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231028</h1><p class="hero-meta"><time datetime="2023-10-28T17:21+08:00">2023-10-28 17:21</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17794328.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<p><s>最</s>小丑的一回（好像并不是）</p>
+<p>T1 是个简单题，只要会高中基础几何就行了。</p>
+<p>T2 看上去是个暴力，然后我也写了个暴力，结果跑大样例 dfs 进行到两万多层的时候 RE 了，完全不知道为什么，然后调调调调了一个多小时，到了十点放弃 T2 开始干 T3。</p>
+<p>T3 看起来是个数学题，然后退式子，推推推大概半个小时过去了，有了点眉目，然后比对小样例，死活对不上答案，啊，原来是我题目看错了，那没事了。然后就死活推不出来。写了个 <span class="math inline">\(k=1\)</span> 的情况就滚去 T4。</p>
+<p>T4 先看暴力 <span class="math inline">\(n\le100\)</span>，<span class="math inline">\(C_n^5\)</span>，那不是 <span class="math inline">\(10^{10}\)</span> 的复杂度吗（智慧的眼神），于是直接冲正解。看起来就非常二分，但是 check 函数不会，于是写了个很假的贪心，不出所料挂成了 <span class="math inline">\(0\)</span>，部分分是一分都没有拿到，关键是部分分还贼多，心痛。</p>
+<p>T2 考后发现 dev-c 栈爆了所以死活过不了大样例，写的做法被特殊性质卡了，wtm~。</p>
+<h2 id="t1">T1</h2>
+<pre><code class="language-cpp">inline f96 dist(int x,int y,int xx,int yy){
+	return (f96)sqrt((int)(x-xx)*(x-xx)+(y-yy)*(y-yy));
+}
+inline void solve(){
+	int jwjx=read(),jwjy=read(),
+	bqx=read(),bqy=read(),
+	pqx=read(),pqy=read(),r=read();
+	f96 ansjwj=max(dist(pqx,pqy,jwjx,jwjy),dist(pqx,pqy,bqx,bqy))+r;
+	f96 a,b,c,ansbq;
+	if(jwjx-bqx!=0){
+		a=(f96)1.0*(jwjy-bqy)/(jwjx-bqx);
+		b=-1;
+		c=jwjy-jwjx*a;
+		ansbq=1.0*abs((a*pqx+b*pqy+c))/(sqrtl(a*a+b*b))-r;
+	}
+	else{
+		ansbq=abs(pqx-bqx)-r;
+	}
+	printf("%.2Lf %.2Lf\n",ansbq,ansjwj);
+}
+signed main(){
+	int T=read();
+	while(T--){
+		solve();
+	}
+	return 0;
+}
+</code></pre>
+<h2 id="t2">T2</h2>
+<p>写法和题解略有不同，用一个 map 储存所有状态，记忆化搜索，当然，这样只能拿 <span class="math inline">\(70\)</span>，题解的优化感觉很麻烦，我的优化反正就是求一个后缀 <span class="math inline">\(lcm\)</span>，如果满足的话就直接跳，这个奇怪的优化可以增加 <span class="math inline">\(30\)</span>。</p>
+<p>ps：其实不知道这个优化优化了哪里，但他就是能过。</p>
+<pre><code class="language-cpp">int n,m; 
+int a[N];
+unordered_map&lt;int,int&gt;mp[N];
+int gd[N];
+inline int dfs(int t,int i){
+	if(i==m+1)return t;
+	if(t%gd[i]==0)return t;
+	if(t%a[i]==0)return dfs(t,i+1);
+	int res=t/a[i]+1;
+	if(mp[i].count(res)&gt;=1)return mp[i][res];
+	return mp[i][res]=dfs(res*a[i],i+1);
+}
+signed main(){
+	n=read();m=read();
+	up(i,1,m)a[i]=read();
+	gd[m]=a[m];
+	dn(i,m-1,1)gd[i]=a[i]*gd[i+1]/__gcd(a[i],gd[i+1]);
+	up(i,1,n)printf("%d ",dfs(i,1));
+	return 0;
+}
+
+</code></pre>
+<h2 id="t3">T3</h2>
+<p>毒瘤的数学题。</p>
+<p>已知：<br/>
+<span class="math inline">\(F_0(S)=[(\sum_{x\in S}x)=M]\)</span></p>
+<p><span class="math inline">\(F_k(S)=\sum_{T\subseteq S} F_{k-1}(T)\)</span></p>
+<p>不知道怎么推的，有公式</p>
+<p></p><div class="math display">\[F_k(S)=\sum_{T\subseteq S} F_{0}(T)\times k^{|S|-|T|}
+\]</div><p></p><p>可以归纳证明。</p>
+<p>你手摸一下，大概是对的。</p>
+<p>有了这个式子，题目就变得轻松起来了。</p>
+<p>考虑优化一下状态设计：设 <span class="math inline">\(f(i,w)\)</span> 表示 <span class="math inline">\({a_1,a_2...a_i}\)</span> 的所有和为 <span class="math inline">\(w\)</span> 的子集的贡献之和。 同样考虑最后一个数选不选：</p>
+<ul>
+<li>如果没有选 <span class="math inline">\(a_i\)</span>，那么相当于式 <span class="math inline">\(S\)</span> 中的大小增加了，因此 <span class="math inline">\(f(i,w)\)</span> 的指数也会加一。</li>
+<li>原封不动加进来就行了。</li>
+</ul>
+<p></p><div class="math display">\[f(i,w)=f(i-1,w)\times k+f(i-1,w-a_i)
+\]</div><p></p><pre><code class="language-cpp">inline void solve(){
+	n=read();m=read();k=read();
+	up(i,1,n)a[i]=read();
+	f[0][0]=1;
+	up(i,1,n){
+		 up(j,0,m){
+			f[i][j]=f[i-1][j]*k%mod;
+			if(j&gt;=a[i])f[i][j]=(f[i][j]+f[i-1][j-a[i]])%mod;
+		}
+	}
+	cout&lt;&lt;f[n][m]&lt;&lt;endl;
+}
+</code></pre>
+<h2 id="t4">T4</h2>
+<p>佛怒火莲！</p>
+<p>很显然的二分，但是如何 判断答案的合法性呢？</p>
+<p>看到 <span class="math inline">\(k\le 5\)</span>，一看就很状压。但是 <span class="math inline">\(a_i\le n\)</span> 怎么办呢，有一个非常暴力的做法，把这个序列 <span class="math inline">\(n\)</span> 映射到 <span class="math inline">\(1-5\)</span> 上，冲突的概率很小，同样操作两百遍后，相同的概率几乎为 <span class="math inline">\(0\)</span>。</p>
+<p>有 <span class="math inline">\(dp_{i,sta}=max(dp_{j,pre})\)</span></p>
+<p>其实只用这个 DP，如果你够欧，你能拿满分。</p>
+<p>另一种做法，把每一个点对应的存在离散化后的点里面。</p>
+<p>随机打乱数组，直接 dp 判断，同样能过。</p>
+<pre><code class="language-cpp">
+struct node{int a,b;}p[N];
+vector&lt;int&gt;pos[N],col;
+int n,k,type,minum[5],dp[N];
+inline bool check(int mid){
+    int tmp=700;
+    while(tmp--){
+        shuffle(col.begin(),col.end(),rng);
+        for(int i=1;i&lt;k;++i) minum[i]=inf;
+        minum[0]=-inf;
+        for(auto x:col){
+            for(auto i:pos[x]){
+                dp[i]=upper_bound(minum,minum+k,p[i].b-mid)-minum;
+                if(dp[i]==k) return 1;
+            }
+            for(auto i:pos[x])minum[dp[i]]=min(minum[dp[i]],p[i].b);
+        }
+    }
+    return 0;
+}
+signed main(){
+    int T;
+    cin&gt;&gt;T;
+    while(T--){
+        n=read();m=read();type=read();
+        col.clear();
+        up(i,1,n) pos[i].clear();
+        for(int i=1;i&lt;=n;++i) scanf("%d %d",&amp;p[i].a,&amp;p[i].b),pos[p[i].a].push_back(i),col.push_back(p[i].a);
+        sort(col.begin(),col.end());
+        col.erase(unique(col.begin(),col.end()),col.end());
+        int l=1,r=1e6,ans=0;
+        while(l&lt;=r){
+            int mid=(l+r)&gt;&gt;1;
+            if(check(mid)) ans=mid,l=mid+1;
+            else r=mid-1;
+        }
+        printf("%d\n",ans);
+    }
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17794328.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17793100.html"><small>← 上一篇</small><span>CF练习题16 (毒瘤数据结构）</span></a><a href="17795596.html"><small>下一篇 →</small><span>AT_abc_326</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

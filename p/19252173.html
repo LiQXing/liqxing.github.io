@@ -1,0 +1,97 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Problem - A - Codeforces 类似合并石子，但是合并的代价是 \(\max(x,y)\) 对复杂度要求高。 因为每个元素只可能比之前更大，我们最小的数两边的数提前被取一定更优。 int n,pre[N],nxt[N]; struct node{ int key,pos; }a[N]; int b[N]; in"><title>11.19与11.20笔记 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/19252173.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>11.19与11.20笔记</h1><p class="hero-meta"><time datetime="2025-11-21T12:07+08:00">2025-11-21 12:07</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/19252173" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="problem---a---codeforces"><a href="https://codeforces.com/contest/2165/problem/A" rel="noopener noreferrer" target="_blank">Problem - A - Codeforces</a></h2>
+<p>类似合并石子，但是合并的代价是<span class="math inline">\(\max(x,y)\)</span><br/>
+对复杂度要求高。<br/>
+因为每个元素只可能比之前更大，我们最小的数两边的数提前被取一定更优。</p>
+<pre><code class="language-cpp">int n,pre[N],nxt[N];
+struct node{
+    int key,pos;
+}a[N];
+int b[N];
+inline bool cmp(node x,node y){
+    return x.key&lt;y.key;
+}
+inline void clear(){
+    
+}
+inline void solve(){
+    cin&gt;&gt;n;
+    up(i,1,n){
+        a[i]={read(),i};
+        b[i]=a[i].key;
+        pre[i]=i-1;
+        nxt[i]=i+1;
+    }
+    pre[1]=n;nxt[n]=1;
+    sort(a+1,a+1+n,cmp);
+    int ans=0;
+    up(i,1,n-1){
+        ans+=min(b[pre[a[i].pos]],b[nxt[a[i].pos]]);
+        nxt[pre[a[i].pos]]=nxt[a[i].pos];
+        pre[nxt[a[i].pos]]=pre[a[i].pos];
+    }
+    cout&lt;&lt;ans&lt;&lt;endl;
+}
+signed main(){
+    int T;
+    cin&gt;&gt;T;
+    while(T--){
+        clear();
+        solve();
+    }
+    return 0;
+}         
+</code></pre>
+<h2 id="problem---b---codeforces"><a href="https://codeforces.com/contest/2165/problem/B" rel="noopener noreferrer" target="_blank">Problem - B - Codeforces</a></h2>
+<p>很难绷的一道题<br/>
+让你计算多集合的数量。</p>
+<p>首先，很明显的一点。这道题和数无关，只和数的数量有关。<br/>
+比如 1 1 1 1 2 2 2 3 3 4和2 2 2 2 3 3 3 4 4 1 等价。<br/>
+然后，我们可以这么依次对每个数进行处理。我们考虑每个数是作为特征数还是非特征数。<br/>
+那么特征数会覆盖掉非特征数。<br/>
+我们可以 一个一个数的往下递推。<br/>
+比如我们看1，可以先分为特证数和非特征数。<br/>
+如</p>
+<pre><code>1  1  
+     1  1
+</code></pre>
+<p>我们考虑先不分组，那么1的分配有5种</p>
+<p>但是很容易发现，如果我们把1全放在特证数上。<br/>
+1111，我们这种情况加上分组则可以为s提供1的各种数量（0除外），而且这样的话，为之后的数提供了更多隐藏的位置，更优。</p>
+<p>所以每次我们都只用考虑（0，cnt）和（cnt，0）的情况。</p>
+<p>然后就可以考虑背包。</p>
+<pre><code class="language-cpp">int n,a[N],cnt[N],maxl,f[N];
+inline void clear(){
+    up(i,1,n)a[i]=0;
+    up(i,1,n)f[i]=0;
+    maxl=0;
+    up(i,1,n)cnt[i]=0;
+}
+signed main(){
+    int T;
+    cin&gt;&gt;T;
+    while(T--){
+        clear();
+        cin&gt;&gt;n;
+        up(i,1,n){
+            cin&gt;&gt;a[i];
+            cnt[a[i]]++;
+            maxl=max(maxl,cnt[a[i]]);
+        }
+        f[0]=1;
+        up(i,1,n){
+            if(cnt[i]){
+                dn(j,n,cnt[i]){
+                    f[j]=(f[j]+cnt[i]*f[j-cnt[i]])%mod;
+                }
+            }
+        }
+        int ans=0;
+        for(int i=maxl;i&lt;=n;i++)ans=(ans+f[i])%mod;
+        cout&lt;&lt;ans&lt;&lt;endl;
+    }
+    return 0;
+}
+</code></pre>
+<h2 id="_"></h2>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/19252173" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="19003703.html"><small>← 上一篇</small><span>十八岁少年的葬礼</span></a><a href="19309221.html"><small>下一篇 →</small><span>25年csp认证题解</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>

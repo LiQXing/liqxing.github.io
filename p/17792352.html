@@ -1,0 +1,97 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="P4097 【模板】李超线段树 / [HEOI2013] Segment 强制在线，那么这种问题该如何解决？ 我们可以把任务转化为维护如下操作： 加入一个一次函数 给定 \(k\) ，求定义域包含 \(k\) 的所有一次函数中，在 \(k\) 处取值最大的那个，如果有多个函数取值相同，选编号最小的。 注意：有可能线段斜率不存在 "><title>李超线段树 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/17792352.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>33</b>文章</span><span><b>5</b>分类</span><span><b>2023</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>李超线段树</h1><p class="hero-meta"><time datetime="2023-10-27T14:40+08:00">2023-10-27 14:40</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.cnblogs.com/LiQXing/p/17792352.html" target="_blank" rel="noopener noreferrer">博客园 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body">
+<h2 id="p4097-模板李超线段树--heoi2013-segment-"><a href="https://www.luogu.com.cn/problem/P4097" rel="noopener noreferrer" target="_blank">P4097 【模板】李超线段树 / [HEOI2013] Segment </a></h2>
+<p>强制在线，那么这种问题该如何解决？</p>
+<p>我们可以把任务转化为维护如下操作：</p>
+<ul>
+<li>加入一个一次函数</li>
+<li>给定 <span class="math inline">\(k\)</span>，求定义域包含 <span class="math inline">\(k\)</span> 的所有一次函数中，在 <span class="math inline">\(k\)</span> 处取值最大的那个，如果有多个函数取值相同，选编号最小的。</li>
+</ul>
+<blockquote>
+<p>注意：有可能线段斜率不存在</p>
+</blockquote>
+<p>看到区间修改，我们按照线段树解决区间问题的常见方法，给每个节点一个懒标记。标记 <span class="math inline">\(l_i\)</span>表示用 <span class="math inline">\(l_i\)</span> 修改这个区间。</p>
+<p>现在我们需要插入一条线段 <span class="math inline">\(f_i\)</span>，考虑一个被 <span class="math inline">\(f_i\)</span> 完整覆盖的线段树区间。若该区间没有标记，就直接标记，否则就递归下传标记。</p>
+<p>设该区间原本线段为 <span class="math inline">\(g_i\)</span>，把该区间根据 <span class="math inline">\(f_i\)</span>是否大于 <span class="math inline">\(g_i\)</span> 分为两个子区间，其中肯定有一个子区间被左区间或右区间完全包含。</p>
+<p>也就是说，在两条线段中，肯定有一条线段，只可能成为左区间的答案，或者只可能成为右区间的答案。我们用这条线段递归更新对应子树，用另一条线段作为懒标记更新整个区间，这就保证了递归下传的复杂度。当一条线段只可能成为左或右区间的答案时，才会被下传，所以不用担心漏掉某些线段。</p>
+<p>具体来说，当前区间的终点为 <span class="math inline">\(mid\)</span>，如果 <span class="math inline">\(f(mid)&gt;g(mid)\)</span>，交换 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span>。</p>
+<p>当 <span class="math inline">\(f\)</span> 中点劣于 <span class="math inline">\(g\)</span> 时 ：</p>
+<ol>
+<li>在左端点时 <span class="math inline">\(f\)</span> 优于 <span class="math inline">\(g\)</span> 那么 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span> 的交点一定在左区间，<span class="math inline">\(f\)</span> 只可能在左区间才能优于 <span class="math inline">\(g\)</span>，递归左区间。</li>
+<li>在右端点时 <span class="math inline">\(f\)</span> 优于 <span class="math inline">\(g\)</span> 那么 <span class="math inline">\(f\)</span> 和 <span class="math inline">\(g\)</span> 的交点一定在右区间，<span class="math inline">\(f\)</span> 只可能在右区间才能优于 <span class="math inline">\(g\)</span>，递归右区间。</li>
+<li>若在左右区间都是 <span class="math inline">\(g\)</span> 更优，那么不需要下传。</li>
+</ol>
+<p>其实对每个区间都用一条最优的线段表示，如果你加入的线段劣于该线段<br/>
+就判断在那个区间可以更优。</p>
+<p>至于查询，可以到达的所有线段取最大值就行了。</p>
+<pre><code class="language-cpp">int n,last;
+struct line{
+    ldb k,b;
+}p[N];
+int cnt;
+inline void add(int x0, int y0, int x1, int y1) {
+    cnt++;
+    if(x0==x1)p[cnt].k=0,p[cnt].b=max(y0, y1);
+    else p[cnt].k=1.0*(y1-y0)/(x1-x0),p[cnt].b=y0-p[cnt].k*x0;
+}
+int s[N];
+inline ldb calc(int id,int d) { return p[id].b+p[id].k*d;}
+inline int cmp(ldb x,ldb y) {
+    if(x-y&gt;eps)return 1;
+    if(y-x&gt;eps)return -1;
+    return 0;
+}
+inline void change(int k,int l,int r,int u){
+    int &amp;v=s[k],mid=(l+r)&gt;&gt;1;
+    int bmid=cmp(calc(u,mid),calc(v,mid));
+    if(bmid==1||(!bmid&amp;&amp;u&lt;v))swap(u,v);
+    int bl=cmp(calc(u,l),calc(v,l)),br=cmp(calc(u,r),calc(v,r));
+    if(bl==1||(!bl&amp;&amp;u&lt;v))change(lc,l,mid,u);
+    if(br==1||(!br&amp;&amp;u&lt;v))change(rc,mid+1,r,u);
+}
+inline void insert(int k,int tl,int tr,int l,int r,int u){
+    if(l&lt;=tl&amp;&amp;tr&lt;=r) {
+        change(k,tl,tr,u);
+        return;
+    }
+    int mid=(tl+tr)&gt;&gt;1;
+    if(l&lt;=mid)insert(lc,tl,mid,l,r,u);
+    if(mid&lt;r)insert(rc,mid+1,tr,l,r,u);
+}
+inline pdi pmax(pdi x,pdi y){
+    if(cmp(x.fi,y.fi)==-1)return y;
+    else if(cmp(x.fi,y.fi)==1)return x;
+    return x.se&lt;y.se?x:y;
+}
+inline pdi ask(int k,int l,int r,int d){
+    if(l==r)return {calc(s[k],d),s[k]};
+    int mid=(l+r)&gt;&gt;1;
+    pdi res={calc(s[k],d),s[k]};
+    if(mid&gt;=d)res=pmax(res,ask(lc,l,mid,d));
+    else res=pmax(res,ask(rc,mid+1,r,d));
+    return res;
+}
+signed main(){
+    n=read();
+    int op,k,x0,y0,x1,y1;
+    up(i,1,n){
+        op=read();
+        if(op==1){
+            x0=(read()+last-1+mod1)%mod1+1;
+            y0=(read()+last-1+mod2)%mod2+1;
+            x1=(read()+last-1+mod1)%mod1+1; 
+            y1=(read()+last-1+mod2)%mod2+1;
+            if (x0&gt;x1)swap(x0,x1),swap(y0,y1);
+            add(x0,y0,x1,y1);
+            insert(1,1,mod1,x0,x1,cnt);
+        }
+        else {
+            k=read();
+            k=(k+last-1+mod1)%mod1+1;
+            last=ask(1,1,mod1,k).second;
+            cout&lt;&lt;(last)&lt;&lt;endl;
+        }
+    }
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.cnblogs.com/LiQXing/p/17792352.html" target="_blank" rel="noopener noreferrer">查看博客园原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17790618.html"><small>← 上一篇</small><span>可持久化线段树学习笔记</span></a><a href="17793100.html"><small>下一篇 →</small><span>CF练习题16 (毒瘤数据结构）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script><script defer src="../script.js"></script></body></html>
