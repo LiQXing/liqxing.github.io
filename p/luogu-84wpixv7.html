@@ -1,0 +1,273 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 结论题：最优情况一定只有两个点 证明：假设有一点对，从这点对延伸出去的一条边可以使点权与边权的比变大； 设原先点的边权为 \(a\) ，点权为 \(ka\) ，比值为 \(k\) ，则延伸后比值为 \(k+d\) ，边值为 \(a+l\) ，则点权为（ \(a+l)\) *（ \(k+d\) ）= \(ak+ad+"><title>test20200308 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-84wpixv7.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20200308</h1><p class="hero-meta"><time datetime="2023-03-10T16:36:21+08:00">2023-03-10 16:36</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/84wpixv7" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p>结论题：最优情况一定只有两个点</p>
+<p>证明：假设有一点对，从这点对延伸出去的一条边可以使点权与边权的比变大；</p>
+<p>设原先点的边权为<span class="math">\(a\)</span>，点权为<span class="math">\(ka\)</span>，比值为<span class="math">\(k\)</span>，则延伸后比值为<span class="math">\(k+d\)</span>，边值为<span class="math">\(a+l\)</span>，则点权为（<span class="math">\(a+l)\)</span>*（<span class="math">\(k+d\)</span>）=<span class="math">\(ak+ad+lk+ld\)</span>，增加点权为 <span class="math">\(ad+lk+ld\)</span> 则延伸边的比为(<span class="math">\(k+d+ad/l\)</span>）&gt;
+<span class="math">\(k+d\)</span></p>
+<p><span class="math">\(Qed;\)</span></p>
+<p>当然，推出结论并没有神么用</p>
+<p>如</p>
+<pre><code class="language-cpp">ans=max(ans,(double)a[i]+a[v]/w);
+</code></pre>
+<p>手残一下少 <span class="math">\(40pts\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define pii pair&lt;int,int&gt;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,a[150050];double ans=0;
+bool vis[500500];
+vector&lt;pii&gt;vec[500500];
+void main1();
+signed main(){
+	//freopen("graph.in","r",stdin);
+	//freopen("graph.out","w",stdout);
+	n=read();m=read();
+	for(int i=1;i&lt;=n;i++)a[i]=read();
+	for(int i=1,u,v,w;i&lt;=m;i++){
+		u=read();v=read();w=read();
+		vec[u].push_back({v,w});
+		vec[v].push_back({u,w});
+	}
+	if(m==0){printf("0");return 0;}
+	if(n==2){main1();return 0;}
+	for(int i=1;i&lt;=n;i++){
+		for(auto j:vec[i]){
+			int v=j.first,w=j.second;
+			ans=max(ans,(double)(a[i]+a[v])/w);
+		}
+	}
+	if(ans==0)printf("0");
+	else printf("%.2lf",ans);
+	return 0;
+}
+void main1(){
+	int w=vec[1][0].second;
+	double dian=a[1]+a[2];
+	printf("%.2lf",dian/w);
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p><span class="math">\(n\)</span>的数据范围为<span class="math">\(1e8\)</span>，背包显然会炸，考虑到个数比较小，可以用双向搜索，把<span class="math">\(ab\)</span>,<span class="math">\(cd\)</span>分开枚举，不过如果硬枚举的话，空间会炸，优化空间时间会炸</p>
+<p>如</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,an,bn,cn,dn,m,ans;
+int a[8005],b[8005],c[8005],d[8005];
+int ab[25005000],cd[25000500],cishu[25000500];
+signed main(){
+	//freopen("eat.in","r",stdin);
+	//freopen("eat.out","w",stdout);
+	n=read();an=read();bn=read();cn=read();dn=read();
+	for(int i=1;i&lt;=an;i++)a[i]=read();
+	for(int i=1;i&lt;=bn;i++)b[i]=read();
+	for(int i=1;i&lt;=cn;i++)c[i]=read();
+	for(int i=1;i&lt;=dn;i++)d[i]=read();
+	int len=0,t;
+	for(int i=1;i&lt;=an;i++){
+		for(int j=1;j&lt;=bn;j++){
+			ab[++len]=a[i]+b[j];
+		}
+	}
+	//sort(ab+1,ab+1+len);
+	m=len;len=0;
+	for(int i=1;i&lt;=cn;i++){
+		for(int j=1;j&lt;=dn;j++){
+			cd[++len]=c[i]+d[j];
+		}
+	}
+	sort(cd+1,cd+1+len);
+	for(int i=1;i&lt;=len;i++)cishu[i]=cishu[i-1]+1;
+	int low=0,upp=0;
+	int key;
+	for(int i=1;i&lt;=m;i++){
+		upp=(upper_bound(cd+1,cd+1+len,n-ab[i])-cd);
+		//if(low==upp)continue;
+		ans+=cishu[upp-1];
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<p>你谷上能拿<span class="math">\(70pts\)</span>，所以还是要搜索</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m;
+int a[5][6000],cnt[5];
+int f[100000500];
+long long ans;
+void dfsab(int step,int sum){
+	if(step&gt;2){
+		f[sum]++;
+		return;
+	}
+	for(int i=1;i&lt;=cnt[step];i++){
+		if(sum+a[step][i]&lt;=n) {
+			dfsab(step + 1, sum + a[step][i]);
+		}
+	}
+}
+void dfs(int step,int sum){
+	if(step&gt;4){
+		ans+=f[n-sum];
+		return;
+	}
+	for(int i=1;i&lt;=cnt[step];i++){
+		if(sum+a[step][i]&lt;=n) {
+			dfs(step+1,sum+a[step][i]);
+		}
+	}
+}
+signed main(){
+	//freopen("eat.in","r",stdin);
+	//freopen("eat.out","w",stdout);
+	n=read();cnt[1]=read();cnt[2]=read();cnt[3]=read();cnt[4]=read();
+	for(int i=1;i&lt;=4;i++){
+		for(int j=1;j&lt;=cnt[i];j++){
+			a[i][j]=read();
+		}
+	}
+	dfsab(1,0);
+	for(int i=1;i&lt;=n;i++)f[i]+=f[i-1];
+	dfs(3,0);
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>题意比较简单，想出暴力应该不难画出函数图像，当距离最小时，一定是速度最快的豹与一个豹的交点；</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,maxv,vi,ti;
+double maxt;
+struct node{
+	double t,v;
+}a[100050];
+inline bool cmp(node l,node r){
+	if(l.v==r.v)return l.t&gt;r.t;
+	return l.v&lt;r.v;
+}
+inline double clac(int i,int j){
+	return (double)(a[i].v*a[i].t-a[j].v*a[j].t)/(a[i].v-a[j].v);
+}
+signed main(){
+	//freopen("chase.in","r",stdin);
+	//freopen("chase.out","w",stdout);
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		a[i].t=read();
+		a[i].v=read();
+		maxt=max(a[i].t,maxt);
+	}
+	sort(a+1,a+1+n,cmp);
+	double ans=0,maxl,minl=1e14;
+	for(int i=1;i&lt;=n;i++){
+		maxl=max(maxl,a[i].v*(maxt-a[i].t));
+		minl=min(minl,a[i].v*(maxt-a[i].t));
+	}
+	ans=maxl-minl;
+	for(int l=1;l&lt;n;l++){
+		double jx=clac(n,l);
+		if(jx&lt;maxt)continue;
+		maxl=0;minl=1e14;
+		for(int i=1;i&lt;=n;i++){
+			maxl=max(maxl,a[i].v*jx-a[i].v*a[i].t);
+			minl=min(minl,a[i].v*jx-a[i].v*a[i].t);
+		}
+		if(maxl==a[n].v*jx-a[n].v*a[n].t)break;
+		if(minl==1e14)continue;
+		ans=min(ans,maxl-minl);
+	}
+	printf("%.2lf",ans);
+	return 0;
+}
+
+</code></pre>
+<p>此代码能拿<span class="math">\(80pts\)</span></p>
+<p>在进一步分析，最大距离其实是一个单峰函数，在某一点后只会上升</p>
+<p>所以只用三分法求定点</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+const double eps=1e-8;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+struct node{
+	int t,v;
+}a[500500];
+int n;
+double l=0;
+double check(double mid){
+	double minn,maxx,temp;
+	minn=maxx=(mid-a[1].t)*a[1].v;
+	for(int i=2;i&lt;=n;i++){
+		temp=(mid-a[i].t)*a[i].v;	
+		minn=min(minn,temp);
+		maxx=max(maxx,temp);
+	}
+	return maxx-minn;
+}
+signed main(){
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		a[i].t=read();
+		a[i].v=read();
+		l=max(l,(double)a[i].t);
+	}
+	double r=1e15,lmid,rmid;
+	while(r-l&gt;eps){
+		lmid=l+(r-l)/3;
+		rmid=r-(r-l)/3;
+		if(check(lmid)&lt;check(rmid))r=rmid;
+		else l=lmid;
+	}
+	printf("%.2lf",check(l));
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/84wpixv7" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-jnlhtc16.html"><small>← 上一篇</small><span>test20230301</span></a><a href="luogu-bj2jz5rs.html"><small>下一篇 →</small><span>test20230312</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

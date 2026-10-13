@@ -1,0 +1,447 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Generate a String 虽然是个黄题，但是我 Wa 了 n 遍。 有两个非常显然的柿子。 \(f[i]=f[i-1]+x\) , \(f[i]=f[i/2]+y \quad i\) 是偶数 注意看题，字符串可以删除。 所以还有 \(f[i]=f[i/2+1]+x+y, i\) 是奇数。 Cipher 观察两种操作，发"><title>codeforce2100DP · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-78ct41yv.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforce2100DP</h1><p class="hero-meta"><time datetime="2023-08-08T21:47:24+08:00">2023-08-08 21:47</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/78ct41yv" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://www.luogu.com.cn/problem/CF710E" rel="noopener noreferrer" target="_blank">Generate a String</a></h2>
+<p>虽然是个黄题，但是我 Wa 了 n 遍。</p>
+<p>有两个非常显然的柿子。</p>
+<p><span class="math">\(f[i]=f[i-1]+x\)</span> ,</p>
+<p><span class="math">\(f[i]=f[i/2]+y \quad i\)</span> 是偶数</p>
+<p>注意看题，字符串可以删除。</p>
+<p>所以还有 <span class="math">\(f[i]=f[i/2+1]+x+y, i\)</span> 是奇数。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF156C" rel="noopener noreferrer" target="_blank">Cipher</a></h2>
+<p>观察两种操作，发现两种操作对字符串和的大小不变，而且任何一种情况都可以变换到。</p>
+<p>所以可以简化为把一个数分成 len 份，有多少种分法。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF128C" rel="noopener noreferrer" target="_blank">Games with Rectangle</a></h2>
+<p>绘制 <span class="math">\(k\)</span> 个矩形，等价于横向纵向分别选 <span class="math">\(2k\)</span> 个点。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF837D" rel="noopener noreferrer" target="_blank">Round Subset</a></h2>
+<p>是一个背包。</p>
+<p><span class="math">\($f[j][k]=f[j-c[i]][k-d[i]]+num2[i]\)</span>$</p>
+<h2><a href="https://www.luogu.com.cn/problem/P2986" rel="noopener noreferrer" target="_blank">P2986</a></h2>
+<p>换根 DP 模板。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF796D" rel="noopener noreferrer" target="_blank">Police Stations</a></h2>
+<p>就是一遍 bfs。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF14D" rel="noopener noreferrer" target="_blank"> Two Paths</a></h2>
+<p>数据过小，对每一条边切开，分成两个图然后跑直径。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF540D" rel="noopener noreferrer" target="_blank">Bad Luck Island</a></h2>
+<p>求概率是正推，求期望是逆推。</p>
+<p>所以这道题是正推。</p>
+<p><span class="math">\(i,j\)</span> 相遇的概率是<span class="math">\(\frac{i\times j}{i\times j+j\times k+i\times k}\)</span></p>
+<pre><code class="language-cpp">f[r][s][p]=1;
+	dn(i,r,0){
+		dn(j,s,0){
+			dn(k,p,0){
+				ldo tot=i*j+i*k+j*k;
+				if(i&amp;&amp;j)f[i][j-1][k]+=f[i][j][k]*i*j/tot;
+				if (j &amp;&amp; k)f[i][j][k-1]+=f[i][j][k]*j*k/tot;
+				if (k &amp;&amp; i)f[i-1][j][k]+=f[i][j][k]*i*k/tot;
+			}
+		}
+	}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF527D" rel="noopener noreferrer" target="_blank">Clique Problem</a></h2>
+<p>很有意思的一道题。</p>
+<p>令 <span class="math">\(x_i&gt;x_j\)</span> ,  则有<span class="math">\(x_i-w_i\ge x_j+w_j\)</span></p>
+<p>对每一个点，都需要 判断每一个点的区间 <span class="math">\([x_i-w_i,x_i+w_i]\)</span></p>
+<p>我们可以把每个点都看成是 <span class="math">\([l,r]\)</span> 区间上的一条线段，如果满足刚才的那个式子，就说明两条线段不重叠（因为一个的最左端在另一个最右端的右侧，肯定不重叠），所以任意两条互不重叠的线段之间都会相连。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF478D" rel="noopener noreferrer" target="_blank">Red-Green Towers</a></h2>
+<p>贪心求高度，剩下就好做了。</p>
+<pre><code class="language-cpp">	int h = sqrt(2*r+2*g);
+	while(h*(h+1)&lt;=r+g+r+g)	h++;
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF505C" rel="noopener noreferrer" target="_blank">Mr. Kitayuta, the Treasure Hunter</a></h2>
+<p>之前考试考过一次。</p>
+<p>暴力 DP 很好写，但是空间会炸掉。</p>
+<p>因为每次跳跃距离是加一或减一，所以dp 第二维只用考虑偏移量。</p>
+<pre><code class="language-cpp">	for (int i=d;i&lt;=N;i++){
+		for (int j=-D;j&lt;=D;j++){
+			for (int z=-1;z&lt;=1;z++){
+				int len=j+d+z ;
+				if (j+z &lt; -D || j+z &gt;D || len&lt;1 || i+len&gt;N) continue ;
+				dp[i+len][j+z+D]=max(dp[i+len][j+z+D],dp[i][j+D]+cnt[i+len]) ;
+			}
+		}
+	}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF14E" rel="noopener noreferrer" target="_blank">Camels</a></h2>
+<p>五维暴力dp.</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF1271D" rel="noopener noreferrer" target="_blank">Portals</a></h2>
+<p>设 <span class="math">\(f[i][j]\)</span> 表示攻下了前 <span class="math">\(i\)</span> 个城堡且手上还剩 <span class="math">\(j\)</span> 个士兵时，被控制的最大总价值。那么这个问题就类似一个背包，直接转移一下就可以得到答案了。只要注意边界——打第 <span class="math">\(i\)</span> 个城堡前手上必须有至少 <span class="math">\(a[i]\)</span> 个士兵。</p>
+<pre><code class="language-cpp">int n,m,k;
+int a[N],b[N],c[N],pre[N];
+int f[N];
+vector&lt;int&gt;g[N];
+signed main() {
+    n=read();m=read();k=read();
+    up(i,1,n){
+        a[i]=read();b[i]=read();c[i]=read();
+        pre[i]=i;
+    }
+    int u,v;
+    up(i,1,m){
+        u=read();v=read();
+        pre[v]=max(pre[v],u);
+    }
+    up(i,1,n){
+        g[pre[i]].push_back(i);
+    }
+    fill(f,f+N,-inf);
+    f[k]=0;
+    int ans = -inf;
+    up(i,1,n){
+        for(int j = (k += b[i]); (j - b[i]) &gt;= a[i]; --j) {
+            f[j] = f[j - b[i]];
+        }
+        fill(f, f + a[i],-inf);
+        for (auto u :g[i]) {
+            for (int j = 0, dj = j + 1; j &lt;k; j = dj++) {
+                f[j]=max(f[j], f[dj] + c[u]);
+            }
+        }
+    }
+    for (int i = 0; i &lt;=k; ++i) {
+        ans = max(ans, f[i]);
+    }
+    if(ans&lt;0)cout&lt;&lt;-1;
+    else cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF213C" rel="noopener noreferrer" target="_blank">Relay Race </a></h2>
+<p>与传纸条一样，但是数据更大。不能考虑四维DP。</p>
+<p>假设两次传递走的步数相同，其实可以压去一维。</p>
+<pre><code class="language-cpp">f[1][1][1]=g[1][1];
+    up(i,1,n){
+    	up(j,1,m) {
+    		up(k,1,n) {
+    			if(i==1&amp;&amp;j==1&amp;&amp;k==1)continue;
+				int l=i+j-k;
+				f[i][j][k]=max(
+    				max(f[i-1][j][k-1],f[i-1][j][k]),
+    				max(f[i][j-1][k-1],f[i][j-1][k]))
+    				+g[i][j]+g[k][l];
+    				if(i==k&amp;&amp;l==j)f[i][j][k]-=g[i][j];
+    		}
+    	}
+    }
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF1265E" rel="noopener noreferrer" target="_blank">Beautiful Mirrors</a></h2>
+<p>挺离谱的期望DP。</p>
+<p>另 <span class="math">\(f[i]\)</span> 为从第一面镜子到第 <span class="math">\(i\)</span> 面镜子都快乐的概率。</p>
+<p><span class="math">\(f[i]=(f[i-1]+1)\times p[i]+(f[i-1]+1+f[i])*(1-p[i])\)</span></p>
+<p><span class="math">\(f[i]=f[i-1]*\dfrac{1}{p}\)</span></p>
+<h2><a href="https://www.luogu.com.cn/problem/CF1202C" rel="noopener noreferrer" target="_blank">You Are Given a WASD-string... </a></h2>
+<p>看到这道题 第一反应是行列减一。
+原本面积是 <span class="math">\(a\times b\)</span>,答案应该是 <span class="math">\((a-1)\times b,a\times(b-1)\)</span>.</p>
+<p>然而这个结论是错误的。</p>
+<p>但是考虑这样一个操作序列 <code>ADAD</code> 原本是 <span class="math">\(1×2\)</span>，但任意添加操作之后并不能让权值变为$ 0×2<span class="math">\(，甚至不能变为 \)</span>1×1$。</p>
+<p>那么变化的位置只能是 <strong>一个最值最后一次出现与另一个最值第一次出现</strong> 之间。</p>
+<pre><code class="language-cpp">int n;
+int sum[N],sum2[N];
+inline bool check(int l,int r){
+  for(int i=l+1;i&lt;=r;++i)if(sum[i]!=sum[l])return true;
+  return false;
+}
+inline bool check2(int l,int r){
+  for(int i=l+1;i&lt;=r;++i)if(sum2[i]!=sum2[l])return true;
+  return false;
+}
+string s;
+signed main() { 
+	int T=read();
+	while(T--){
+		cin&gt;&gt;s;
+		n=s.size();s=" "+s;
+		int maxl=0,maxl2=0,minl=0,minl2=0;
+		up(i,1,n){
+      		sum[i]=sum[i-1];
+      		if(s[i]=='A')--sum[i];
+      		if(s[i]=='D')++sum[i];
+      		maxl=max(maxl,sum[i]);minl=min(minl,sum[i]);
+      		sum2[i]=sum2[i-1];
+      		if(s[i]=='S')--sum2[i];
+      		if(s[i]=='W')++sum2[i];
+      		maxl2=max(maxl2,sum2[i]);minl2=min(minl2,sum2[i]);
+		}
+    	int l=1e14,r=-1e14,l2=1e14,r2=-1e14;
+    	for(int i=0;i&lt;=n;++i){
+      		if(sum[i]==minl)l=min(l,i),r=max(r,i);
+      		if(sum[i]==maxl)l2=min(l2,i),r2=max(r2,i);
+    	}
+    	int tot=(maxl2-minl2+1)*(maxl-minl+1),ans=tot;
+    	if((l&gt;r2||r&lt;l2)&amp;&amp;(check(r2,l-1)||check(r,l2-1)))ans=min(ans,tot-(maxl2-minl2+1));
+    	l=l2=1e14;r=r2=-1e14;
+    	up(i,0,n) {
+      		if(sum2[i]==minl2)l=min(l,i),r=max(r,i);
+      		if(sum2[i]==maxl2)l2=min(l2,i),r2=max(r2,i);
+    	}
+    	if((l&gt;r2||l2&gt;r)&amp;&amp;(check2(r2,l-1)||check2(r,l2-1)))ans=min(ans,tot-(maxl-minl+1));
+    	cout&lt;&lt;ans&lt;&lt;endl;
+	}
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF900D" rel="noopener noreferrer" target="_blank">Unusual Sequences </a></h2>
+<p>很有意思的一道数学题。</p>
+<p>等价为求一个和为<span class="math">\(\dfrac{y}{x}\)</span>​ 的序列，使得其 <span class="math">\(\gcd\)</span> 为 <span class="math">\(1\)</span></p>
+<p>和为 <span class="math">\(s\)</span> 的数列有 <span class="math">\(2^{s-1}\)</span>,和为 <span class="math">\(s,\gcd =1\)</span>的数列个数为 <span class="math">\(f(s)\)</span>。</p>
+<p>所以有<span class="math">\($f(k)=2^{k-1}-\sum_{d|k,d&gt;1}f(\dfrac{k}{d})\)</span>$</p>
+<pre><code class="language-cpp">inline int ksm(int a,int b){
+	int res=1;
+	while(b){
+		if(b&amp;1)res=res*a%mod;
+		a=a*a%mod;
+		b&gt;&gt;=1;
+	}
+	return res;
+}
+unordered_map&lt;int,int&gt;mp;
+inline int dfs(int n) {
+	if(n==1) return 1;
+	if(mp.count(n)) return mp[n];
+	int ans=0;
+	for(int i=2;i*i&lt;=n;++i) {
+		if(n%i==0) {
+			ans=(ans+dfs(i))%mod;
+			if(i*i!=n) ans=(ans+dfs(n/i))%mod;
+		}
+	}
+	ans=(ans+dfs(1))%mod;
+	ans=(ksm(2,n-1)-ans+mod)%mod;
+	return mp[n]=ans;
+}
+signed main() { 
+	x=read();y=read();
+	if(y%x){
+		printf("0\n");
+		return 0;
+	}
+	cout&lt;&lt;dfs(y/x);
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF1271E" rel="noopener noreferrer" target="_blank">Common Number</a></h2>
+<h2><a href="https://www.luogu.com.cn/problem/CF840B" rel="noopener noreferrer" target="_blank">Leha and another game about graph</a></h2>
+<p>若是度数只和为奇数，则无解。</p>
+<p>用dfs 从下往上构造。</p>
+<pre><code class="language-cpp">int n,m;
+int d[N];
+vector&lt;pii&gt;g[N];
+int rt,sum;
+vector&lt;int&gt;ans;
+int vis[N];
+inline int dfs(int u){
+    vis[u]=1;
+    int t=d[u];
+    for(auto [v,id]:g[u]){
+        if(vis[v])continue;
+        if(dfs(v)){
+            ans.push_back((id+1)/2);
+            t=(1-t);
+        }
+    }
+    if(d[u]==-1)t=0;
+    return t;
+}
+signed main(){
+    n=read();m=read();
+    up(i,1,n){
+        d[i]=read();
+        if(d[i]==-1)rt=i;
+        else sum+=d[i];
+    }
+    int u,v,cnt=0;
+    up(i,1,m){
+        u=read();v=read();
+        g[u].push_back({v,++cnt});
+        g[v].push_back({u,++cnt});
+    }
+    if(rt==0&amp;&amp;sum%2==1){
+        cout&lt;&lt;-1;
+        return 0;
+    }
+    if(rt==0)rt=1;
+    dfs(rt);
+    cout&lt;&lt;ans.size()&lt;&lt;endl;
+    for(auto v:ans)cout&lt;&lt;v&lt;&lt;" ";
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF16E" rel="noopener noreferrer" target="_blank">Fish - 洛谷</a></h2>
+<p>状压</p>
+<pre><code class="language-cpp">int n;
+ldb a[105][105];
+ldb dp[1&lt;&lt;20];
+signed main(){
+    n=read();
+    up(i,1,n){
+        up(j,1,n){
+            scanf("%LF",&amp;a[i][j]);
+        }
+    }
+    int all=(1&lt;&lt;n)-1;
+    dp[all]=1;
+    dn(i,all,1){
+        int cnt=__builtin_popcountll(i);
+        up(j,1,n){
+            if((i&amp;(1&lt;&lt;(j-1))))continue;
+            up(k,1,n){
+                if(!(i&amp;(1&lt;&lt;(k-1)))) continue;
+				dp[i] += dp[i|(1 &lt;&lt; (j - 1))] *a[k][j] / (1.0 * (cnt + 1) * cnt / 2.0);
+            }
+        }
+    }
+    for(int i = 0; i &lt; n; i ++) printf("%.6Lf ",dp[1 &lt;&lt; i]);
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF621E" rel="noopener noreferrer" target="_blank">Wet Shark and Blocks</a></h2>
+<h2><a href="https://www.luogu.com.cn/problem/CF235B" rel="noopener noreferrer" target="_blank">Let's Play Osu!</a></h2>
+<p>又是一道考过的题。</p>
+<pre><code class="language-cpp">	up(i,1,n){
+		k[i]=(k[i-1]+1)*p[i];
+		f[i]=((f[i-1]+2*k[i-1]+1)*p[i])+(f[i-1]*(1-p[i]));
+	}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF351B" rel="noopener noreferrer" target="_blank">Jeff and Furik</a></h2>
+<p>一个人一次操作减少一个逆序对，一个人二分之一概率减少一个逆序对。</p>
+<p>考虑将Jeff和Fruik当成一整轮一起操作，那么一轮操作中又 <span class="math">\(0.5\)</span>的概率减少两个逆序对，<span class="math">\(0.5\)</span> 的概率使逆序对个数不变。</p>
+<p>当前是 <span class="math">\(dp[i]=dp[i-1]+1\)</span>,不然<span class="math">\(dp[i]=\dfrac{1}{2}(dp[i-1]+1)+\dfrac{1}{2}(dp[i]+2)\)</span></p>
+<p><span class="math">\($dp[i]=dp[i-1]+3\)</span>$</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF1151E" rel="noopener noreferrer" target="_blank">Number of Components </a></h2>
+<p>通块数量=点数-边数。</p>
+<p>对于 <span class="math">\(i\)</span>, 会被计算 <span class="math">\(a_i*(n-a_i+1)\)</span></p>
+<p>对于 边 <span class="math">\([i,i+1]\)</span>,被计算次数为 <span class="math">\(\min(a_i,a_{i+1})*(n-\max(a_i,a_{i+1})+1)\)</span></p>
+<h2><a href="https://www.luogu.com.cn/problem/CF165E" rel="noopener noreferrer" target="_blank">Compatible Numbers </a></h2>
+<p>暴力乱搞。</p>
+<pre><code class="language-cpp">	up(i,0,21){
+		for(int j=0;j&lt;(1&lt;&lt;22);j++){
+			if((j&amp;(1&lt;&lt;i))&amp;&amp;f[j^(1&lt;&lt;i)]) f[j]=f[j^(1&lt;&lt;i)];
+		}
+	}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF337D" rel="noopener noreferrer" target="_blank">Book of Evil </a></h2>
+<p>先考虑一个暴力。</p>
+<p>对每个鬼进行 <span class="math">\(bfs\)</span> 复杂度 <span class="math">\(O(md)\)</span> 。</p>
+<p>然而只用求出有鬼的直径就行了。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF1294F" rel="noopener noreferrer" target="_blank">Three Paths on a Tree </a></h2>
+<p>先求出直径，然后枚举每个直径外的节点。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF119C" rel="noopener noreferrer" target="_blank">Education Reform </a></h2>
+<h2><a href="https://www.luogu.com.cn/problem/CF883I#submit" rel="noopener noreferrer" target="_blank">Photo Processing</a></h2>
+<p>不难想到排序，因为想要最小化每组中的最小值，那每组中的数必然是挨着的，比如 55 个数被分为 <span class="math">\([1,3][4,5][9]\)</span> ，假设我们交换了3,5 必然造成两个组的权值都增加，这明显是不优的，因此我们只需要考虑连续区间即可。</p>
+<pre><code class="language-cpp">int n,m;
+int a[N];
+int f[N];
+inline bool check(int x){
+	f[0]=1;
+	fill(f+1,f+1+n,0);
+	int l=1,r=0;
+	for(int i=1;i&lt;=n;i++){
+		while(a[i]-a[l]&gt;x)l++;
+		r=i-m+1;
+		while(!f[l-1]&amp;&amp;l&lt;=r)l++;
+		if(l&lt;=r)f[i]=1;  
+	}
+	return f[n];
+}
+int ans;
+signed main(){
+    n=read();m=read();
+    up(i,1,n)a[i]=read();
+    sort(a+1,a+1+n);
+    int l=0,r=a[n]-a[1];
+    while(l&lt;=r){
+		int mid=(l+r)&gt;&gt;1;
+		if(check(mid))r=mid-1,ans=mid;
+		else l=mid+1;
+	}
+	cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF980D" rel="noopener noreferrer" target="_blank">Perfect Groups</a></h2>
+<p>用并查集维护乘积为平方数的数。</p>
+<p>求处每个区间有多少个联通快。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF1106E" rel="noopener noreferrer" target="_blank">Lunar New Year and Red Envelopes</a></h2>
+<p>题目的关键在<span class="math">\(s[i]\le t[i]\le d[i]\)</span>。</p>
+<p>所以如果能行动，则该区间的红包一定能收集。</p>
+<pre><code class="language-cpp">int n,m,k;
+struct node{
+    int s,t,d,w;
+    bool operator&lt;(const node &amp;x)const {
+    	if(w == x.w) return d &lt; x.d;
+        return w &lt; x.w;
+    }
+}a[100500];
+priority_queue&lt;node&gt;q;
+inline bool cmp(node x,node y){
+    return x.s&lt;y.s;
+}
+int g[N],f[100500][205],h[N];
+signed main(){
+    n=read();m=read();k=read();
+    up(i,1,k){
+        a[i].s=read();
+        a[i].t=read();
+        a[i].d=read();
+        a[i].w=read();
+    }
+    sort(a+1,a+1+k,cmp);
+    int cur=1;
+    g[0]=1;
+    up(i,1,n){
+        while(cur&lt;=k&amp;&amp;a[cur].s&lt;=i)q.push(a[cur++]);
+        if(q.empty())g[i]=i+1;
+        else{
+            node u = q.top();
+            if(u.t&lt;i){
+                i--;
+                q.pop();
+                continue;
+            }
+            g[i]=u.d+1;
+            h[i]=u.w;
+        }
+    }
+    memset(f,0x3f,sizeof f);
+    f[0][0]=0;
+    up(i,0,n){
+        up(j,0,m){
+            f[i+1][j+1]=min(f[i+1][j+1],f[i][j]);
+            f[g[i]][j]=min(f[g[i]][j],f[i][j]+h[i]);
+        }
+    }
+    int ans=inf;
+    up(i,0,m)ans=min(ans, f[n+1][i]);
+    cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF771C" rel="noopener noreferrer" target="_blank">Bear and Tree Jumps</a></h2>
+<h2><a href="https://www.luogu.com.cn/problem/CF1030E" rel="noopener noreferrer" target="_blank">Vasya and Good Sequences </a></h2>
+<p>成立当且仅当区间二进制1和为偶数且没有一个数的1的个数多于一半。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF510D" rel="noopener noreferrer" target="_blank">Fox And Jumping</a></h2>
+<p>若能成功，当且仅当选出的书 <span class="math">\(\gcd=1\)</span></p>
+<p>用 map 乱搞。</p>
+<pre><code class="language-cpp">int n;
+int l[N],c[N];
+map&lt;int,int&gt;mp;
+signed main(){
+    n=read();
+    up(i,1,n)l[i]=read();
+    up(i,1,n)c[i]=read();
+    up(i,1,n){
+        for(auto x:mp){
+            int num=__gcd(l[i],x.first),val=x.second+c[i];
+            if(mp[num]==0) mp[num]=val;
+            else mp[num]=min(mp[num],val);
+        }
+        if(mp[l[i]]==0) mp[l[i]]=c[i];
+        else mp[l[i]]=min(mp[l[i]],c[i]);
+    }
+    if(mp[1]==0) puts("-1");
+    else cout&lt;&lt;mp[1];
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF459E" rel="noopener noreferrer" target="_blank">Pashmak and Graph </a></h2>
+<p>暴力转移就行了</p>
+<hr/>
+<p>完结撒花。</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/78ct41yv" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-rtizjklt.html"><small>← 上一篇</small><span>luogu.dp</span></a><a href="luogu-mrb3h24j.html"><small>下一篇 →</small><span>test20230809</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

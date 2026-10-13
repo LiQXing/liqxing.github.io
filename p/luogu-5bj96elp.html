@@ -1,0 +1,171 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Cow Program 记忆化搜索。 \(dp[0][u]\) 表示到达 \(u\) 点进行2操作。 \(dp[1][u]\) 表示到达 \(u\) 点进行3操作。 此题的难点在于，如何利用以前的计算判圈 于是可用两个数组记录是否出发过，是否已回去的状态。 Zero Tree 因为是一棵树，所以有着良好的结构。 对于每一颗子树考"><title>codeforces练习题1 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-5bj96elp.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题1</h1><p class="hero-meta"><time datetime="2023-08-24T15:56:48+08:00">2023-08-24 15:56</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/5bj96elp" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://www.luogu.com.cn/problem/CF283B" rel="noopener noreferrer" target="_blank">Cow Program </a></h2>
+<p>记忆化搜索。</p>
+<p><span class="math">\(dp[0][u]\)</span> 表示到达 <span class="math">\(u\)</span> 点进行2操作。
+<span class="math">\(dp[1][u]\)</span> 表示到达 <span class="math">\(u\)</span> 点进行3操作。</p>
+<p>此题的难点在于，如何利用以前的计算判圈</p>
+<p>于是可用两个数组记录是否出发过，是否已回去的状态。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF274B" rel="noopener noreferrer" target="_blank">Zero Tree</a></h2>
+<p>因为是一棵树，所以有着良好的结构。</p>
+<p>对于每一颗子树考虑变为0需要加减多少次。</p>
+<p>就是把下面子树取 <span class="math">\(\max\)</span> 然后再对单点进行修改。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF272D" rel="noopener noreferrer" target="_blank">Dima and Two Sequences</a></h2>
+<pre><code class="language-cpp">int n;
+int a[N],b[N],ans=1;
+unordered_map&lt;int,int&gt;mp,f,mp1;
+inline int getsum(int maxn,int cnt){
+	int sum=1;
+	for(int i=1;i&lt;=maxn;i++){
+		if(i%2==0&amp;&amp;cnt) sum=sum*i/2%mod,cnt--;
+		else sum=sum*i%mod;
+	}
+	return sum;
+}
+signed main(){
+	n=read();
+	up(i,1,n)a[i]=read();
+	up(i,1,n)b[i]=read();
+	mod=read();
+	up(i,1,n){
+		mp[a[i]]++;
+		mp[b[i]]++;
+		if(a[i]==b[i])f[a[i]]++;
+	}
+	up(i,1,n){
+		if(!mp1[a[i]]){
+			ans=ans*getsum(mp[a[i]],f[a[i]])%mod;
+			mp1[a[i]]=1;
+		}
+		if(!mp1[b[i]]){
+			ans=ans*getsum(mp[b[i]],f[b[i]])%mod;
+			mp1[b[i]]=1;
+		}
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF343B" rel="noopener noreferrer" target="_blank">Alternating Current</a></h2>
+<p>求出最长上升子序列就行。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF261B" rel="noopener noreferrer" target="_blank">Maxim and Restaurant</a></h2>
+<p>设 <span class="math">\(f(i,j,k)\)</span> 表示表示已经处理完前 <span class="math">\(i\)</span> 个人选了 <span class="math">\(j\)</span> 个人占了<span class="math">\(k\)</span>这么长的方案数，那么答案显然是：</p>
+<p><span class="math">\(ans=n!\sum f(n,i,j)×i!×(n−i)!\)</span>​</p>
+<p>对于 <span class="math">\(f(i,j,k)\)</span>我们有两个策略，一个是选，一个是不选，得出：</p>
+<p><span class="math">\(f(i,j,k)=f(i−1,j−1,k−a[i])+f(i−1,j,k)\)</span></p>
+<h2><a href="https://www.luogu.com.cn/problem/CF258B" rel="noopener noreferrer" target="_blank">Little Elephant and Elections </a></h2>
+<p>数位DP。
+<span class="math">\(g[i]\)</span> 表示有 <span class="math">\(i\)</span> 个4或7。</p>
+<pre><code class="language-cpp">int m,f[15][15],g[15],dit[15];
+inline int dp(int step,int r,int lim){
+	if(step==0)return r==0;
+	if(!lim&amp;&amp;~f[step][r])return f[step][r];
+	int x=lim?dit[step]:9,res=0;
+	for(int i=0;i&lt;=x;i++){
+		if(i==4||i==7){
+			if(r==0)continue;
+			(res+=dp(step-1,r-1,lim&amp;&amp;i==x))%mod;
+			continue;
+		}
+		res+=dp(step-1,r,lim&amp;&amp;i==x);
+	}
+	if(!lim)f[step][r]=res;
+	return res;
+}
+inline int dfs(int step,int r,int mul){
+	if(step==0)return mul;
+	int res=0;
+	for(int i=0;i&lt;=r;i++){
+		if(g[i]){
+			g[i]--;
+			(res+=dfs(step-1,r-i,mul*(g[i]+1)%mod))%mod;
+			g[i]++;
+		}
+	} 
+	return res;
+}
+signed main(){
+	memset(f,-1,sizeof f);
+	m=read();
+	int len=0;
+	while(m)dit[++len]=m%10,m/=10;
+	up(i,0,len) g[i]=dp(len,i,1);
+	g[0]--;
+	int ans=0;
+	up(i,1,len) (ans+=g[i]*dfs(6,i-1,1)%mod);
+	printf("%d\n",ans);
+	return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF255D" rel="noopener noreferrer" target="_blank">Mr. Bender and Square</a></h2>
+<p>简单二分题。</p>
+<p>二分答案然后减去超出方格的部分，还要加上四角重叠的部分</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF251B" rel="noopener noreferrer" target="_blank">Playing with Permutations</a></h2>
+<p>首先不考虑恰好 <span class="math">\(k\)</span> 次，而只考虑能否达到。可以发现给出的两次操作其实是互为逆元的（换句话说，在进行了操作一后进行操作二就相当于啥都没做），所以最后的答案一定是重复操作一或者操作二若干次而不可能同时出现操作一和操作二。</p>
+<p>在已经进行了 <span class="math">\(m\)</span> 次操作的前提下，可以通过在两个操作中反复横跳的方法解决任意为偶数的剩下次数。</p>
+<pre><code class="language-cpp">int n,k;
+bool flag;
+int p[N],s[N],q[N],now[N],p2[N],now2[N];
+inline void check(){
+	up(i,1,k-1){
+		up(j,1,n) now2[j]=now[p[j]];
+		up(j,1,n) now[j]=now2[j];
+		flag=1;
+		up(j,1,k)if(now[j]!=s[j])flag=0;
+		if(flag){
+			printf("NO\n");
+			return;
+		}
+	}
+	up(j,1,n)now2[j]=now[p[j]];
+	up(j,1,n)now[j]=now2[j];
+	flag=1;
+	up(j,1,k)if(now[j]!=s[j])flag=0;
+	if(flag==0){printf("NO\n");return;}
+	printf("YES\n");
+}
+signed main(){
+	n=read();k=read();
+	up(i,1,n)p[i]=read();
+	up(i,1,n)s[i]=read();
+	up(i,1,n)p2[p[i]]=i;
+	up(i,1,n)now[i]=i;
+	flag=1;
+	up(i,1,n)if(s[i]!=now[i])flag=0;
+	if(flag){
+		printf("NO\n");
+		return 0;
+	}
+	flag=1;
+	for(int i=1;i&lt;=n;i++)if(p[i]!=p2[i])flag=0;
+	if(flag){
+		check();
+		return 0;
+	}
+	up(i,1,n) now[i]=i;
+	up(i,1,k){
+		up(j,1,n) now2[j]=now[p[j]];
+		up(j,1,n) now[j]=now2[j];
+		flag=1;
+		up(j,1,k)if(now[j]!=s[j])flag=0;
+		if(flag&amp;&amp;(k-i)%2==0){
+			printf("YES\n");
+			return 0;
+		}		
+	}
+	up(i,1,n)now[i]=i;
+	up(i,1,k) {
+		up(j,1,n)now2[j]=now[p2[j]];
+		up(j,1,n)now[j]=now2[j];
+		flag=1;
+		up(j,1,k)if(now[j]!=s[j])flag=0;
+		if(flag&amp;&amp;(k-i)%2==0){
+			printf("YES\n");
+			return 0;
+		}		
+	}
+	printf("NO\n");
+	return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF243B" rel="noopener noreferrer" target="_blank">Hydra</a></h2>
+<p>枚举每一条边，判断是否满足条件。</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/5bj96elp" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-u3pl32v3.html"><small>← 上一篇</small><span>[网络流从入门到入土 #1]</span></a><a href="luogu-9crt2axg.html"><small>下一篇 →</small><span>codeforces练习题2</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

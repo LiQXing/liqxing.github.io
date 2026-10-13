@@ -1,0 +1,111 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(My\;blog\) rp 大爆发（别一次用完就行了）。 来晚了，差点没赶上考试。 T1 先看 T1，看上去很像一个三维偏序问题，一看数据范围 \(n\le 3\times 10^7\) 。 打扰了。 不行，再看一眼题目，发现一句话 请选手仔细观察给出的数据生成器，数据生成方式与解题强相关 。 阿这，原来是一道分析代码题。 "><title>test20231030 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-7b1cem0q.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231030</h1><p class="hero-meta"><time datetime="2023-10-30T15:54:06+08:00">2023-10-30 15:54</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/7b1cem0q" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><a href="17797966.html"><span class="math">\(My\;blog\)</span></a></p>
+<p>rp 大爆发（别一次用完就行了）。</p>
+<p>来晚了，差点没赶上考试。</p>
+<h2>T1</h2>
+<p>先看 T1，看上去很像一个三维偏序问题，一看数据范围 <span class="math">\(n\le 3\times 10^7\)</span>。</p>
+<p>打扰了。</p>
+<p>不行，再看一眼题目，发现一句话 <code>请选手仔细观察给出的数据生成器，数据生成方式与解题强相关</code>。</p>
+<p>阿这，原来是一道分析代码题。</p>
+<p>看他数据生成器：</p>
+<pre><code class="language-cpp">typedef unsigned long long ull;
+int n,A,B,C,u[N],v[N],w[N];
+inline ull Rand(ull &amp;k1, ull &amp;k2){
+	ull k3 = k1, k4 = k2;
+	k1 = k4;
+	k3 ^= (k3 &lt;&lt; 23);
+	k2 = k3 ^ k4 ^ (k3 &gt;&gt; 17) ^ (k4 &gt;&gt; 26);
+	return k2 + k4;
+} 
+inline void GetData () {
+	ull x, y;
+ 	cin &gt;&gt; n &gt;&gt; A &gt;&gt; B &gt;&gt; C &gt;&gt; x &gt;&gt; y;
+	up(i,1,n){
+ 		u[i] = Rand(x, y) % A + 1;
+ 		v[i] = Rand(x, y) % B + 1;
+ 		w[i] = Rand(x, y) % C + 1;
+ 		if (Rand(x, y) % 3 == 0) u[i] = A;
+ 		if (Rand(x, y) % 3 == 0) v[i] = B;
+ 		if ((u[i] != A) &amp;&amp; (v[i] != B)) w[i] = C;
+ 	} 
+}
+</code></pre>
+<p>我们发现 <span class="math">\(u_i\)</span>，<span class="math">\(v_i\)</span> 有三分之一的概率等于 <span class="math">\(A\)</span>，<span class="math">\(B\)</span>，<span class="math">\(w_i\)</span> 有九分之四的概率等于 <span class="math">\(C\)</span>。</p>
+<p>而且 <span class="math">\(w_i\)</span> 等于 <span class="math">\(C\)</span> 时，<span class="math">\(u_i\)</span>，<span class="math">\(v_i\)</span> 分别不等于 <span class="math">\(A\)</span>，<span class="math">\(B\)</span>（大概率）。</p>
+<p>然后我灵机一动，将操作分成两部分，第一种是 <span class="math">\(u_i\)</span>，<span class="math">\(v_i\)</span> 分别等于 <span class="math">\(A\)</span>，<span class="math">\(B\)</span>，这个时候就只用找到<span class="math">\(\max w_i\)</span> 就行了，另一部分是 <span class="math">\(w_i\)</span> 等于 <span class="math">\(C\)</span> 的，然后把 <span class="math">\(u_i\)</span>，<span class="math">\(w_i\)</span> 撒在二维平面，一个点代表一个矩形，求矩形面积就行了，我开始还用单调栈，写一半发现因为矩形的高度具有单调性，所以只用记录后缀最大值扫一遍就行了。</p>
+<p>但是这有一个问题，就是有一些点没有被统计，所以我们可以 把所有的 <span class="math">\(\max<w_i\le> 都进行一次如下操作~ ，桥豆麻袋，这样复杂度不就 <span class="math">\(n^2\)</span> 了吗？</w_i\le></span></p>
+<p>哎呀~，观察最大的样例，我们发现这个 <span class="math">\(\max \approx C\)</span>，而且数据纯随机，自信。</p>
+<p>复杂度 <span class="math">\(O(玄学)\)</span>。</p>
+<pre><code class="language-cpp">signed main(){
+	GetData();
+	int maxl=0;
+	up(i,1,n){
+		if(u[i]==A&amp;&amp;v[i]==B){
+			maxl=max(maxl,w[i]);
+			if(w[i]==C){
+				i128 t=(i128)A*B*C;
+				write(t);
+				return 0;
+			}	
+		}
+	}
+	ans+=(i128)A*B*maxl;	
+	i128 sq=0,pre=0;
+	dn(H,C,maxl+1){
+		up(i,1,n){
+			if(w[i]==H){
+				suf[u[i]]=max(suf[u[i]],v[i]);
+			}
+		}
+		sq=0;
+		for(int i=A;i&gt;=1;i--){
+			suf[i]=max(suf[i],suf[i+1]);
+			sq+=suf[i];
+		} 
+		ans+=(i128)(H-maxl)*(sq-pre);
+		pre=sq; 
+	}
+	write(ans);
+	//cout&lt;&lt;ans&lt;&lt;endl;
+	return 0;
+}
+
+</code></pre>
+<h2>T2</h2>
+<p>出去洗了把脸看 T2，是期望不是很会的样子。</p>
+<p>与前两天的 At_abc_E 类似，</p>
+<p>把最后要求的东西看成 <span class="math">\(\sum_{i=1}^{n} i*p_i\)</span>。</p>
+<p>所以我们只用把每一个数留到最后的概率求出来。</p>
+<p>然后快速写了个状压求概率。</p>
+<p>然后考虑进一步优化。</p>
+<p>这个 DP 可不可以用更简单的形式表达出来呢？</p>
+<p>对于每一个数，我们似乎只用关心他前面有多少个数就行了，最后的状态就是他排名为 <span class="math">\(1\)</span>，的情况，想到了这个，这道题就基本想出来了，接下来就只有代码实现问题（然后我在实现上卡了一个小时）。</p>
+<pre><code class="language-cpp">int n,p[N];
+int ans=0;
+signed main(){	
+	n=read();
+	up(i,1,n-1){
+		p[i]=read();
+	}
+	up(w,1,n){
+		memset(dp,0,sizeof dp);
+		dp[1][w]=1;
+		up(i,2,n){
+			up(j,1,n){
+				if(j&lt;=n-i+1)dp[i][j]=(dp[i][j]+dp[i-1][j]*ksm((1-p[i-1]+mod)%mod,j))%mod; 
+				if(j!=1)dp[i][j-1]=(dp[i][j-1]+dp[i-1][j]*(1-ksm((1-p[i-1]+mod),j-1)+mod)%mod)%mod;
+			}
+		}
+		ans=(ans+w*dp[n][1])%mod;
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+
+</code></pre>
+<h2>T3</h2>
+<p>看着不是很会，于是写了 <span class="math">\(15\)</span>，分的 <span class="math">\(n^3\)</span> 暴力加上输出 <span class="math">\(0\)</span> 骗分。</p>
+<p>luogu 竟然能的 <span class="math">\(35\)</span> 分。</p>
+<p>暴力就不放了，没意义。</p>
+<h2>T4</h2>
+<p>题都没看。</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/7b1cem0q" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="17797966.html"><small>← 上一篇</small><span>test20231030</span></a><a href="luogu-gw8rp52a.html"><small>下一篇 →</small><span>[ABC326F] Robot Rotation</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

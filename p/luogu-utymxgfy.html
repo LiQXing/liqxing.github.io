@@ -1,0 +1,368 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="FHQTreap 无旋 Treap（FHQ） 完爆带旋 Treap 。 在了解什么是 FHQTreap 之前，我们需要了解什么是二叉搜索树（BST）。 BST 二叉搜索树其实很简单。就是一棵二叉树，对每个节点，其左子树小于当前节点，右儿子大于当前节点。 由于二叉树这个优美的性质，我们可以完成一些操作。 1.插入一个数。 2. 删"><title>FHQ · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-utymxgfy.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>FHQ</h1><p class="hero-meta"><time datetime="2023-05-31T15:20:34+08:00">2023-05-31 15:20</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/utymxgfy" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h1>FHQTreap</h1>
+<p>无旋<code>Treap（FHQ）</code>完爆带旋<code>Treap</code>。</p>
+<p>在了解什么是<code>FHQTreap</code>之前，我们需要了解什么是二叉搜索树（BST）。</p>
+<h1>BST</h1>
+<p>二叉搜索树其实很简单。就是一棵二叉树，对每个节点，其左子树小于当前节点，右儿子大于当前节点。</p>
+<p>由于二叉树这个优美的性质，我们可以完成一些操作。</p>
+<p>1.插入一个数。
+2. 删除一个数。
+3. 给你一个数，求其在该二叉树中的排名。
+4. 根据排名求数值。
+5. 求一个数的前驱。
+6. 求一个数的后继。</p>
+<p>其理想复杂度是 <span class="math">\(O(log_n)\)</span>,</p>
+<p>然而，在形成二叉树的时候，如果退化成一条链，复杂度可能退化成 <span class="math">\(O(n)\)</span>。</p>
+<p>所以我们需要一种方法来维护二叉树。</p>
+<p>这个时候就应该请出我们的 <span class="math">\(FHQ\)</span></p>
+<h1>FHQTreap</h1>
+<p>其实FHQ与旋转法本质上是一样的，都是根据一个树的 <span class="math">\(rand\)</span>值来确定一棵树的形态。</p>
+<p>为什么这种维护方法不需要旋转，这是因为Treap的本质——结构确定。</p>
+<p>FHQ 中最重要的就是分裂和合并。</p>
+<h2>分裂</h2>
+<p><strong>因为从一个根节点开始遍历就可以推出整棵树，所以一个Treap的根节点代表的是这棵Treap所有的点，你可以将其理解为这个Treap所代表的是一个 <span class="math">\(val\)</span> 的区间，中序遍历后的 <span class="math">\(val\)</span> 序列是单调不减的。-----by 万万没想到</strong></p>
+<p>根据图片理解一下。</p>
+<p><img alt="输入图片说明" loading="lazy" src="../assets/images/luogu/0a0850d27ab6e3e7dd.png"/></p>
+<p>当 <span class="math">\(askval\)</span> 时，分裂的过程如图，图中的蓝色是已经归入左区间树的点，橙色是已经归入右区间树的点，左右区间树中的实圆是已经确定的节点，虚圆是尚未确定的节点。</p>
+<p>我们首先建立两个虚拟节点，就是图中的虚圆，如果当前访问的节点 <span class="math">\(now\)</span> 的 <span class="math">\(key\le askval\)</span> ，那么$ now$ 及 <span class="math">\(now\)</span> 的左子树，都应归在左区间树里，就是将左区间树上一个虚拟节点赋为 <span class="math">\(now\)</span> ，此节点便由虚变实，然后对 <span class="math">\(now\)</span> 建立虚拟的右儿子。否则，<span class="math">\(now\)</span> 及 <span class="math">\(now\)</span> 的右子树应该归在右区间树里，就是将上一个右区间树的虚拟节点赋为 <span class="math">\(now\)</span> ，此节点便由虚变实，然后对 <span class="math">\(now\)</span> 建立虚拟的左儿子。如果 <span class="math">\(now\)</span> 是空节点，则将左右区间树的虚拟节点赋为 0 。</p>
+<p>因为每访问到一个非空的 <span class="math">\(now\)</span> 节点时，递归分裂子树进行的操作会改变左右儿子，所以在维护一些值如子树大小的时候需要用同线段树类似的方法进行上传操作。</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline void build(int x){
+    cnt++;
+    tr[cnt].siz=1;
+    tr[cnt].ls=tr[cnt].rs=0;
+    tr[cnt].key=x;
+    tr[cnt].pri=rand();
+}
+inline void push_up(int k){
+    tr[k].siz=tr[tr[k].ls].siz+tr[tr[k].rs].siz+1;
+}
+inline void split(int u,int x,int &amp;l,int &amp;r){
+    if(u==0){l=r=0;return;}
+    if(tr[u].key&lt;=x){
+        l=u;
+        split(tr[u].rs,x,tr[u].rs,r);
+    }
+    else{
+        r=u;
+        split(tr[u].ls,x,l,tr[u].ls);
+    }
+    push_up(u);
+}
+</code></pre>
+<p>分裂后<span class="math">\(l，r\)</span>是两颗新子树的根。</p>
+<h2>合并</h2>
+<p>因为已经提过，一棵Treap的形态已经被rand值给固定住了。</p>
+<p><img alt="输入图片说明" loading="lazy" src="../assets/images/luogu/cc52c4c8cfe54fe56b.png"/></p>
+<p>黑底白字是 <span class="math">\(key\)</span> 权值，而白底黑字是 <span class="math">\(rand\)</span>  值。当一个节点被染蓝，说明此节点已被放入最终获得了主树内。</p>
+<p><strong><span class="math">\(l,r\)</span> 分别为左右区间树的根节点，那么 <span class="math">\(l\)</span>  及其子树要么在 <span class="math">\(v\)</span> 的左子树中，要么 <span class="math">\(r\)</span> 及其子树在 <span class="math">\(l\)</span> 的右子树中。</strong></p>
+<p><strong>（注意：是子树而非子节点。）</strong></p>
+<p>而一棵二叉树中越是上面的节点，rand值越小。</p>
+<p>所以，同时遍历两棵树，不断确定谁为根。</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline int merge(int l,int r){
+    if(l==0||r==0)return l+r;
+    if(tr[l].pri&gt;tr[r].pri){
+        tr[l].rs=merge(tr[l].rs,r);
+        push_up(l);
+        return l;
+    }
+    else{
+        tr[r].ls=merge(l,tr[r].ls);
+        push_up(r);
+        return r;
+    }
+}
+</code></pre>
+<h2>插入</h2>
+<p>插入一个数，把比该数小的数，大的数分裂成两棵树，再自己建一棵树，合并三棵树。</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline void build(int x){
+    cnt++;
+    tr[cnt].siz=1;
+    tr[cnt].ls=tr[cnt].rs=0;
+    tr[cnt].key=x;
+    tr[cnt].pri=rand();
+}
+inline void insert(int x){
+    int l,r;
+    split(root,x,l,r);
+    build(x);
+    root=merge(merge(l,cnt),r);
+}
+</code></pre>
+<h2>删除</h2>
+<p>把比该数小的数，大的数分裂成两棵树。合并这两棵树。</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline void del(int x){
+    int l,r,p;
+    split(root,x,l,r);
+    split(l,x-1,l,p);
+    p=merge(tr[p].ls,tr[p].rs);
+    root=merge(merge(l,p),r);
+}
+</code></pre>
+<h2>get_key_by_rank</h2>
+<p>就像普通二叉树一样去求就行</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline int kth(int u,int k){
+    if(k==tr[tr[u].ls].siz+1)return u;
+    if(k&lt;tr[tr[u].ls].siz)return kth(tr[u].ls,k);
+    else return kth(tr[u].rs,k-tr[tr[u].ls].siz-1);
+}
+</code></pre>
+<h2>get_rank_by_key</h2>
+<p>求该数左子树的大小就行了。</p>
+<h3>code</h3>
+<pre><code class="language-cpp">inline int getrank(int x){
+    int l,r;
+    split(root,x-1,l,r);
+    int t=tr[l].siz+1;
+    root=merge(l,r);
+    return t;
+} 
+</code></pre>
+<h2>前驱/后继</h2>
+<h3>code</h3>
+<pre><code class="language-cpp">inline int getpre(int x){
+    int l,r;
+    split(root,x-1,l,r);
+    int last=tr[kth(l,tr[l].siz)].key;
+    root=merge(l,r);
+	return last;
+}
+inline int getnxt(int x){
+    int l,r;
+    split(root,x,l,r);
+    int last=tr[kth(r,1)].key;
+    root=merge(l,r);
+	return last;
+}
+</code></pre>
+<h2>code</h2>
+<pre><code class="language-cpp">struct FHQTreap{
+    int cnt=0,root=0;
+    struct node{
+        int ls,rs;
+        int key,pri;
+        int siz;
+    }tr[N];
+    int ans;
+    inline void build(int x){
+        cnt++;
+        tr[cnt].siz=1;
+        tr[cnt].ls=tr[cnt].rs=0;
+        tr[cnt].key=x;
+        tr[cnt].pri=rand();
+    }
+    inline void push_up(int k){
+        tr[k].siz=tr[tr[k].ls].siz+tr[tr[k].rs].siz+1;
+    }
+    inline void split(int u,int x,int &amp;l,int &amp;r){
+        if(u==0){l=r=0;return;}
+        if(tr[u].key&lt;=x){
+            l=u;
+            split(tr[u].rs,x,tr[u].rs,r);
+        }
+        else{
+            r=u;
+            split(tr[u].ls,x,l,tr[u].ls);
+        }
+        push_up(u);
+    }
+    inline int merge(int l,int r){
+        if(l==0||r==0)return l+r;
+        if(tr[l].pri&gt;tr[r].pri){
+            tr[l].rs=merge(tr[l].rs,r);
+            push_up(l);
+            return l;
+        }
+        else{
+            tr[r].ls=merge(l,tr[r].ls);
+            push_up(r);
+            return r;
+        }
+    }
+    inline void insert(int x){
+        int l,r;
+        split(root,x,l,r);
+        build(x);
+        root=merge(merge(l,cnt),r);
+    }
+    inline void del(int x){
+        int l,r,p;
+        split(root,x,l,r);
+        split(l,x-1,l,p);
+        p=merge(tr[p].ls,tr[p].rs);
+        root=merge(merge(l,p),r);
+    }
+    inline void getrank(int x){
+        int l,r;
+        split(root,x-1,l,r);
+        int last=tr[l].siz+1;
+        root=merge(l,r);
+    } 
+    inline int kth(int u,int k){
+        if(k==tr[tr[u].ls].siz+1)return u;
+        if(k&lt;=tr[tr[u].ls].siz)return kth(tr[u].ls,k);
+        else return kth(tr[u].rs,k-tr[tr[u].ls].siz-1);
+    }
+    inline int getpre(int x){
+        int l,r;
+        split(root,x-1,l,r);
+        int last=tr[kth(l,tr[l].siz)].key;
+        root=merge(l,r);
+        return last;
+    }
+    inline int getpre1(int x){
+        int l,r;
+        split(root,x,l,r);
+        int last=tr[kth(l,tr[l].siz)].key;
+        root=merge(l,r);
+        return last;
+    }
+    inline int getnxt(int x){
+        int l,r;
+        split(root,x,l,r);
+        int last=tr[kth(r,1)].key;
+        root=merge(l,r);
+        return last;
+    }
+    inline int size(){
+        return tr[root].siz;
+    }
+    inline int getans(int x){
+        int a=getpre1(x),b=getnxt(x);
+        if(x-a&gt;b-x)return b;
+        else return a;
+    }
+}
+</code></pre>
+<h2>文艺平衡树</h2>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define i64 long long
+#define ull unsigned long long
+#define ldb long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=(b);a&lt;=(c);a++)
+#define dn(a,b,c) for(int a=(b);a&gt;=(c);a--)
+#define pii pair&lt;int,int&gt;
+#define pdi pair&lt;double,int&gt;
+#define pivi pair&lt;int,vector&lt;int&gt; &gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+#define fi first
+#define se second
+#define endl '\n'
+#define i16 short
+#define eps 1e-8
+
+const int N=5e5+100,M=2e6+100;
+const int mod1=39989,mod2=1e9;
+const int inf=1e9+7;
+const ull uinf=1e18+14;
+
+mt19937 rng(time(0));
+
+namespace IO{
+    inline int read(){
+        char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+    }
+    inline void wt(int x){
+        if(x&lt;0){x=-x;putchar('-');}
+        if(x&gt;9)wt(x/10);
+        putchar((x%10)^48);
+    }
+    inline void write(int x,bool op){
+        wt(x);
+        putchar(op?'\n':' ');
+    }
+}using namespace IO;
+int n,m;
+int a[N];
+struct FHQTreap{
+    struct node{
+        int ls,rs;
+        int val,key;
+        int siz,tag;
+    }tr[N];
+    int rt=0,cnt=0;
+    inline void push_up(int k){
+        tr[k].siz=tr[tr[k].ls].siz+tr[tr[k].rs].siz+1;
+    }
+    inline int nd(int x){
+        cnt++;
+        tr[cnt].val=x;
+        tr[cnt].key=rng();
+        tr[cnt].siz=1;
+        return cnt;
+    }
+    inline void push_down(int k){
+        if(tr[k].tag){
+            tr[tr[k].ls].tag^=1;
+            tr[tr[k].rs].tag^=1;
+            swap(tr[k].ls,tr[k].rs);
+            tr[k].tag=0;
+        }
+    }
+    inline void split(int u,int x,int &amp;L,int &amp;R){
+        if(!u)return L=R=0,void();
+        push_down(u);
+        if(tr[tr[u].ls].siz&gt;=x)R=u,split(tr[u].ls,x,L,tr[u].ls);
+        else L=u,split(tr[u].rs,x-tr[tr[u].ls].siz-1,tr[u].rs,R);
+        push_up(u);
+    }
+    inline int merge(int L,int R){
+        if(!L||!R)return L|R;
+        push_down(L);
+        push_down(R);
+        if(tr[L].key&gt;tr[R].key){
+            tr[L].rs=merge(tr[L].rs,R);
+            push_up(L);
+            return L;
+        }
+        else{
+            tr[R].ls=merge(L,tr[R].ls);
+            push_up(R);
+            return R;
+        }
+    }
+    inline void insert(int x){
+        rt=merge(rt,nd(x));
+    }
+    inline void rev(int l,int r){
+        int x,y,z;
+        split(rt,r,x,z);
+        split(x,l-1,x,y);
+        tr[y].tag^=1;
+        rt=merge(x,merge(y,z));
+    }
+    inline void print(int x){
+        if(!x)return; 
+        push_down(x),
+        print(tr[x].ls);
+        cout&lt;&lt;tr[x].val&lt;&lt;" ";
+        print(tr[x].rs);
+    }
+}T;
+signed main(){
+	n=read();m=read();
+	up(i,1,n)T.insert(i);
+    int l,r;
+    up(i,1,m){
+        l=read();r=read();
+        T.rev(l,r);
+    }
+    T.print(T.rt);
+    return 0;
+}
+</code></pre>
+<p>____图和部分分裂合并描述by万万没想到</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/utymxgfy" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-yc3vcj6p.html"><small>← 上一篇</small><span>test20230525</span></a><a href="luogu-x7mw9901.html"><small>下一篇 →</small><span>主席树</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

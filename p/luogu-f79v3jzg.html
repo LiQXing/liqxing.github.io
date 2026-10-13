@@ -1,0 +1,373 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) sbsbsbsbsbsbsbsbsbsbsb。 最难的一道题。 因为边的权值小于 \(30\) 。 所以可以暴力枚举最大的边权。 然后让这条边的次数尽可能的多。 把联通块分成多个，使得匹配最多。 另 \(x=\max \{a_i\},s=\sum a_i\) 如果 \(x\times 2&gt;s\) ，有 \(s-x\"><title>test20230922 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-f79v3jzg.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20230922</h1><p class="hero-meta"><time datetime="2023-09-23T17:05:59+08:00">2023-09-23 17:05</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/f79v3jzg" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><span class="math">\(T1\)</span></h2>
+<p>sbsbsbsbsbsbsbsbsbsbsb。</p>
+<p>最难的一道题。</p>
+<p>因为边的权值小于 <span class="math">\(30\)</span>。
+所以可以暴力枚举最大的边权。</p>
+<p>然后让这条边的次数尽可能的多。</p>
+<p>把联通块分成多个，使得匹配最多。</p>
+<p>另 <span class="math">\(x=\max \{a_i\},s=\sum a_i\)</span></p>
+<p>如果 <span class="math">\(x\times 2&gt;s\)</span>，有 <span class="math">\(s-x\)</span> 个匹配。</p>
+<p>否则,有 <span class="math">\(s/2\)</span> 个匹配。</p>
+<p>那么就一次一次删点就完了。</p>
+<pre><code class="language-cpp">int n,m,k;
+int ans;
+inline int ksm(int a,int b){
+    int res=1;
+    while(b){
+        if(b&amp;1)res=res*a%mod;
+        a=a*a%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+vector&lt;pii&gt;g[N];
+vector&lt;int&gt;p[N];
+bool vis[N];
+int del[N],cnt,lim;
+inline void dfs(int u){
+    vis[u]=1;
+    p[cnt].push_back(u);
+    for(auto [v,w]:g[u]){
+        if(vis[v]||del[v]||w&gt;lim)continue;
+        dfs(v);
+    }
+}
+int ex;
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n;
+    int u,v,w;
+    up(i,1,n-1){
+        cin&gt;&gt;u&gt;&gt;v&gt;&gt;w;
+        g[u].push_back({v,w});
+        g[v].push_back({u,w});
+    }    
+    dn(k,30,0){
+        memset(vis,0,sizeof vis);
+        cnt=0;lim=k-1;
+        up(i,1,n){
+            if(!del[i]&amp;&amp;!vis[i]){
+                cnt++;
+                p[cnt].clear();
+                dfs(i);
+            }
+        }
+        int maxl=0,pos=0,tot=0;
+		up(i,1,cnt){
+			int u=p[i].size();
+			if(u&gt;maxl){
+				maxl=u;
+                pos=i;
+			}
+			tot+=u;
+		}
+        if((maxl-ex)*2&lt;=tot-ex){
+			ans=(ans+ksm(n,k)*(tot-ex-1))%mod;
+			break;
+		}
+		tot-=ex;
+        maxl-=ex;
+		ans=(ans+2*ksm(n,k)*(tot-maxl))%mod;
+		up(i,1,cnt){
+			if(i==pos) continue;
+			for(auto u:p[i]){
+				del[u]=1;
+			}
+		}
+		ex+=tot-maxl;
+    }
+    cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h2><span class="math">\(T2\)</span></h2>
+<p>sb 模拟。</p>
+<pre><code class="language-cpp">inline bool check(string a){
+    string num1,num2,num3,op;
+    int n1=0,n2=0,n3=0;
+    up(i,0,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num1+=a[i];
+        }
+        else break;
+    }
+    op=a[num1.size()];
+    if(op[0]!='+'&amp;&amp;op[0]!='-'&amp;&amp;op[0]!='*'&amp;&amp;op[0]!='/'){
+        //cerr&lt;&lt;"### 1"&lt;&lt;endl;
+        return 0;
+    }
+    up(i,num1.size()+1,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num2+=a[i];
+        }
+        else break;
+    }
+    if(a[num1.size()+num2.size()+1]!='='){
+        //cerr&lt;&lt;"### 2"&lt;&lt;endl;
+        return 0;
+    }
+    up(i,num1.size()+num2.size()+2,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num3+=a[i];
+        }
+        else break;
+    }
+    if(num1.size()+num2.size()+num3.size()+2!=a.size()){
+        //cerr&lt;&lt;"### 3"&lt;&lt;endl;
+        return 0;
+    }
+    //cerr&lt;&lt;num1&lt;&lt;op&lt;&lt;num2&lt;&lt;"="&lt;&lt;num3&lt;&lt;endl;
+    if(!num1.size()||!num2.size()||!num3.size()){
+        return 0;
+    }
+    if(num1[0]=='0'||num2[0]=='0'||num3[0]=='0'){
+        return 0;
+    }
+    if(num1.size()&gt;9||num2.size()&gt;9||num3.size()&gt;9){
+        return 0;
+    }
+    up(i,0,num1.size()-1){
+        n1=n1*10+num1[i]-'0';
+    }
+    up(i,0,num2.size()-1){
+        n2=n2*10+num2[i]-'0';
+    }
+    up(i,0,num3.size()-1){
+        n3=n3*10+num3[i]-'0';
+    }
+    //cerr&lt;&lt;n1&lt;&lt;" "&lt;&lt;n2&lt;&lt;" "&lt;&lt;n3&lt;&lt;endl;
+    if(op[0]=='+'){
+        if(n1+n2==n3){
+            return 1;
+        }
+    }
+    if(op[0]=='-'){
+        if(n1-n2==n3){
+            return 1;
+        }
+    }
+    if(op[0]=='*'){
+        if(n1*n2==n3){
+            return 1;
+        }
+    }
+    if(op[0]=='/'){
+        if(n1/n2==n3&amp;&amp;__gcd(n1,n2)==n2){
+            return 1;
+        }
+    }
+    return 0;
+}
+string a,num1,num2,num3,op;
+int n1,n2,n3;
+inline void corr(){
+    up(i,0,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num1+=a[i];
+        }
+        else break;
+    }
+    op=a[num1.size()];
+    if(op[0]!='+'&amp;&amp;op[0]!='-'&amp;&amp;op[0]!='*'&amp;&amp;op[0]!='/'){
+        //cout&lt;&lt;"### 1"&lt;&lt;endl;
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    up(i,num1.size()+1,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num2+=a[i];
+        }
+        else break;
+    }
+    if(a[num1.size()+num2.size()+1]!='='){
+        //cout&lt;&lt;"### 2"&lt;&lt;endl;
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    up(i,num1.size()+num2.size()+2,a.size()-1){
+        if(a[i]&gt;='0'&amp;&amp;a[i]&lt;='9'){
+            num3+=a[i];
+        }
+        else break;
+    }
+    if(num1.size()+num2.size()+num3.size()+2!=a.size()){
+        //cout&lt;&lt;"### 3"&lt;&lt;endl;
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    //cout&lt;&lt;num1&lt;&lt;op&lt;&lt;num2&lt;&lt;"="&lt;&lt;num3&lt;&lt;endl;
+    if(!num1.size()||!num2.size()||!num3.size()){
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    if(num1[0]=='0'||num2[0]=='0'||num3[0]=='0'){
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    if(num1.size()&gt;9||num2.size()&gt;9||num3.size()&gt;9){
+        cout&lt;&lt;"Format Error"&lt;&lt;endl;
+        exit(0);
+    }
+    up(i,0,num1.size()-1){
+        n1=n1*10+num1[i]-'0';
+    }
+    up(i,0,num2.size()-1){
+        n2=n2*10+num2[i]-'0';
+    }
+    up(i,0,num3.size()-1){
+        n3=n3*10+num3[i]-'0';
+    }
+    //cout&lt;&lt;n1&lt;&lt;" "&lt;&lt;n2&lt;&lt;" "&lt;&lt;n3&lt;&lt;endl;
+    if(op[0]=='+'){
+        if(n1+n2==n3){
+            cout&lt;&lt;"Correct"&lt;&lt;endl;
+            exit(0);
+        }
+    }
+    if(op[0]=='-'){
+        if(n1-n2==n3){
+            cout&lt;&lt;"Correct"&lt;&lt;endl;
+            exit(0);
+        }
+    }
+    if(op[0]=='*'){
+        if(n1*n2==n3){
+            cout&lt;&lt;"Correct"&lt;&lt;endl;
+            exit(0);
+        }
+    }
+    if(op[0]=='/'){
+        if(n1/n2==n3&amp;&amp;__gcd(n1,n2)==n2){
+            cout&lt;&lt;"Correct"&lt;&lt;endl;
+            exit(0);
+        }
+    }
+}
+char d[]={'0','1','2','3','4','5','6','7','8','9','+','-','*','/','='};
+string ans="~~~~~~~~~~~~";
+inline void change2(){
+    up(i,0,a.size()-1){
+        up(j,0,14){
+            up(k,i+1,a.size()-1){
+                up(l,0,14){
+                    string b=a;
+                    b[i]=d[j];
+                    b[k]=d[l];
+                    if(check(b))ans=min(ans,b);
+                }
+            }
+        }
+    }
+}
+signed main() {
+   
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;a;
+    corr();
+    change2();
+    if(ans[0]=='~'){
+        cout&lt;&lt;"Math Error"&lt;&lt;endl;
+    }
+    else{
+        cout&lt;&lt;"Typo: "&lt;&lt;a&lt;&lt;" instead of "&lt;&lt;ans;
+    }
+    return 0;
+}
+</code></pre>
+<h2><span class="math">\(T3\)</span></h2>
+<p>有意思的一道题。</p>
+<p>首先如果是<code>| ^</code> 那么一定是把所有祖先都选上。</p>
+<p><code>|</code>是显然的，对于<code>^</code>，有 <span class="math">\(a\oplus c=a\oplus b\oplus b\oplus c\le a\oplus b+b\oplus c\)</span></p>
+<p>至于<code>&amp;</code></p>
+<p>可以枚举最高位 <span class="math">\(1\)</span> 为 <span class="math">\(k\)</span> 的数，只用考虑最近的点就行了，有点像树上背包。</p>
+<pre><code class="language-cpp">int n,w[N];
+string a;
+int fa[N];
+vector&lt;int&gt;g[N];
+int f[N],nxt[35];
+inline void dfs(int u){
+    int tmp[35];
+	memcpy(tmp, nxt, sizeof tmp);
+    for (int j=0;j&lt;31; j ++) {
+		if (nxt[j])f[u]=max(f[u],f[nxt[j]]+(w[nxt[j]]&amp;w[u]));
+		if ((w[u]&gt;&gt;j)&amp;1)nxt[j]=u;
+	}
+	for (auto v:g[u]){
+		dfs(v);
+	}
+    memcpy(nxt, tmp, sizeof nxt);
+}
+int ans;
+inline void dfs2(int u,int from){
+    ans=(ans+u*(f[u]+w[u]))%mod;
+    for(auto v:g[u]){
+        if(a=="OR")f[v]=(f[u]+(w[u]|w[v]))%mod; 
+		if(a=="XOR")f[v]=(f[u]+(w[u]^w[v]))%mod;
+        dfs2(v,u);
+    }
+}
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;a;
+    up(i,1,n)cin&gt;&gt;w[i];
+    up(i,2,n){
+        cin&gt;&gt;fa[i];
+        g[fa[i]].push_back(i);
+    }
+    if(a=="AND"){
+        dfs(1);
+        up(i,1,n){
+            ans=(ans+i*((f[i]+w[i])%mod)%mod)%mod; 
+        }
+        cout&lt;&lt;ans;
+        return 0;
+    }
+    dfs2(1,0);
+    cout&lt;&lt;ans;
+    return 0;
+}
+
+</code></pre>
+<h2><span class="math">\(T4\)</span></h2>
+<p><span class="math">\(f[i][j]\)</span> 表示 <span class="math">\(i\)</span> 个数，和为 <span class="math">\(j\)</span>。
+显然：</p>
+<p><span class="math">\(f[i][j]=f[i-1][j-i]+f[i-1][j-1]\)</span></p>
+<p>设  <span class="math">\(a_i\)</span> 出现了 <span class="math">\(x\)</span> 次。</p>
+<p>贡献为 <span class="math">\(a_i^m\times f[i-x][n-x\times a_i]\)</span></p>
+<pre><code class="language-cpp">int n,m,k;
+int ans;
+inline int ksm(int a,int b){
+    int res=1;
+    while(b){
+        if(b&amp;1)res=res*a%mod;
+        a=a*a%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+int f[5050][5050];
+signed main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;k&gt;&gt;m;
+    f[0][0]=1;
+    up(i,1,k){
+        up(j,i,n){
+            f[i][j]=(f[i][j-i]+f[i-1][j-1])%mod;
+        }
+    }
+    int ans=0;
+	up(i,1,n) {
+		int s=0;
+		for (int j=1;j&lt;=k&amp;&amp;j*i&lt;=n;j++)s=(s+f[k-j][n-i*j])%mod;
+		ans=(ans+s*ksm(i,m)%mod)%mod;
+	}
+	cout&lt;&lt;ans;
+    return 0;
+}
+
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/f79v3jzg" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-hovzxogd.html"><small>← 上一篇</small><span>test20230913</span></a><a href="luogu-vzm37jbv.html"><small>下一篇 →</small><span>AT_abc321_e</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

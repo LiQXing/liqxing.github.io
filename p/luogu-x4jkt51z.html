@@ -1,0 +1,213 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="这次考试有什么好写的呢？ \(T1\) 差分约束，但是不能一遍 \(spfa\) 直接 $ dis[i]-dis[j] $, 看n的范围 \(n\le200\) ,考虑弗洛伊德更新二维 \(dis\) 数组。 int main(){ ios_base::sync_with_stdio(false), cin.tie(0), co"><title>痛，太痛了。 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-x4jkt51z.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>痛，太痛了。</h1><p class="hero-meta"><time datetime="2023-04-27T19:35:24+08:00">2023-04-27 19:35</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/x4jkt51z" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>这次考试有什么好写的呢？</p>
+<p><span class="math">\(T1\)</span></p>
+<p>差分约束，但是不能一遍<span class="math">\(spfa\)</span>直接 $ dis[i]-dis[j] $,</p>
+<p>看n的范围<span class="math">\(n\le200\)</span>,考虑弗洛伊德更新二维<span class="math">\(dis\)</span>数组。</p>
+<pre><code class="language-cpp">int main(){
+	ios_base::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+	cin &gt;&gt;n &gt;&gt;m;
+	for(int i = 1; i &lt;= n; i ++) {
+		for(int j = 1; j &lt;= n; j ++) {
+			g[i][j] = Inf;
+		}
+	}
+	for(int i = 1, u, v, w, op; i &lt;= m; i ++) {
+		cin &gt;&gt;op &gt;&gt;u &gt;&gt;v &gt;&gt;w;
+		if(op == 0) {
+			g[v][u] = min(g[v][u], (i64)w);
+		}
+		else if(op == 1) {
+			g[u][v] = min(g[u][v], (i64)-w);
+		}
+		else {
+			g[v][u] = min(g[v][u], (i64)w);
+			g[u][v] = min(g[u][v], (i64)-w);
+		}
+	}
+	for(int k = 1; k &lt;= n; k ++) {
+		for(int i = 1; i &lt;= n; i ++) {
+			for(int j = 1; j &lt;= n; j ++) {
+				if(g[i][k] &gt;= Inf || g[k][j] &gt;= Inf) continue;
+				g[i][j] = min(g[i][j], g[i][k] + g[k][j]);
+			}
+		}
+	}
+	cin &gt;&gt;q;
+	for(int i = 1, x, y; i &lt;= q; i ++) {
+		cin &gt;&gt;x &gt;&gt;y;
+		if(g[y][x] &gt;= Inf) {
+			cout &lt;&lt;"Infinity" &lt;&lt;endl;
+		}
+		else {
+			cout &lt;&lt;g[y][x] &lt;&lt;endl;
+		}
+	}
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>没什么好讲的，<span class="math">\(dis[u][0]\)</span> 为进 <span class="math">\(u \)</span> 的距离，<span class="math">\(dis[u][1]\)</span> 为出<span class="math">\(u\)</span>的距离，</p>
+<p><span class="math">\(spfa\)</span> 被卡了，所以用 <span class="math">\(djs\)</span> 。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define pii pair&lt;int,int&gt;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+} 
+int n,m,s,Q;
+int re[250500],gr[250500];
+vector&lt;pii&gt;g[250500];
+int dis[250500][2];
+bool vis[250500];
+priority_queue&lt;pii,vector&lt;pii&gt;,greater&lt;pii&gt; &gt;q;
+inline void djs(){
+	memset(dis,0x3f,sizeof dis);
+	dis[s][1]=re[s];
+	dis[s][0]=re[s];
+	q.push({dis[s][1],s});
+	while(q.size()){
+		int u=q.top().second;q.pop();
+		if(vis[u])continue;
+		vis[u]=1;
+		for(auto i:g[u]){
+			int v=i.first,w=i.second;
+			if(dis[v][0]&gt;dis[u][1]+w){
+				dis[v][0]=dis[u][1]+w;
+				if(dis[v][0]%(re[v]+gr[v])&gt;re[v])dis[v][1]=dis[v][0];
+				else dis[v][1]=dis[v][0]+re[v]-dis[v][0]%(re[v]+gr[v]);
+				q.push({dis[v][1],v});
+			}
+		}
+	}
+}
+signed main(){
+	n=read();m=read();s=read();Q=read();
+	for(int i=1;i&lt;=n;i++){
+		re[i]=read();
+		gr[i]=read();
+	}
+	while(m--){
+		int u=read(),v=read(),w=read();
+		g[u].push_back({v,w});
+		g[v].push_back({u,w});
+	}
+	djs();
+	cout&lt;&lt;dis[Q][0];
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>有点难度</p>
+<p>以0为原点，n+1为汇点，建一个正图，求出最长路</p>
+<p>再建一个反图，找到每条 <span class="math">\(dis[u]+t[v]=dis[v]\)</span> 的边，</p>
+<p>有以每条边建一个新图</p>
+<p>求割点。</p>
+<p>显然当该点为割点时，会影响最终值</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define pii pair&lt;int,int&gt;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+} 
+int n,m;
+int t[100500];
+int c[100500];
+int cnt[100500];
+vector&lt;int&gt;g[100500];
+vector&lt;int&gt;e[100500];
+vector&lt;int&gt;edge[100500];
+queue&lt;int&gt;q;
+int dis[105009][2];
+bool vis[105000];
+inline void spfa1(){
+	q.push(0);
+	vis[0]=1;
+	dis[0][1]=dis[0][0]=0;
+	while(q.size()){
+		int u=q.front();q.pop();
+		for(auto v:g[u]){
+			cnt[v]++;
+			if(dis[v][0]&lt;dis[u][1]){
+				dis[v][0]=dis[u][1];
+			}
+			if(cnt[v]==c[v]){
+				dis[v][1]=dis[v][0]+t[v];
+				q.push(v);	
+			}
+		}
+	}
+}
+inline void dfs(int u){
+	if(!u)return;
+	for(auto v:e[u]){
+		if(dis[v][1]==dis[u][0]){
+			edge[u].push_back(v);
+			edge[v].push_back(u);
+			dfs(v);
+		}
+	}
+}
+int dfn[155000],idx,low[155000];
+bool num[155000];
+vector&lt;int&gt;ans;
+inline void dfs_cut(int u,int fa){
+	dfn[u] = low[u] = ++idx;
+	int child = 0;
+	for(auto v:edge[u]) {
+		if(!dfn[v]){
+			dfs_cut(v, fa);
+			low[u] = min(low[v], low[u]);
+			if(low[v] &gt;= dfn[u] &amp;&amp; u != fa) ans.push_back(u);
+			if(u == fa) child ++;
+		}
+		low[u] = min(low[u], dfn[v]);
+	}
+	if(child &gt;= 2 &amp;&amp; u == fa) ans.push_back(u);
+}
+signed main(){
+	n=read();
+	int x,u,s;
+	for(int i=1;i&lt;=n;i++){
+		t[i]=read();
+		c[i]=read();
+		if(c[i]==0){
+			c[i]=1;
+			g[0].push_back(i);	
+			e[i].push_back(0);
+		}
+		else for(int j=1;j&lt;=c[i];j++){
+			u=read();
+			g[u].push_back(i);
+			e[i].push_back(u);
+		}
+	}
+	c[n+1]=n;
+	for(int i=1;i&lt;=n;i++){
+		g[i].push_back(n+1);
+		e[n+1].push_back(i);
+	}
+	spfa1();
+	cout&lt;&lt;dis[n+1][0]&lt;&lt;endl;
+	dfs(n+1);
+	dfs_cut(n+1,-1);
+	cout &lt;&lt;ans.size()-1&lt;&lt;endl;
+	sort(ans.begin(), ans.end());
+	for(int i = 0; i &lt; (int)ans.size()-1; i ++) {
+		cout &lt;&lt;ans[i] &lt;&lt;" ";
+	}
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/x4jkt51z" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-hg1dzxcp.html"><small>← 上一篇</small><span>《Re~关于我考试脑子坏掉了这档事~傻逼的考试头脑战》</span></a><a href="luogu-o4xdp2og.html"><small>下一篇 →</small><span>无向图的双连通分量</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

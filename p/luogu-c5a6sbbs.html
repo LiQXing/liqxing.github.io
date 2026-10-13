@@ -1,0 +1,179 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Tavas and Malekas 正难则反，考虑如果没有限制条件，那么一共有 \(26^k\) 种。 那么可以考虑写 \(z\) 函数，求出最长公共后缀即可 inline int ksm(int a,int b){ int res=1; while(b){ if(b&amp;1)res=res*a%mod; a=a*a%mod; b&gt;"><title>codeforces练习题7 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-c5a6sbbs.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题7</h1><p class="hero-meta"><time datetime="2023-08-31T10:51:12+08:00">2023-08-31 10:51</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/c5a6sbbs" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/CF535D" rel="noopener noreferrer" target="_blank">Tavas and Malekas</a></h3>
+<p>正难则反，考虑如果没有限制条件，那么一共有 <span class="math">\(26^k\)</span>种。</p>
+<p>那么可以考虑写 <span class="math">\(z\)</span> 函数，求出最长公共后缀即可</p>
+<pre><code class="language-cpp">inline int ksm(int a,int b){
+	int res=1;
+	while(b){
+		if(b&amp;1)res=res*a%mod;
+		a=a*a%mod;
+		b&gt;&gt;=1;
+	}
+	return res;
+}
+int n,m,z[N];
+char b[N];
+bool a[N];
+signed main(){
+	n=read();m=read();
+	scanf("%s",b+1);
+	int lenb=strlen(b+1);
+    z[1]=lenb;
+    for(int i=2,l=0,r=0;i&lt;=lenb;i++) {
+        z[i]=i&gt;r?0:min(z[i-l+1],r-i+1);
+        while(b[1+z[i]]==b[i+z[i]])z[i]++;
+        if(i+z[i]-1&gt;r)l=i,r=i+z[i]-1;
+    }
+	int x,y;
+	while(m--){
+		x=read();
+		a[x]=true;
+	}
+	x=y=0;
+	up(i,1,n) {
+		if(x){
+			if(a[i]){
+				if(z[lenb-x+1]&gt;=x)x=lenb;
+				else{
+					printf("0");
+					return 0;
+				}
+			}
+		}
+		else{
+			if(a[i])x=lenb;
+			else ++y;
+		}
+		if(x)--x;
+	}
+	x=ksm(26,y);
+	printf("%lld",x);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1627C" rel="noopener noreferrer" target="_blank">Not Assigning</a></h3>
+<p>只有在链的情况是存在的。</p>
+<h3><a href="https://www.luogu.com.cn/problem/CF448C" rel="noopener noreferrer" target="_blank">Painting Fence</a></h3>
+<p>分治，每个区间比较横着刷和纵向那种情况更优。</p>
+<pre><code class="language-cpp">int n;
+int a[N];
+inline int merge(int l,int r){
+	if(l&lt;1||r&lt;1)return 0;
+	if(l&gt;r)return 0;
+	if(l==r)return min(a[l],1ll);
+	int m=inf,w=0;
+	up(i,l,r){
+		if(a[i]&lt;m){
+			m=a[i];
+			w=i;
+		}
+	}
+	int j=a[w];
+	up(i,l,r)a[i]-=j;
+	int lco=merge(l,w-1);
+	int rco=merge(w+1,r);
+	return min(j+lco+rco,r-l+1);
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF601B#submit" rel="noopener noreferrer" target="_blank">Lipshitz Sequence</a></h3>
+<p>很有意思，首先有一个结论，k 一定在相邻的数里面。</p>
+<p>所以我们考虑一个数所贡献的区间。</p>
+<pre><code class="language-cpp">int n,q,h[N],a[N],l[N],r[N],st[N];
+signed main(){
+	n=read();q=read();
+	up(i,1,n)h[i]=read();
+	up(i,1,n-1)a[i]=abs(h[i+1]-h[i]);
+	while(q--){
+		int L,R;
+		scanf("%lld%lld",&amp;L,&amp;R);
+		R--;
+		memset(l,0,sizeof l);
+		memset(r,0,sizeof r);
+		int ans=0;
+		for(int i=L,j=1;i&lt;=R;++i,++j)a[j]=abs(h[i+1]-h[i]);
+		int len=R-L+1;
+		int top=0;
+		for(int i=1;i&lt;=len;++i){
+			while(top&amp;&amp;a[st[top]]&lt;a[i]){
+				r[st[top]]=i-st[top];
+				top--;
+			}
+			l[i]=i-st[top];
+			st[++top]=i;
+		}
+		while(top)r[st[top]]=len+1-st[top],top--;
+		up(i,1,len)ans+=a[i]*l[i]*r[i];
+		printf("%lld\n",ans);
+	}
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF603B" rel="noopener noreferrer" target="_blank">Moodular Arithmetic</a></h3>
+<p>个人觉得这题不应该是绿。</p>
+<p>第一眼看上去没有任何思路。</p>
+<p>然后打开题解：</p>
+<p>由于 <span class="math">\(p\)</span> 是质数。所以，<span class="math">\(k^{p-1}\)</span> 一定是模 <span class="math">\(p\)</span> 余 <span class="math">\(1\)</span> 的。所以我们只要所以这个 <span class="math">\(m\)</span>，<span class="math">\(m\)</span> 是一个循环节，一定是 <span class="math">\(p−1\)</span> 的因数。于是，答案即为</p>
+<p><span class="math">\(k=0\)</span>, <span class="math">\(ans=p^{p-1}\)</span></p>
+<p><span class="math">\(k=1\)</span>, <span class="math">\(ans=p^{p-1}\)</span></p>
+<p><span class="math">\(ans=p^{(p-1)/m}\)</span></p>
+<pre><code class="language-cpp">inline int ksm(int a,int b){
+	int ret=1;
+	while(b){
+		if(b&amp;1)ret=ret*a%mod;
+		a=a*a%mod;
+		b&gt;&gt;=1;
+	}
+	return ret;
+}
+int p,k;
+signed main(){
+	p=read();k=read();
+	if(k==0)write(ksm(p,p-1),1),exit(0);
+	if(k==1)write(ksm(p,p),1),exit(0);
+	int m=1;
+	int x=k;
+	while(x!=1)m++,x=x*k%p;
+	write(ksm(p,(p-1)/m),1);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1139C" rel="noopener noreferrer" target="_blank">Edgy Trees </a></h3>
+<p>就是反着算。</p>
+<pre><code class="language-cpp">int n;
+int fa[N];
+inline int find(int x){
+	if(x==fa[x])return x;
+	return fa[x]=find(fa[x]);
+}
+inline int ksm(int a,int b){
+	int res=1;
+	while(b){
+		if(b&amp;1)res=res*a%mod;
+		a=a*a%mod;
+		b&gt;&gt;=1;
+	}
+	return res;
+}
+int k,ans;
+int cnt[N];
+signed main(){
+	n=read();k=read();
+	up(i,1,n)fa[i]=i;
+	int u,v,w;
+	up(i,1,n-1) {
+		u=read();v=read();w=read();
+		if(w==0)fa[find(u)]=find(v);
+		
+	}
+	up(i,1,n){
+		cnt[find(i)]++;
+	}
+	up(i,1,n){
+		if(fa[i]==i){
+			ans=(ans+ksm(cnt[i],k))%mod;
+		}
+	}
+	cout&lt;&lt;(ksm(n,k)-ans+mod)%mod;
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/c5a6sbbs" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-z1t29x5o.html"><small>← 上一篇</small><span>字符串</span></a><a href="luogu-2bvx32gi.html"><small>下一篇 →</small><span>codeforces练习题8</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

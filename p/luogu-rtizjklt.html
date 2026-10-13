@@ -1,0 +1,75 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="林语堂曾说过：“绅士写题解当如淑女迷你裙，短为佳。” P4933 \($dp[i][a[i]-a[j]]=\sum dp[j][a[i]-a[j]]\) $ P2758 if(a[i-1]==b[j-1])f[i][j]=f[i-1][j-1]; else f[i][j]=min(min(f[i-1][j],f[i][j-1])"><title>luogu.dp · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-rtizjklt.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>luogu.dp</h1><p class="hero-meta"><time datetime="2023-08-05T15:59:14+08:00">2023-08-05 15:59</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/rtizjklt" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>林语堂曾说过：“绅士写题解当如淑女迷你裙，短为佳。”</p>
+<hr/>
+<h2><a href="https://www.luogu.com.cn/problem/P4933" rel="noopener noreferrer" target="_blank">P4933</a></h2>
+<p><span class="math">\($dp[i][a[i]-a[j]]=\sum dp[j][a[i]-a[j]]\)</span>$</p>
+<h2><a href="https://www.luogu.com.cn/problem/P2758" rel="noopener noreferrer" target="_blank">P2758</a></h2>
+<pre><code class="language-cpp">		if(a[i-1]==b[j-1])f[i][j]=f[i-1][j-1];
+        else f[i][j]=min(min(f[i-1][j],f[i][j-1]),f[i-1][j-1])+1;
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P1544" rel="noopener noreferrer" target="_blank">P1544</a></h2>
+<p><span class="math">\($f[i][j][k]=\max(\max(f[i-1][j-1][k]+a[i][j],f[i-1][j][k]+a[i][j]),\max(f[i-1][j-1][k-1]+3*a[i][j],f[i-1][j][k-1]+3*a[i][j]))\)</span>$</p>
+<p>记得全部变成最小值。</p>
+<h2><a href="https://www.luogu.com.cn/problem/P3205" rel="noopener noreferrer" target="_blank">P3205</a></h2>
+<p>显然是区间 DP。</p>
+<p>默认当一个人的时候是从左侧进入。</p>
+<p>考虑当前状态的前一个人时在子区间的左边还是右边。</p>
+<pre><code class="language-cpp">if(a[i]&lt;a[i+1])f[i][j][0]+=f[i+1][j][0];
+if(a[i]&lt;a[j])f[i][j][0]+=f[i+1][j][1];
+if(a[j]&gt;a[i])f[i][j][1]+=f[i][j-1][0];
+if(a[j]&gt;a[j-1])f[i][j][1]+=f[i][j-1][1];
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P1107" rel="noopener noreferrer" target="_blank">P1107</a></h2>
+<p><span class="math">\($dp[i][j]=\max(dp[i-1][j]​,dp[i−delta][j]​)\)</span>$</p>
+<h2><a href="https://www.luogu.com.cn/problem/P1651" rel="noopener noreferrer" target="_blank">P1651</a></h2>
+<p>另 <span class="math">\(dp[i][j]\)</span> 表示到了第 <span class="math">\(i\)</span> 块木头，左边比右边高 <span class="math">\(j\)</span>。</p>
+<pre><code class="language-cpp">	up(i,1,n){
+        up(j,0,sum){
+            dp[i][j]=max(dp[i-1][j],dp[i-1][j+a[i]]);
+            if(j&gt;=a[i]) dp[i][j]=max(dp[i][j],dp[i-1][j-a[i]]+a[i]);
+            else dp[i][j]=max(dp[i][j],dp[i-1][a[i]-j]+j);
+        }
+    }
+    if(dp[n][0])  cout&lt;&lt;dp[n][0]&lt;&lt;endl;
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P1489" rel="noopener noreferrer" target="_blank">P1489</a></h2>
+<p>暴力二维背包，  <span class="math">\(x\)</span> 个人 <span class="math">\(y\)</span> 点血是否可行。</p>
+<h2><a href="https://www.luogu.com.cn/problem/P1373" rel="noopener noreferrer" target="_blank">P1373</a></h2>
+<p>直接暴力递推。</p>
+<p>有一点卡空间。</p>
+<pre><code class="language-cpp">for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			for(int h=0;h&lt;=k;h++){
+				dp[i][j][h][0]=(dp[i][j][h][0]+dp[i-1][j][(h-a[i][j]+k)%k][1])%mod;
+				dp[i][j][h][0]=(dp[i][j][h][0]+dp[i][j-1][(h-a[i][j]+k)%k][1])%mod;
+				dp[i][j][h][1]=(dp[i][j][h][1]+dp[i-1][j][(h+a[i][j])%k][0])%mod;
+				dp[i][j][h][1]=(dp[i][j][h][1]+dp[i][j-1][(h+a[i][j])%k][0])%mod;
+			}
+		}
+	}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P2339" rel="noopener noreferrer" target="_blank">P2339</a></h2>
+<p>区间DP。</p>
+<pre><code class="language-cpp">f[1][C][0] = max(a[1].x,a[1].t);
+	f[1][C][1] = max(a[C].x,a[C].t);
+	for(int i = 1; i &lt;= C; i++){
+		for(int j = C; j &gt;= i; j--){
+			f[i][j][0] = min(f[i][j][0], max(f[i - 1][j][0] + a[i].x - a[i - 1].x, a[i].t) );
+			f[i][j][0] = min(f[i][j][0], max(f[i][j + 1][1] + a[j + 1].x - a[i].x, a[i].t) );
+			f[i][j][1] = min(f[i][j][1], max(f[i][j + 1][1] + a[j + 1].x - a[j].x, a[j].t) );
+			f[i][j][1] = min(f[i][j][1], max(f[i - 1][j][0] + a[j].x - a[i - 1].x, a[j].t) );
+		}
+	}
+
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P2851" rel="noopener noreferrer" target="_blank">P2851</a></h2>
+<p>比较好像的DP。</p>
+<p>店主是完全背包，john 是组合背包。</p>
+<h2><a href="https://www.luogu.com.cn/problem/P3080" rel="noopener noreferrer" target="_blank">P3080</a></h2>
+<p>与关路灯这道题相似。</p>
+<p>定义<span class="math">\(f[i][j][0/1]\)</span>表示当前已经套完了 <span class="math">\(i\)</span> 到 <span class="math">\(j\)</span> 的牛，然后 第三维表示在左边还是在右边。</p>
+<pre><code class="language-cpp">			f[i][j][0] = min(f[i + 1][j][0] + (d[i + 1] - d[i]) * (i + n - j),
+                             f[i + 1][j][1] + (d[j] - d[i]) * (i + n - j));
+            f[i][j][1] = min(f[i][j - 1][0] + (d[j] - d[i]) * (i + n - j),
+                             f[i][j - 1][1] + (d[j] - d[j - 1]) * (i + n - j));
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/rtizjklt" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-yegcs0pa.html"><small>← 上一篇</small><span>ATcoderDP26道</span></a><a href="luogu-78ct41yv.html"><small>下一篇 →</small><span>codeforce2100DP</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

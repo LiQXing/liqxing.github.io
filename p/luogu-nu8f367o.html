@@ -1,0 +1,84 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="题意： 有 \(N\) 个点，你从第一个点出发，要按顺序经过他们，最终到达第 \(N\) 个点。你可以跳过一些点，但是如果你一共跳过了 \(C\) 个点，那么你将受到 \(2^{C-1}\) 的罚时，求最少的时间。 solve： 因为 \(2^{14}&gt; N\) ，所以最多跳过 \(15\) 个点。 考虑 DP，令 \(f_{i"><title>AT_abc315_f题解 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-nu8f367o.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>AT_abc315_f题解</h1><p class="hero-meta"><time datetime="2023-08-24T22:09:36+08:00">2023-08-24 22:09</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/nu8f367o" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2>题意：</h2>
+<blockquote>
+<p>有 <span class="math">\(N\)</span> 个点，你从第一个点出发，要按顺序经过他们，最终到达第 <span class="math">\(N\)</span> 个点。你可以跳过一些点，但是如果你一共跳过了 <span class="math">\(C\)</span> 个点，那么你将受到  <span class="math">\(2^{C-1}\)</span> 的罚时，求最少的时间。</p>
+</blockquote>
+<h2>solve：</h2>
+<p>因为 <span class="math">\(2^{14}&gt; N\)</span>，所以最多跳过 <span class="math">\(15\)</span> 个点。</p>
+<p>考虑 DP，令 <span class="math">\(f_{i,j}\)</span> 表示到第 <span class="math">\(i\)</span> 个点，一共跳过了 <span class="math">\(j\)</span> 个点的用时（不用加上罚时，因为罚时可以在最后进行统计）。</p>
+<p>则有</p>
+<p><span class="math">\($f_{i,j}=\min(f_{i-k,j-k+1}+dis(i-k,i))\)</span>$</p>
+<p>最后再求出最小值就行了。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ull unsigned long long
+#define ldb long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define pdd pair&lt;db,db&gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+#define fi first
+#define se second
+#define i16 short
+
+const int N=3e5+100,M=2e6+100;
+const int mod=998244353;
+const int inf=1e17;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(int x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(int x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+int n;
+pdd p[N];
+inline db dis(pdd a,pdd b){
+    return (db)sqrt((db)(a.first-b.first)*(a.first-b.first)+(a.second-b.second)*(a.second-b.second));
+}
+db dp[13050][25];
+signed main(){
+    n=read();
+    int x,y;
+    up(i,1,n){
+        x=read();y=read();
+        p[i]={x,y};
+    }
+    db sum=0;
+    int c=0;
+    memset(dp,0x42,sizeof dp);
+    up(i,0,20)dp[1][i]=0;
+    up(i,2,n){
+        up(j,0,20){
+            up(k,1,min(j+1,i-1)){
+                dp[i][j]=min(dp[i][j],dp[i-k][j-k+1]+dis(p[i],p[i-k]));
+            }
+        }
+    }
+    db minl=inf;
+    up(i,1,20){
+        minl=min(dp[n][i]+pow(2,i-1),minl);
+    }
+    minl=min(minl,dp[n][0]);
+    printf("%.9lf",minl);
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/nu8f367o" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-y3dv7ee1.html"><small>← 上一篇</small><span>codeforces练习题4</span></a><a href="luogu-k16c9lw8.html"><small>下一篇 →</small><span>AT_abc317_f</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

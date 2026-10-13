@@ -1,0 +1,160 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="比较显然的结论: \(a\Longleftrightarrow b,b\Longleftrightarrow c\) ，则 \(a\Longleftrightarrow c\) 。 看一眼数据范围，肯定不能每条边都一一加上，肯定会超时。 观察，每个连通块的贡献都为 \(size[x]\times(size[x]-1)\) 。 想"><title>ジョイッターで友だちをつくろう (Making Friends on Joitter is Fun) · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-hhxbrn4n.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>ジョイッターで友だちをつくろう (Making Friends on Joitter is Fun)</h1><p class="hero-meta"><time datetime="2023-10-19T21:40:06+08:00">2023-10-19 21:40</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/hhxbrn4n" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>比较显然的结论:</p>
+<p><span class="math">\(a\Longleftrightarrow b,b\Longleftrightarrow c\)</span>，则 <span class="math">\(a\Longleftrightarrow c\)</span>。</p>
+<p>看一眼数据范围，肯定不能每条边都一一加上，肯定会超时。</p>
+<p>观察，每个连通块的贡献都为 <span class="math">\(size[x]\times(size[x]-1)\)</span>。</p>
+<p>想到只维护连通块之间的边。</p>
+<p>手动模拟加边情况：</p>
+<p>加入边 <span class="math">\([u,v]\)</span>，如果这条边在同一个联通图，跳过。</p>
+<p>如果 <span class="math">\(u\)</span> 有一条连向 <span class="math">\(v\)</span> 所在连通图的边，那么 <span class="math">\(u\)</span> 一定已经连向了 <span class="math">\(v\)</span> 本身，跳过。</p>
+<p>再判断有无一条边可以从 <span class="math">\(v\)</span> 所在的连通图连向 <span class="math">\(u\)</span> 所在的连通图。</p>
+<p>如果 <span class="math">\(v\)</span> 所在的连通图不能够连向 <span class="math">\(u\)</span> 所在的连通图，就直接记录这条边，然后答案加上 <span class="math">\(v\)</span> 连通块的大小。</p>
+<p>如果能够连向，那么这两个连通块都可以合并成一个。</p>
+<p>那么把答案中的两个连通块去掉，合并之后再加上。</p>
+<p>把 <span class="math">\(v\)</span> 所在的连通图合并在 <span class="math">\(u\)</span> 所在的联通图上。</p>
+<p><span class="math">\(v\)</span> 连通图伸出和射入的边去掉，然后全连在 <span class="math">\(u\)</span> 的图上，bfs 循环加边，最后再统计答案。</p>
+<pre><code class="language-cpp">
+inline int clac(int u){
+    return siz[u]*(siz[u]-1)+in[u].size()*siz[u];
+}
+inline void merge(int xx,int yy){
+    queue&lt;pii&gt;q;
+    q.push({xx,yy});
+    while(q.size()){
+        pii u=q.front();q.pop();
+        int x=u.first,y=u.second;
+        int fux=find(x),fuy=find(y);
+        if(fux==fuy||in[fuy].count(x))continue;
+        auto it=out[fuy].lower_bound({fux,0});
+        if(it==out[fuy].end()||it-&gt;first!=fux){
+            in[fuy].insert(x);
+            out[fux].insert({fuy,x});
+            ans+=siz[fuy];
+            continue;
+        }
+        ans-=clac(fux)+clac(fuy);
+        for(auto t:out[fuy]){
+            int tx=t.first,ty=t.second;
+            in[tx].erase(ty);
+            if(tx==fux)continue;
+            q.push({ty,tx});
+            ans-=siz[tx];
+        }
+        for(auto t:in[fuy]){
+            int ft=find(t);
+            out[ft].erase({fuy,t});
+            if(ft!=fux)q.push({t,fux});
+        }
+        fa[fuy]=fux;siz[fux]+=siz[fuy];
+        ans+=clac(fux);
+        in[fuy].clear();
+        out[fuy].clear();
+    }
+}
+</code></pre>
+<p>然而，会超时。</p>
+<p>考虑优化，想到启发式合并。</p>
+<pre><code class="language-cpp">	if(in[fux].size()+out[fux].size()&lt;in[fuy].size()+out[fuy].size()){
+            swap(fux,fuy);
+            swap(x,y);
+        }
+</code></pre>
+<p>时间复杂度变为 <span class="math">\(O(n\log^2n)\)</span>。</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ull unsigned long long
+#define i128 __int128
+#define ldo long double
+#define dle double
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+
+const int N=1e6+7;
+const int mod=59027;
+
+namespace IO{
+    inline int read(){
+        char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+    }
+    inline void wt(int x){
+        if(x&lt;0){x=-x;putchar('-');}
+        if(x&gt;9)wt(x/10);
+        putchar((x%10)^48);
+    }
+    inline void write(int x,bool op){
+        wt(x);
+        putchar(op?'\n':' ');
+    }
+}using namespace IO;
+int fa[N];
+inline int find(int x){
+    if(x==fa[x])return x;
+    return fa[x]=find(fa[x]);
+}
+set&lt;int&gt;in[N];
+set&lt;pii&gt;out[N];
+int n,m,siz[N];
+int ans;
+inline int clac(int u){
+    return siz[u]*(siz[u]-1)+in[u].size()*siz[u];
+}
+inline void merge(int xx,int yy){
+    queue&lt;pii&gt;q;
+    q.push({xx,yy});
+    while(q.size()){
+        pii u=q.front();q.pop();
+        int x=u.first,y=u.second;
+        int fux=find(x),fuy=find(y);
+        if(fux==fuy||in[fuy].count(x))continue;
+        auto it=out[fuy].lower_bound({fux,0});
+        if(it==out[fuy].end()||it-&gt;first!=fux){
+            in[fuy].insert(x);
+            out[fux].insert({fuy,x});
+            ans+=siz[fuy];
+            continue;
+        }
+        if(in[fux].size()+out[fux].size()&lt;in[fuy].size()+out[fuy].size()){
+            swap(fux,fuy);
+            swap(x,y);
+        }
+        ans-=clac(fux)+clac(fuy);
+        for(auto t:out[fuy]){
+            int tx=t.first,ty=t.second;
+            in[tx].erase(ty);
+            if(tx==fux)continue;
+            q.push({ty,tx});
+            ans-=siz[tx];
+        }
+        for(auto t:in[fuy]){
+            int ft=find(t);
+            out[ft].erase({fuy,t});
+            if(ft!=fux)q.push({t,fux});
+        }
+        fa[fuy]=fux;siz[fux]+=siz[fuy];
+        ans+=clac(fux);
+        in[fuy].clear();
+        out[fuy].clear();
+    }
+}
+signed main(){
+    int u,v;
+    n=read();m=read();
+    up(i,1,n)fa[i]=i,siz[i]=1;
+    up(i,1,m){
+        u=read();v=read();
+        merge(u,v);
+        write(ans,1);
+    }
+    return 0;
+}
+
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/hhxbrn4n" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-dp63ucmp.html"><small>← 上一篇</small><span>test20231002</span></a><a href="luogu-43prhqcx.html"><small>下一篇 →</small><span>CSPS2023寄</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

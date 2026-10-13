@@ -1,0 +1,142 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="动态规划 性质： \(1.\) 无后效性 \(2.\) 最优子结构 \(3.\) 有向图 \(4.\) 重叠子问题 步骤： \(1.\) 阶段划分 \(2.\) 状态设计 \(3.\) 转移方程 \(4.\) 初值 状态设计 最简单的方法就是把搜索记录的所有信息全放在状态里，再来考虑优化 \(problem.1\) 给出一个正整"><title>1.18培训笔记（上） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-17oy8zln.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>1.18培训笔记（上）</h1><p class="hero-meta"><time datetime="2023-01-27T19:22:06+08:00">2023-01-27 19:22</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/17oy8zln" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h1>动态规划</h1>
+<h3>性质：</h3>
+<p><span class="math">\(1.\)</span>无后效性</p>
+<p><span class="math">\(2.\)</span>最优子结构</p>
+<p><span class="math">\(3.\)</span>有向图</p>
+<p><span class="math">\(4.\)</span>重叠子问题</p>
+<h3>步骤：</h3>
+<p><span class="math">\(1.\)</span>阶段划分</p>
+<p><span class="math">\(2.\)</span>状态设计</p>
+<p><span class="math">\(3.\)</span>转移方程</p>
+<p><span class="math">\(4.\)</span>初值</p>
+<h3>状态设计</h3>
+<p>最简单的方法就是把搜索记录的所有信息全放在状态里，再来考虑优化</p>
+<p><span class="math">\(problem.1\)</span></p>
+<p>给出一个正整数序列<span class="math">\(x_1,x_2,...x_n\)</span>要求将其分为若干连续段，设每一段的x_i 的和分别为<span class="math">\(s_1,s_2,...s_m\)</span>，要求最小化<span class="math">\(\sum_{i=1}^m(as_i^2+bs_i+c)\)</span></p>
+<p><span class="math">\(n\le2000,1<x_i\le100,1\le></x_i\le100,1\le></span></p>
+<p><span class="math">\(1.O(n^2)\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 1000000007
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,x[500500],a,b,c,sum[500500],f[500500];
+signed main() {
+	n=read();m=read();
+	a=read();b=read();c=read();
+	for(int i=1;i&lt;=n;i++){
+		x[i]=read();
+		sum[i]=sum[i-1]+x[i];	
+	}
+	memset(f,0x3f,sizeof f);
+	for(int i=1;i&lt;=n;i++){
+		for(int j=0;j&lt;=i-1;j++){
+			f[i]=min(f[i],f[i]+a*(sum[i]-sum[j])*(sum[i]-sum[j])+b*(sum[i]-sum[j])+c);
+		}
+	}
+	cout&lt;&lt;f[n]&lt;&lt;endl;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(2.O(nlogn)\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>区间DP</h2>
+<p><a href="https://www.luogu.com.cn/problem/P1880" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.2\)</span></a></p>
+<p>1.<span class="math">\(O(n^3)\)</span></p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int a, s[10050], f[5005][5050],g[1000][1000],num[1000];
+int main() {
+	int n;
+	//memset(f, 127 / 3, sizeof(f));
+	scanf("%d", &amp;n);
+	for (int i = 1; i &lt;= 2*n; i++) {
+		scanf("%d", &amp;num[i]);
+		num[i+n]=num[i];
+		s[i] = s[i - 1] + num[i];
+	}
+	for (int i = 1; i &lt;= n; i++) {
+		f[i][i] = 0;
+	}
+	for (int l = 1; l &lt; n; l++) {
+		for (int i = 1, j = i + l; i &lt; n*2 &amp;&amp; j &lt;2*n; i++, j = i + l) {
+			f[i][j] = 0x3f3f3f3f;
+			for (int k = i; k &lt; j; k++) {
+				f[i][j] = min(f[i][j], f[i][k] + f[k + 1][j] + s[j] - s[i - 1]);
+				g[i][j]=max(g[i][j],g[i][k]+g[k+1][j]+s[j]-s[i-1]);	
+			}
+		}
+	}
+	int maxl,minl=0x3f3f3f3f;
+	for(int i=1;i&lt;=n;i++){
+		maxl=max(maxl,g[i][i+n-1]);
+		minl=min(minl,f[i][i+n-1]);
+	}
+	printf("%d\n%d", minl,maxl);
+	return 0;
+}
+</code></pre>
+<p>四边形不等式优化：<span class="math">\(O(n^2)\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P1040" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.3\)</span></a></p>
+<p>提示：以<span class="math">\(x\)</span>为根的子树在中序遍历中显然是连续的，设为<span class="math">\([l,r]\)</span>,且若左子
+树有<span class="math">\(k\)</span>个点，则左子树在中序遍历中的位置为<span class="math">\([l,l+k-1]\)</span>，则右
+子树为 <span class="math">\([l+k+1,,r]\)</span>，x为中序遍历第l+k个点</p>
+<p>即<span class="math">\(f_{l,r}=\max_{k=l}^{k\le r}({f_{l,k-1}* f{_{k+1,r}+d_{k}}})\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 1000000007
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,tr[2077][2077],path[2077][2077];
+void showpath(int l,int r){
+	if(l &gt; r)return;
+	printf("%lld ", path[l][r]);
+	if (l == r)return;
+	showpath(l,path[l][r] - 1);
+	showpath(path[l][r]+1,r);
+}
+signed main(){
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		tr[i][i]=read();
+		tr[i][i-1]=1;
+		path[i][i]=i;
+	}
+	for(int len=1;len&lt;n;len++) {
+		for(int l=1;l+len&lt;=n;l++) {
+			int r = l + len;
+			tr[l][r] = tr[l + 1][r] + tr[l][l];
+			path[l][r]=l;
+			for (int k=l+1;k&lt;r;k++) {
+				if (tr[l][r] &lt; tr[l][k - 1] * tr[k + 1][r] + tr[k][k]) {
+					tr[l][r] = tr[l][k - 1] * tr[k + 1][r] + tr[k][k];
+					path[l][r]=k;
+				}
+			}
+		}
+	}
+	cout&lt;&lt;tr[1][n]&lt;&lt;endl;
+	showpath(1,n);
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P6419" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.4\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p>完结撒花</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/17oy8zln" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-9g5gs4fy.html"><small>← 上一篇</small><span>1.17培训笔记（下）</span></a><a href="luogu-xarc4xod.html"><small>下一篇 →</small><span>1.18培训笔记（下）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

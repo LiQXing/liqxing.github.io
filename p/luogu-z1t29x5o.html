@@ -1,0 +1,285 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="P3375 【模板】KMP 字符串匹配 char s1[N],s2[N]; int nxt[N]; inline void getnxt(){ int len=strlen(s2+1),j=0; up(i,2,len){ while(j&amp;&amp;s2[i]!=s2[j+1])j=nxt[j]; if(s2[j+1]==s2[i])j+"><title>字符串 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-z1t29x5o.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>字符串</h1><p class="hero-meta"><time datetime="2023-08-30T13:54:12+08:00">2023-08-30 13:54</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/z1t29x5o" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/P3375" rel="noopener noreferrer" target="_blank">P3375 【模板】KMP 字符串匹配</a></h3>
+<pre><code class="language-cpp">
+char s1[N],s2[N];
+int nxt[N];
+inline void getnxt(){
+    int len=strlen(s2+1),j=0;
+    up(i,2,len){
+        while(j&amp;&amp;s2[i]!=s2[j+1])j=nxt[j];
+        if(s2[j+1]==s2[i])j++;
+        nxt[i]=j;
+    }
+}
+inline void kmp(){
+    int len=strlen(s1+1),j=0,len2=strlen(s2+1);
+    up(i,1,len){
+        while(j&amp;&amp;s1[i]!=s2[j+1])j=nxt[j];
+        if(s2[j+1]==s1[i])j++;
+        if(j==len2){
+            write(i-j+1,1);
+            j=nxt[j];
+        }
+    }
+}
+signed main(){
+    scanf("%s",s1+1);
+    scanf("%s",s2+1);
+    getnxt();
+    kmp();
+    up(i,1,strlen(s2+1)){
+        write(nxt[i],0);
+    }
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF126B" rel="noopener noreferrer" target="_blank">Password )</a></h3>
+<p>求出 <span class="math">\(nxt\)</span> 数组，然后枚举每一位。</p>
+<h3><a href="https://www.luogu.com.cn/problem/P4391" rel="noopener noreferrer" target="_blank">P4391 [BOI2009] Radio Transmission 无线传输</a></h3>
+<p>周期题。</p>
+<p>答案为 <span class="math">\(n-nxt[n]\)</span>。</p>
+<h3><a href="https://www.luogu.com.cn/problem/UVA10298" rel="noopener noreferrer" target="_blank">Power Strings</a></h3>
+<p>一样的</p>
+<h3><a href="https://www.luogu.com.cn/problem/UVA11022" rel="noopener noreferrer" target="_blank">String Factoring</a></h3>
+<p>非常妙的区间 DP。</p>
+<p>可以 KMP 优化，但是我写的是暴力。</p>
+<p>首先有第一个决策：
+<span class="math">\(f[l][r]=\min(f[l][k]+f[k+1][r])\)</span>。</p>
+<p>第二个决策是 <span class="math">\(f[l][r]\)</span>  可以压缩的长度。</p>
+<p>令压缩后的长度为 <span class="math">\(f[l][l+x-1]\)</span> ，如果有循环节，那么可以被压缩。</p>
+<pre><code class="language-cpp">string s,ss[500];
+int nxt[N];
+int f[500][500];
+inline int check(int l,int r){
+    up(k,1,r-l+1){
+        if((r-l+1)%k)continue ;
+        int cnt=0;
+        for(int x=l;x&lt;=r;x+=k){
+            ss[++cnt] = s.substr(x, k);
+            if (cnt&gt;=2&amp;&amp;ss[cnt]!=ss[cnt-1])goto F;
+        }
+        return k;
+        F:;
+    }
+    return 0;
+}
+signed main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    while(cin&gt;&gt;s&amp;&amp;s!="*"){
+        int n=s.size();
+        s=" "+s;
+        memset(f,0x3f,sizeof f);
+        up(i,1,n)f[i][i]=1;
+        up(len,2,n){
+            up(l,1,n-len+1){
+                int r=l+len-1,x=check(l,r);
+                f[l][r]=f[l][l+x-1];
+                up(k,l,r-1){
+                    f[l][r]=min(f[l][r],f[l][k]+f[k+1][r]);
+                }
+            }
+        }
+        cout&lt;&lt;f[1][n]&lt;&lt;"\n";
+    }
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF526D" rel="noopener noreferrer" target="_blank">Om Nom and Necklace</a></h3>
+<p>还是枚举循环节。</p>
+<h3><a href="https://www.luogu.com.cn/problem/P5829" rel="noopener noreferrer" target="_blank">P5829 【模板】失配树</a></h3>
+<p>思维挺巧妙地，建树求 <span class="math">\(lca\)</span>。</p>
+<h3><a href="https://www.luogu.com.cn/problem/CF1200E" rel="noopener noreferrer" target="_blank">Compress Words</a></h3>
+<p>单词合成，有个巧妙地技巧，就是在两个单词中加上<code>#</code></p>
+<pre><code class="language-cpp">int n,cnt,top;
+char a[N],s[N];
+int nxt[N];
+signed main(){
+	n=read();
+	up(i,1,n){
+		scanf("%s",s+1);
+		if(i==1){
+			int len=strlen(s+1);
+			up(j,1,len)a[++top]=s[j];
+		}
+		else{
+            int lena = top, lenb = strlen(s + 1);
+            int nlen = min(lena, lenb), cnt = lenb;
+            s[++cnt]='#';
+            for(int j = 1; j &lt;= nlen; ++ j)s[++cnt]=a[lena - nlen + j];
+            nxt[0] = nxt[1]=0;int j=0;
+            for(int k = 2; k &lt;= cnt; ++ k){
+                while(j &amp;&amp; s[k] != s[j + 1]) j = nxt[j];
+                if(s[k] == s[j + 1]) j += 1;
+                nxt[k] = j;
+            }
+            for(int j = nxt[cnt] + 1; j &lt;= lenb; ++ j)a[++top]=s[j];
+		}
+	}
+	up(i,1,top)cout&lt;&lt;a[i];
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/P3426" rel="noopener noreferrer" target="_blank">P3426 [POI2005] SZA-Template</a></h3>
+<p>考虑 DP。</p>
+<p><span class="math">\(f[i]=\min(f[nxt[i],i)\)</span></p>
+<h3><a href="https://www.luogu.com.cn/problem/CF808G" rel="noopener noreferrer" target="_blank">Anthem of Berland</a></h3>
+<p><span class="math">\(f[i]=1+\max(f[j])\)</span></p>
+<p>再用 kmp 优化。</p>
+<pre><code class="language-cpp">bool chk(int p){
+    for(int j = 1; j &lt;= m; j++){
+        if(s[p-j+1] != t[m-j+1] &amp;&amp; s[p-j+1] != '?') return false;
+    }
+    return true;
+}
+
+int main()
+{
+    scanf("%s%s", s+1, t+1);
+    n = strlen(s+1), m = strlen(t+1);
+    for(int i = 2, j = 0; i &lt;= m; i++){
+        while(j &amp;&amp; t[j+1] != t[i]) j = Next[j];
+        if(t[j+1] == t[i]) j++;
+        Next[i] = j;
+    }
+
+    for(int i = 1; i &lt;= n; i++){
+        f[i] = f[i-1];
+        if(chk(i)){
+            g[i] = f[i-m]+1;
+            for(int j = Next[m]; j; j = Next[j]){
+                g[i] = max(g[i], g[i-(m-j)]+1);
+            }
+            f[i] = max(f[i], g[i]);
+        }
+    }
+    cout &lt;&lt; f[n] &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/P4503" rel="noopener noreferrer" target="_blank">P4503 [CTSC2014] 企鹅 QQ </a></h3>
+<p>暴力哈希题。</p>
+<pre><code class="language-cpp">int n,l,s;
+char a[N];
+ull sur[N][250],pre[N][250],tmp[N];
+const ull ba1=2333,ba2=1145;
+inline void work(int x){
+    up(i,1,l)pre[x][i]=pre[x][i-1]*2333+a[i];
+    dn(i,l,1)sur[x][i]=sur[x][i+1]*1145+a[i];
+}
+signed main(){
+	n=read();l=read();s=read();
+	up(i,1,n){
+		scanf("%s",a+1);
+		work(i);
+	}
+	int ans=0;
+	up(j,1,l){
+		up(i,1,n)tmp[i]=pre[i][j-1]*233+sur[i][j+1]*1145;
+		sort(tmp+1,tmp+1+n);
+		int now=1;
+		up(i,2,n){
+            if(tmp[i]==tmp[i-1])ans+=now,now++;
+            else now=1;
+        }
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/P3538" rel="noopener noreferrer" target="_blank">P3538 [POI2012] OKR-A Horrible Poem</a></h3>
+<pre><code class="language-cpp">char s[500500];
+bool vis[500500];
+int ha[500500],power[500500],g[500500];
+vector&lt;int&gt;pri;
+inline void euler() {
+	for(int i=2;i&lt;=n;i++) {
+		if (!vis[i])pri.push_back(i), g[i] = i;
+		for (int j = 0; j &lt; pri.size() &amp;&amp; pri[j] * i &lt;= n; ++j) {
+			vis[pri[j]*i] = true, g[pri[j]*i] = pri[j];
+			if(i%pri[j]==0)break;
+		}
+	}
+}
+inline int calc(int l, int r) {
+	return (ha[r]-ha[l-1]*power[r-l+1]);
+}
+signed main(){
+	n=read();
+	scanf("%s",s+1);
+	euler();
+	for(int i=1;i&lt;=n;i++)ha[i]=(ha[i-1]*base+s[i]-'a'+1);
+	power[0]=1;
+	for(int i=1;i&lt;=n;i++)power[i]=(power[i-1]*base);
+	m=read();
+	
+	while (m--) {
+		//cout&lt;&lt;"gfhdjhfd"&lt;&lt;endl;
+		int l,r,len,ans;
+		l=read();r=read();
+		ans= len=r-l+1;
+		if (calc(l+1,r)==calc(l,r-1)) {
+			puts("1");
+			continue;
+		}
+        while (len &gt; 1){
+			if (calc(l+ans/g[len],r)== calc(l, r-ans/g[len]))ans/=g[len];
+			len /= g[len];
+		}
+		printf("%d\n", ans);
+	}
+	return 0;
+}
+
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/UVA1401" rel="noopener noreferrer" target="_blank">Remember the Word</a></h3>
+<p>简单 DP 题。</p>
+<pre><code class="language-cpp">inline void insert(char s[]){
+	int len=strlen(s+1),p=0;
+	up(i,1,len){
+		int ch=s[i]-'a';
+		if(!tr[p][ch])tr[p][ch]=++cnt;
+		p=tr[p][ch];
+	}
+	ed[p]++;
+}
+char s[N];
+int n;
+inline void clear(){
+	memset(tr,0,sizeof tr);
+	memset(ed,0,sizeof ed);
+	memset(f,0,sizeof f);
+	cnt=0;
+}
+inline void find(int x){
+	int len=strlen(s+1),p=0;
+	for(int i=x;i&lt;=len;++i){
+		int ch=s[i]-'a';
+		if (!tr[p][ch])return;
+		p=tr[p][ch];
+		if(ed[p]){
+			if(x-1&lt;=0)f[i]+=1;
+			else f[i]+=f[x-1];
+			f[i]%=mod;
+		}
+	} 
+}
+signed main(){
+	char a[500];
+	int num=0;
+	while(scanf("%s",s+1)==1){
+		clear();
+		n=read();
+		up(i,1,n){
+			scanf("%s",a+1);
+			insert(a);
+		}
+		int len=strlen(s+1);
+		up(i,1,len)find(i);
+		printf ("Case %lld: %lld\n",++num,f[len]);
+	}
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/UVA11732#submit" rel="noopener noreferrer" target="_blank">"strcmp()" Anyone?</a></h3>
+<p>tire 上计数。</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/z1t29x5o" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-22tcbljn.html"><small>← 上一篇</small><span>test20230828</span></a><a href="luogu-c5a6sbbs.html"><small>下一篇 →</small><span>codeforces练习题7</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

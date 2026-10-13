@@ -1,0 +1,256 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(1.\) 分治 \(1.\) 平面内最近点对 题目 #include &lt;bits/stdc++.h&gt; #define int long long using namespace std; inline int read(){ int x=0,f=1;char ch=getchar(); while (ch&lt;&#x27;0&#x27;||ch&gt;&#x27;"><title>1.15培训笔记（上） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-bsm5xdra.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>1.15培训笔记（上）</h1><p class="hero-meta"><time datetime="2023-01-15T16:58:11+08:00">2023-01-15 16:58</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/bsm5xdra" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><span class="math">\(1.\)</span>分治</h2>
+<p><span class="math">\(1.\)</span>平面内最近点对</p>
+<p><a href="https://www.luogu.com.cn/problem/P1429" rel="noopener noreferrer" target="_blank">题目</a></p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,temp[250000];
+struct node{
+	int x,y;
+}a[500500];
+bool cmp(node l,node r){
+	if(l.x==r.x)return l.y&lt;r.y;
+	return l.x&lt;r.x;
+}
+double dis(int l,int r){
+	return sqrt((a[l].x-a[r].x)*(a[l].x-a[r].x)+(a[l].y-a[r].y)*(a[l].y-a[r].y));
+}
+bool cmp2(int x,int y){
+	return a[x].y&lt;a[y].y;
+}
+double merge(int l,int r){
+	double d;
+	if(l==r){return 1e9;}
+	if(l==r-1){
+		return dis(l,r);
+	}
+	int mid=(l+r)&gt;&gt;1;
+	double d1=merge(l,mid);
+	double d2=merge(mid+1,r);
+	d=min(d1,d2);
+	int k=0;
+	for(int i=l;i&lt;=r;i++){
+		if(fabs(a[mid].x-a[i].x)&lt;d) 
+            temp[k++]=i;
+	}
+    sort(temp,temp+k,cmp2);
+    for(int i=0;i&lt;k;i++){
+    	for(int j = i + 1;j&lt;k&amp;&amp;a[temp[j]].y-a[temp[i]].y&lt;d;j++){
+            double d3=dis(temp[i],temp[j]);
+            if(d &gt; d3)d=d3;
+        }	
+    }
+    return d;
+}
+signed main() {
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		a[i].x=read();
+		a[i].y=read();
+	}
+	sort(a+1,a+1+n,cmp);
+	double k=merge(1,n);
+	printf("%.4lf",k);
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(2.\)</span>矩形内的分治</p>
+<p><a href="https://www.luogu.com.cn/problem/CF364E" rel="noopener noreferrer" target="_blank">题目</a></p>
+<p>思路：按行分治，再按列分治，交次进行；</p>
+<p><span class="math">\(up[0][k]\)</span>表示在<span class="math">\(mid\)</span>上方，满足矩形<span class="math">\(sum(i,j,up[0][i],mid)<k\)<>的最小纵（横）坐标，<span class="math">\(up[1][k]\)</span>为最大纵(横）坐标，答案可化为：
+<span class="math">\($ans=\sum_{i=0}^{k}(up[0][i]-up[0][i+1])*(up[1][k-i+1]-up[1][k-i])\)</span>$</k\)<></span></p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+//#define int long long 
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+long long n,m,k,ans;
+long long a[2530][2530],up[5][2534];
+int sum(int x1,int x2,int y1,int y2){
+	return a[x2][y2]-a[x1][y2]-a[x2][y1]+a[x1][y1];
+}
+void merge(int x1,int x2,int y1,int y2,int kind){
+	if(x1==x2||y1==y2)return;
+	if(x1+1==x2&amp;&amp;y1+1==y2){
+		if(sum(x1,x2,y1,y2)==k)ans++;
+		return;
+	}
+	//行分治
+	if(kind==1){
+		int mid=(x1+x2)&gt;&gt;1;
+		merge(x1,mid,y1,y2,0);
+		merge(mid,x2,y1,y2,0);
+		for(int i=y1;i&lt;y2;i++){
+			up[0][0]=up[1][0]=mid;
+			for(int j=1;j&lt;=k+1;j++){
+				up[0][j]=x1;
+				up[1][j]=x2;	
+			}
+			for(int j=i+1;j&lt;=y2;j++){
+				for(int l=1;l&lt;=k+1;l++){
+					while(sum(up[0][l],mid,i,j)&gt;=l)up[0][l]++;
+					while(sum(mid,up[1][l],i,j)&gt;=l)up[1][l]--;
+				}
+				for(int l=0;l&lt;=k;l++){
+					ans+=(up[0][l]-up[0][l+1])*(up[1][k-l+1]-up[1][k-l]);
+				}
+			}
+		}
+	}
+	//列分治
+	if(kind==0){
+		int mid=(y1+y2)&gt;&gt;1;
+		merge(x1,x2,y1,mid,1);
+		merge(x1,x2,mid,y2,1);
+		for(int i=x1;i&lt;x2;i++){
+			up[0][0]=up[1][0]=mid;
+			for(int j=1;j&lt;=k+1;j++){
+				up[0][j]=y1;
+				up[1][j]=y2;
+			}
+			for(int j=i+1;j&lt;=x2;j++){
+				for(int l=1;l&lt;=k+1;l++){
+					while(sum(i,j,up[0][l],mid)&gt;=l)up[0][l]++;
+					while(sum(i,j,mid,up[1][l])&gt;=l)up[1][l]--;
+				}
+				for(int l=0;l&lt;=k;l++){
+					ans+=(up[0][l]-up[0][l+1])*(up[1][k-l+1]-up[1][k-l]);
+				}
+			}
+		}
+	}
+	return;
+}
+signed main(){
+	n=read();m=read();k=read();
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			scanf("%1lld",&amp;a[i][j]);
+			a[i][j]+=a[i-1][j]+a[i][j-1]-a[i-1][j-1];	
+		}
+	}
+	merge(0,n,0,m,0);
+	cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(3.\)</span>分治练习题</p>
+<p>题目：有<span class="math">\(n\)</span>个物品第<span class="math">\(i\)</span>个物品重量是<span class="math">\(w_i\)</span>,价值是<span class="math">\(v_i\)</span>,要最大化价值和。对每个<span class="math">\(i\)</span>,询问假设第<span class="math">\(i \)</span>个物品消失此时价值和最大是多少？</p>
+<p><span class="math">\(1.\)</span>分治 空间<span class="math">\(O(Wlogn)\)</span>, 时间<span class="math">\(O(nWlogn)\)</span>;</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><span class="math">\(2.\)</span>合并前后缀：空间<span class="math">\(O(nW)\)</span>,时间<span class="math">\(O(nW)\)</span>;</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,w[250],v[250],W,f1[50050],f2[50050];
+signed main(){
+	n=read();W=read();
+	for(int i=1;i&lt;=n;i++){
+		w[i]=read();
+		v[i]=read();
+	}
+	for(int i=1;i&lt;=n;i++){
+		for(int j=W;j&gt;=w[i];j--){
+			f1[j]=max(f1[j],f1[j-w[i]]+v[i]);
+		}
+	}
+	for(int i=n;i&gt;=1;i--){
+		for(int j=W;j&gt;=w[i];j--){
+			f2[j]=max(f2[j],f2[j-w[i]]+v[i]);
+		}
+	}
+	int ans=0;
+	for(int i=1;i&lt;=n;i++){
+		ans=max(f1[i-1]+f2[i+1],ans);
+	}
+	cout&lt;&lt;ans;
+	return 0;
+}
+
+</code></pre>
+<hr/>
+<h2>二分</h2>
+<p><span class="math">\(1.\)</span>求序列中第<span class="math">\(k\)</span>小子串的平均值。<span class="math">\(N\le10^5\)</span></p>
+<p>·误差不超过<span class="math">\(10^{-6}\)</span></p>
+<p>提示：原式=<span class="math">\(\sum_{i=l}^r(a_i-mid)\le0\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><span class="math">\(2.\)</span>给定一个序列，求所有区间<span class="math">\(gcd\)</span>的和。<span class="math">\(N\le10^5,a_i\le10^9\)</span>;</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>倍增</h2>
+<p><span class="math">\(1.\)</span>环上有<span class="math">\(n\)</span>段弧，选出尽量多的弧使两两没有相交。<span class="math">\(N\le10^5\)</span>;</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>贪心</h2>
+<p><a href="https://www.luogu.com.cn/problem/CF875F" rel="noopener noreferrer" target="_blank">题目</a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,sum;
+int fa[500500],a[500500];
+struct node{
+	int u,v,w;
+}e[500500];
+bool cmp(node x,node y){return x.w&gt;y.w;}
+int find(int x){
+	if(x==fa[x])return x;
+	return fa[x]=find(fa[x]);
+}
+void krus(){
+	for(int i=0;i&lt;=n;i++){
+		fa[i]=i;
+		a[i]=1;	
+	}
+	for(int i=1;i&lt;=m;i++){
+		int x=find(e[i].u),y=find(e[i].v);
+		if(x!=y&amp;&amp;(a[x]||a[y])){
+			fa[x]=y;
+			sum+=e[i].w;
+			a[y]=a[x]&amp;a[y];
+		}                                          
+		else if(x==y&amp;&amp;a[x]){
+			a[x]=0;
+			sum+=e[i].w;
+		} 
+	}
+}
+signed main(){
+	n=read();m=read();
+	for(int i=1;i&lt;=m;i++){
+		e[i].u=read();
+		e[i].v=read();
+		e[i].w=read();
+	}
+	sort(e+1,e+1+m,cmp);
+	krus();
+	printf("%lld",sum);
+	return 0;
+}
+
+</code></pre>
+<p>完结撒花</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/bsm5xdra" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-cwlvd185.html"><small>← 上一篇</small><span>1.14培训笔记</span></a><a href="luogu-yhmniovl.html"><small>下一篇 →</small><span>1.15培训笔记（下）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

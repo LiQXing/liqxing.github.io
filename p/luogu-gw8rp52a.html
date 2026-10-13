@@ -1,0 +1,96 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="F 一道搜索好题。 一眼就可以看到 \(n\le 80\) ，看起来直接暴搜不是很能过的样子，考虑优化。 因为每一次都要转向，所以可以可以考虑把 \(x\) 轴和 \(y\) 轴分开计算。 这样，时间复杂度就是 \(2\times 2^{40}\) 。 还是不够，继续优化，因为直到初始状态和最终状态，所以可以考虑双向搜索优化。 "><title>[ABC326F] Robot Rotation · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-gw8rp52a.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>[ABC326F] Robot Rotation</h1><p class="hero-meta"><time datetime="2023-10-30T16:08:44+08:00">2023-10-30 16:08</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/gw8rp52a" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://atcoder.jp/contests/abc326/tasks/abc326_f" rel="noopener noreferrer" target="_blank" title="F">F</a></h2>
+<p>一道搜索好题。</p>
+<p>一眼就可以看到 <span class="math">\(n\le 80\)</span>，看起来直接暴搜不是很能过的样子，考虑优化。</p>
+<p>因为每一次都要转向，所以可以可以考虑把 <span class="math">\(x\)</span> 轴和 <span class="math">\(y\)</span> 轴分开计算。</p>
+<p>这样，时间复杂度就是 <span class="math">\(2\times 2^{40}\)</span>。</p>
+<p>还是不够，继续优化，因为直到初始状态和最终状态，所以可以考虑双向搜索优化。</p>
+<p>最后输出答案需要注意，我们记录的信息是 <span class="math">\(x\)</span> 和 <span class="math">\(y\)</span> 的正负，转化成 <code>LR</code> 需要记录前一位的信息。</p>
+<pre><code class="language-cpp">int n,sx,sy;
+map&lt;int,string&gt;mpx;
+map&lt;int,string&gt;mpy;
+map&lt;int,int&gt;mp;
+int a[500];
+vector&lt;int&gt;x,y;
+inline void dfsx(int i,int pos,string s){
+    if(i==x.size()/2){
+        mpx[pos]=s;
+        return;
+    }
+    dfsx(i+1,pos+x[i],s+"1");
+    dfsx(i+1,pos-x[i],s+"0");
+}
+bool fl=0;
+inline void dfsx2(int i,int pos,string s){
+    if(i==x.size()){
+        if(!mpx.count(sx-pos))return;
+        mpx[sx]=mpx[sx-pos]+s;
+		fl=1;
+		return;
+    }
+	dfsx2(i+1,pos+x[i],s+"1");
+    if(fl)return;
+    dfsx2(i+1,pos-x[i],s+"0");
+    if(fl)return;
+}
+inline void dfsy(int i,int pos,string s){
+    if(i==y.size()/2){
+        mpy[pos]=s;
+        return;
+    }
+    dfsy(i+1,pos+y[i],s+"1");
+    dfsy(i+1,pos-y[i],s+"0");
+}
+inline void dfsy2(int i,int pos,string s){
+    if(i==y.size()){
+        if(!mpy.count(sy-pos))return;
+        mpy[sy]=mpy[sy-pos]+s;
+		fl=1;
+		return;
+    }
+	dfsy2(i+1,pos+y[i],s+"1");
+    if(fl)return;
+    dfsy2(i+1,pos-y[i],s+"0");
+    if(fl)return;
+}
+inline void print(){
+    puts("Yes");
+    vector&lt;int&gt;ans;
+    int i=0,j=0;
+    while(i&lt;mpy[sy].size()||j&lt;mpx[sx].size()){
+        if(i&lt;mpy[sy].size())ans.push_back(mpy[sy][i]-'0'),i++;
+        if(j&lt;mpx[sx].size())ans.push_back(mpx[sx][j]-'0'),j++;
+    }
+    int la=0;
+	 up(i,0,ans.size()-1) {
+		if (ans[i]) {
+			if (la==0) cout&lt;&lt;"L",la=1;
+			else if (la==1) cout&lt;&lt;"R",la=0;
+			else if (la==2) cout&lt;&lt;"R",la=1;
+			else if (la==3) cout&lt;&lt;"L",la=0; 
+		}
+		else {
+			if (la==0) cout&lt;&lt;"R",la=3;
+			else if (la==1) cout&lt;&lt;"L",la=2;
+			else if (la==2) cout&lt;&lt;"L",la=3;
+			else if (la==3) cout&lt;&lt;"R",la=2; 
+		}
+	}
+}
+signed main(){
+	n=read();sx=read();sy=read();
+    up(i,1,n){
+        a[i]=read();
+        if(i&amp;1)y.push_back(a[i]);
+        else x.push_back(a[i]);
+    }
+    dfsx(0,0,"");
+    dfsx2(x.size()/2,0,"");
+    fl=0;
+    dfsy(0,0,""); 
+    dfsy2(y.size()/2,0,"");
+    if(mpx.count(sx)&amp;&amp;mpy.count(sy))print();
+    else puts("No");
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/gw8rp52a" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-7b1cem0q.html"><small>← 上一篇</small><span>test20231030</span></a><a href="17798990.html"><small>下一篇 →</small><span>test20231029</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

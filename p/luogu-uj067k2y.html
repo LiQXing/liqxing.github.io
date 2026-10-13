@@ -1,0 +1,76 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Catalan 数列 \(H_0\) \(H_1\) \(H_2\) \(H_3\) \(H_4\) \(H_5\) \(H_6\) 1 1 2 5 14 42 132 以后遇到了这些数字可以直接往 Catalan 数列上猜。 公式 注： \(C_n\) 表示卡特兰数第 \(n\) 项 。 1 \($ C_n=\dfrac{1}"><title>Catalan 数 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-uj067k2y.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>Catalan 数</h1><p class="hero-meta"><time datetime="2023-08-10T20:23:08+08:00">2023-08-10 20:23</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/uj067k2y" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2>Catalan 数列</h2>
+<table>
+<thead>
+<tr>
+<th><span class="math">\(H_0\)</span></th>
+<th><span class="math">\(H_1\)</span></th>
+<th><span class="math">\(H_2\)</span></th>
+<th><span class="math">\(H_3\)</span></th>
+<th><span class="math">\(H_4\)</span></th>
+<th><span class="math">\(H_5\)</span></th>
+<th><span class="math">\(H_6\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>5</td>
+<td>14</td>
+<td>42</td>
+<td>132</td>
+</tr>
+</tbody>
+</table>
+<p>以后遇到了这些数字可以直接往 Catalan 数列上猜。</p>
+<h2>公式</h2>
+<p>注：<span class="math">\(C_n\)</span> 表示卡特兰数第 <span class="math">\(n\)</span> 项 。</p>
+<h3>1</h3>
+<p><span class="math">\($ C_n=\dfrac{1}{n+1} \dbinom{2n}{n}=\dbinom{2n}{n}-\dbinom{2n}{n-1}=\dbinom{2n}{n}-\dbinom{2n}{n+1}\)</span>$</p>
+<p>该公式可以由基本模型出栈序列推导出来。</p>
+<p>我们将进栈表示为 +1，出栈表示为-1。</p>
+<p>因为出栈时栈不能为空，所以在任意时刻，出栈序列的前缀和大于0。</p>
+<p>不考虑限制条件，一共的序列数为 <span class="math">\(\dbinom{2n}{n}\)</span> 种。</p>
+<p>如果遇上不符合的序列，找到第一个前缀和小于0的前缀，进行取反。</p>
+<p>得到新的序列，1的个数为n+1，-1为n-1。</p>
+<p>进一步推广，每种非法出栈序列都对应一个有n+1个1的序列。</p>
+<p>如何证明这两种序列是一一对应的。</p>
+<p>假设非法序列A ，对应的序列为B。A只会产生一个B，B同样只会产生一个A。</p>
+<p>所以合法的序列数量为<span class="math">\(\dbinom{2n}{n}-\dbinom{2n}{n+1}\)</span>。</p>
+<p>同样的括号序列的数量也为<span class="math">\(C_n\)</span>。</p>
+<h3>2</h3>
+<p><span class="math">\($C_n=\sum C_kC_{n-k-1}\)</span>$</p>
+<p>同样用一个模型来证明。</p>
+<p>一棵有2n+1个点的树，有多少种方式可以构成一棵满二叉树。</p>
+<p>方案数为<span class="math">\(C_n\)</span>。</p>
+<p>我们可以对这棵树进行深搜，认为搜到左儿子为+1，右儿子为-1。</p>
+<p>那么这同样是上面的模型。</p>
+<p>然而，由于二叉树有优美的递推结构，所以也可以写成如上形式。</p>
+<h3>3</h3>
+<p><span class="math">\($C_n=\dfrac{4n-2}{n+1}C_{n-1}\)</span>$</p>
+<p>证明：
+<span class="math">\($C_n=\dfrac{1}{n+1}\dbinom{2n}{n}=\dfrac{1}{n+1}\times \dfrac{2n!}{n!\times n!}\)</span>$
+<span class="math">\($C_n=\dfrac{1}{n+1}\times \dfrac{(2n-2)!\times (2n-1)\times 2n}{(n-1)!\times (n-1)!\times n^2}=\dfrac{4n-2}{n+1}\dbinom{2n-2}{n-1}\)</span>$</p>
+<p><span class="math">\($C_n=\dfrac{4n-2}{n+1}C_{n-1}\)</span>$</p>
+<h2>有意思的模型</h2>
+<h3><strong>1. 凸多边形划分</strong></h3>
+<p>在一个n边形中，通过不相交于n边形内部的对角线，把n边形拆分为若干个三角形，求拆分方案数？</p>
+<p>解：</p>
+<p>你先画出一个三角形，该三角形两边分别为一个凸k边形和n-k-1边形。</p>
+<p><span class="math">\(C_n=\sum C_kC_{n-k-1}\)</span></p>
+<p>所以是卡特兰数。</p>
+<h3><strong>2. 圆上n条线段</strong></h3>
+<p>在圆上选择2n个点，将这些点成对连接起来使得所得到的n条线段不相交的方法数？</p>
+<p>如上。</p>
+<h3><strong>3. 填充阶梯图形</strong></h3>
+<p>用 <span class="math">\(n\)</span> 个长方形填充一个高度为n的阶梯状图形的方法个数？</p>
+<p>很容易发现，这里有  <span class="math">\(N\)</span> 个拐角，而题目只允许我们放 <span class="math">\(N\)</span> 个矩形，也就是说，<strong>每个矩形恰好覆盖一个拐角</strong>。</p>
+<h2>跑题</h2>
+<p>由卡特兰数的一个模型想到的。</p>
+<h3>4</h3>
+<p>笛卡尔坐标系中，从<span class="math">\((0,0)\)</span>出发，每次只能向上走或者向右走，且不能碰到<span class="math">\(y=x\)</span>这条直线，之间求走到<span class="math">\((n,n)\)</span>的不同路径的数量。</p>
+<p>答案是<span class="math">\(C_n\)</span></p>
+<p>然而并不准备如此结束。</p>
+<p>算了，就这么结束吧，下次再说。</p>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/uj067k2y" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-mrb3h24j.html"><small>← 上一篇</small><span>test20230809</span></a><a href="luogu-62d3s64o.html"><small>下一篇 →</small><span>中国剩余定理</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

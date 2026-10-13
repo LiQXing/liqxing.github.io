@@ -1,0 +1,128 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="F 我们把每个人对应的所有区间都存起来，然后贪心的枚举每个区间的端点。 int n; int x[N],L[N]; vector&lt;int&gt;s; signed main(){ ios_base::sync_with_stdio(0); cin.tie(0);cout.tie(0); cin&gt;&gt;n; up(i,1,n)cin&gt;&gt;x["><title>AT_abc318 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-wtbtwb2i.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>AT_abc318</h1><p class="hero-meta"><time datetime="2023-09-03T09:15:02+08:00">2023-09-03 09:15</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/wtbtwb2i" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3>F</h3>
+<p>我们把每个人对应的所有区间都存起来，然后贪心的枚举每个区间的端点。</p>
+<pre><code class="language-cpp">int n;
+int x[N],L[N];
+vector&lt;int&gt;s;
+signed main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n;
+    up(i,1,n)cin&gt;&gt;x[i];
+    up(i,1,n)cin&gt;&gt;L[i];
+    up(i,1,n){
+        up(j,1,n){
+            s.push_back(x[i]+L[j]);
+            s.push_back(x[i]-L[j]-1);
+        }
+    }
+    sort(s.begin(),s.end());
+    int ans=0;
+    up(i,0,s.size()-1){
+        vector&lt;int&gt;d;
+        up(j,1,n){
+            d.push_back(abs(x[j]-s[i]));
+        }
+        sort(d.begin(),d.end());
+        bool flag=0;
+        up(j,1,n){
+            if(d[j-1]&gt;L[j]){
+                flag=1;
+                break;
+            }
+        }
+        if(!flag)ans+=s[i+1]-s[i];
+    }
+    cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<h3>G</h3>
+<p>考虑网络瘤。</p>
+<p>每个点只能经过一次，所以考虑拆点。</p>
+<p>从原点向 <span class="math">\(B\)</span> 连 <span class="math">\(2\)</span> 个流量，<span class="math">\(A,C\)</span> 向汇点分别连一个流量，跑最大流，判断最后的流量是否是 <span class="math">\(2\)</span>。</p>
+<pre><code class="language-cpp">
+struct Dinic{
+    struct edge{
+        int u,v,cap,flow;
+    };
+    vector&lt;edge&gt;edges;
+    vector&lt;int&gt;g[N];
+    int cur[N],d[N];
+    bool vis[N];
+    inline void add(int u,int v,int cap){
+        edges.push_back({u,v,cap,0});
+        edges.push_back({v,u,0,0});
+        int t=edges.size();
+        g[u].push_back(t-2);
+        g[v].push_back(t-1);
+    }
+    inline bool bfs(int s,int t){
+        memset(vis,0,sizeof vis);
+        queue&lt;int&gt;q;
+        q.push(s);
+        d[s]=0;vis[s]=1;
+        while(q.size()){
+            int u=q.front();q.pop();
+            for(auto i:g[u]){
+                auto e=edges[i];
+                if(!vis[e.v]&amp;&amp;e.cap&gt;e.flow){
+                    vis[e.v]=1;
+                    d[e.v]=d[u]+1;
+                    q.push(e.v);
+                }
+            }
+        }
+        return vis[t];
+    }
+    inline int dfs(int u,int a,int t){
+        if(u==t||a==0)return a;
+        int flow=0,f;
+        for(int &amp;i=cur[u];i&lt;g[u].size();i++){
+            auto&amp; e=edges[g[u][i]];
+            if(d[u]+1==d[e.v]&amp;&amp;(f=dfs(e.v,min(a,e.cap-e.flow),t))&gt;0){
+                e.flow+=f;
+                edges[g[u][i]^1].flow-=f;
+                flow+=f;
+                a-=f;
+                if(a==0)break;
+            }
+        }
+        return flow;
+    }
+    inline int maxflow(int s,int t){
+        int flow=0;
+        while(bfs(s,t)){
+            memset(cur,0,sizeof cur);
+            flow+=dfs(s,inf,t);
+        }
+        return flow;
+    }
+}E;
+int n,m,a,b,c;
+int in[N],out[N];
+signed main(){
+	ios_base::sync_with_stdio(0);
+    cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;m&gt;&gt;a&gt;&gt;b&gt;&gt;c;
+    int cnt=0;
+    up(i,1,n){
+        in[i]=++cnt;
+        out[i]=++cnt;
+        E.add(in[i],out[i],1);
+        //E.add(out[i],in[i],1);
+    }
+    int u,v;
+    up(i,1,m){
+        cin&gt;&gt;u&gt;&gt;v;
+        E.add(out[u],in[v],1);
+        E.add(out[v],in[u],1);
+    }
+    E.add(0,out[b],2);
+    int t=cnt+10;
+    E.add(out[a],t,1);E.add(out[c],t,1);
+    if(E.maxflow(0,t)==2)puts("Yes");
+    else puts("No");
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/wtbtwb2i" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-hx7g230k.html"><small>← 上一篇</small><span>codeforces练习题9</span></a><a href="luogu-hbuys2p7.html"><small>下一篇 →</small><span>CF553C题解</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

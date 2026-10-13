@@ -1,0 +1,89 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Greg and Graph 正向思路是按照题意每次删除点 \(x_i\) ​，但 Floyd 不支持删除点，并且这样做会很麻烦：每到一个点 \(x_i\) ​就要做一次复杂度为 \(O(n^3)\) 的 Floyd，整体复杂度为 \(O(n^4)\) ，也会超时。 我们可以反过来想：每次加入一个点，求出加入后每一对点最短路权值"><title>codeforces练习题2 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-9crt2axg.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题2</h1><p class="hero-meta"><time datetime="2023-08-24T20:02:29+08:00">2023-08-24 20:02</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/9crt2axg" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://www.luogu.com.cn/problem/CF295B" rel="noopener noreferrer" target="_blank">Greg and Graph</a></h2>
+<p>正向思路是按照题意每次删除点<span class="math">\(x_i\)</span>​，但 Floyd 不支持删除点，并且这样做会很麻烦：每到一个点 <span class="math">\(x_i\)</span>​就要做一次复杂度为<span class="math">\(O(n^3)\)</span> 的 Floyd，整体复杂度为<span class="math">\(O(n^4)\)</span>，也会超时。</p>
+<p>我们可以反过来想：每次加入一个点，求出加入后每一对点最短路权值的和。
+具体来说，我们倒着枚举删除的点，用这个点来松弛其他的点，然后统计目前存在的点的答案。
+为什么是正确的呢？因为 Floyd 对松弛点的顺序没有要求。</p>
+<pre><code class="language-cpp">int f[N][N];
+int del[N];
+bool tag[N];
+int  ans[N];
+int n;
+signed main(){
+    n=read();
+	up(i,1,n){
+		up(j,1,n){
+			f[i][j]=read();
+		}
+	}
+	up(i,1,n)del[i]=read();
+    dn(p,n,1){
+        int k = del[p];
+        tag[k] = true;
+        up(i,1,n){
+            up(j,1,n){
+                f[i][j]=min(f[i][j],f[i][k] + f[k][j]);
+                if(tag[i] &amp;&amp; tag[j]) ans[p] += f[i][j];
+            }
+        }
+    }
+   	up(i,1,n)cout&lt;&lt;ans[i]&lt;&lt;" ";
+    return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF303B" rel="noopener noreferrer" target="_blank">Rectangle Puzzle II</a></h2>
+<p>像KMP 那样，造一个 nxt 数组，然后再弄一个 cnt 数组。</p>
+<p>其中 <span class="math">\(cnt_i\)</span>​ 表示从 <span class="math">\(c_i\)</span>​ 开始匹配，把 <span class="math">\(a\)</span> 串扫一遍有几组匹配， <span class="math">\(nxt_i\)</span>​ 表示 <span class="math">\(c_i\)</span>​ 匹配完一个 <span class="math">\(a\)</span> 到了 <span class="math">\(c\)</span> 的哪一位。</p>
+<p>然后从 1 到 <span class="math">\(b\)</span> ，每次跳 <span class="math">\(nxt\)</span> ， <span class="math">\(ans+=cnt\)</span> 即可。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF351B" rel="noopener noreferrer" target="_blank">Jeff and Furik</a></h2>
+<p>一个人一次操作减少一个逆序对，一个人二分之一概率减少一个逆序对。</p>
+<p>考虑将Jeff和Fruik当成一整轮一起操作，那么一轮操作中又 <span class="math">\(0.5\)</span>的概率减少两个逆序对，<span class="math">\(0.5\)</span> 的概率使逆序对个数不变。</p>
+<p>当前是 <span class="math">\(dp[i]=dp[i-1]+1\)</span>,不然<span class="math">\(dp[i]=\dfrac{1}{2}(dp[i-1]+1)+\dfrac{1}{2}(dp[i]+2)\)</span></p>
+<p><span class="math">\($dp[i]=dp[i-1]+3\)</span>$</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF337D" rel="noopener noreferrer" target="_blank">Book of Evil</a></h2>
+<p>只用求出有鬼的直径就行了。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF348B" rel="noopener noreferrer" target="_blank">Apple Tree</a></h2>
+<ol>
+<li>对于一个结点，它的值是它的所有子树的值的和，又由于题目要求子树所含的苹果数相同，所以，结点的值<strong>必须为子树的个数的倍数或者 0</strong>。</li>
+<li>为了保证这个结点的子树的合法，此结点的值必须保证<strong>为其子结点所需要的倍数的倍数或者 0</strong>。</li>
+<li>由于叶子结点的苹果数只能加不能减，所以每一个结点的最大值为<strong>子结点的最小值乘以子结点的个数。</strong></li>
+</ol>
+<h2><a href="https://www.luogu.com.cn/problem/CF346B" rel="noopener noreferrer" target="_blank">Lucky Common Subsequence</a></h2>
+<p>暴力DP</p>
+<ul>
+<li>使用 KMP 预处理出 <span class="math">\(S\)</span> 串的 <span class="math">\(nxt\)</span> 数组</li>
+<li>我们知道，<span class="math">\(nxt[i]\)</span> 表示<span class="math">\(S\)</span> 串的<strong>前 <span class="math">\(i\)</span> 个字符</strong>的<strong>最长前后缀</strong>长度。</li>
+<li>根据 <span class="math">\(nxt\)</span> 数组，用 <span class="math">\(KMP\)</span> 处理出 <span class="math">\(arr[i][ch]\)</span>，代表目前已经和 <span class="math">\(S\)</span> 串匹配了 <span class="math">\(i\)</span> 位，如果下一个字符是 <span class="math">\(ch\)</span>，那么加上这个字符后，将会和 <span class="math">\(S\)</span> 串匹配多少位。</li>
+</ul>
+<pre><code class="language-cpp">string a,b,c,dp[111][111][111],ans;
+int f[111];
+inline void change(string &amp;a,string b){
+    if(a.size()&lt;b.size()) a=b;
+}
+signed main(){
+    cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;
+    int la=a.size(),lb=b.size(),lc=c.size();
+    int j=0;
+    for(int i=1;i&lt;lc;i++){
+        while(j&gt;0&amp;&amp;c[i]!=c[j]) j=f[j-1];
+        if(c[i]==c[j]) f[i]=++j;
+    }
+    for(int i=1;i&lt;=la;i++)
+        for(int j=1;j&lt;=lb;j++)
+            for(int k=0;k&lt;lc;k++){
+                if(a[i-1]==b[j-1]){
+                    char tmp=a[i-1];
+                    int t=k;
+                    while(t&gt;0&amp;&amp;tmp!=c[t]) t=f[t-1];
+                    if(tmp==c[t]) t++;
+                    change(dp[i][j][t],dp[i-1][j-1][k]+tmp);
+                }
+                change(dp[i][j][k],dp[i-1][j][k]);
+                change(dp[i][j][k],dp[i][j-1][k]);
+            }
+    for(int i=0;i&lt;lc;i++) change(ans,dp[la][lb][i]);
+    if(ans.size()==0) puts("0");
+    else cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/9crt2axg" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-5bj96elp.html"><small>← 上一篇</small><span>codeforces练习题1</span></a><a href="luogu-7t9z2ifo.html"><small>下一篇 →</small><span>codeforces练习题3</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

@@ -1,0 +1,283 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="什么是状压 一种利用计算机二进制的性质来描述状态的DP方式。以 一个数的二进制位数上的 \(1,0\) 表示该数的取与不取。状压DP通常复杂度都大于 \(O(2^n)\) , 所以题目数据 \(n\) 一般要小于 \(18\) 。 状压的灵魂——位运算 判断一个数字 \(x\) 二进制下第 \(i\) 位是不是等于 \(1\) "><title>插头DP——入门到入土 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-uon5ntk6.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>插头DP——入门到入土</h1><p class="hero-meta"><time datetime="2023-06-14T16:55:28+08:00">2023-06-14 16:55</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/uon5ntk6" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h1>什么是状压</h1>
+<p>一种利用计算机二进制的性质来描述状态的DP方式。以 一个数的二进制位数上的<span class="math">\(1,0\)</span>表示该数的取与不取。状压DP通常复杂度都大于<span class="math">\(O(2^n)\)</span> , 所以题目数据 <span class="math">\(n\)</span> 一般要小于 <span class="math">\(18\)</span>。</p>
+<h1>状压的灵魂——位运算</h1>
+<ol>
+<li>判断一个数字 <span class="math">\(x\)</span> 二进制下第 <span class="math">\(i\)</span> 位是不是等于 <span class="math">\(1\)</span></li>
+</ol>
+<p><code>if(((1&lt;&lt;(i−1))&amp;x))</code></p>
+<ol>
+<li><p>将一个数字x二进制下第i位更改成1
+<code> x=x|(1&lt;&lt;(i−1))</code></p>
+</li>
+<li><p>将一个数字x二进制下第i位更改成0</p>
+</li>
+</ol>
+<p><code>x=x&amp;(x−1)</code></p>
+<ol>
+<li>把一个数字二进制下最靠右的第一个1去掉
+<code>x=x&amp;(x−1)</code></li>
+</ol>
+<p>好的，你现在已经会状压了，所以快来学习基于状压的插头DP吧！！(  * ^ ▽ ^ * )</p>
+<h1>插头DP</h1>
+<p>插头DP ,也就是一类基于连通性的状态压缩动态规划。</p>
+<h2>T1</h2>
+<p>给你一个 <span class="math">\(m  n\)</span> 的棋盘，有的格子是障碍，问共有多少条回路使得经过每个 非障碍格子恰好一次．<span class="math">\(m, n ≤ 12\)</span>。</p>
+<p>先思考一下暴力，因为是求最大回路，考虑状压DP，像旅行商问题那样求解，时间复杂度
+<span class="math">\(O(n^2*2^{n^2})\)</span>,最劣复杂度为<span class="math">\(144*2^{144}\)</span>,肯定超时。</p>
+<p>于是我们考虑一下特殊性质，这是一个棋盘。</p>
+<p>引入一个概念，插头：<strong>对于一个 4 连 通的问题来说，它通常有上下左右 4 个插头，一个方向的插头存在表示这个格子 在这个方向可以与外面相连。</strong></p>
+<p>观察可以发现所有的非障碍 格子一定是从一个格子进来，另一个格子出去，即 4 个插头恰好有 2 个插头存在， 共 6 种情况。</p>
+<p>那么我们可以逐格转移。</p>
+<p>以每格划分状态，当前遍历到<code>[i,j]</code>,则过该点画一条轮廓线。</p>
+<p>以轮廓线上的插头来表示这个状态，有两种表示方法来记录连通块。</p>
+<p>以下图为例</p>
+<ol>
+<li>最小表示法：<code>102021</code></li>
+<li>括号表示法：<code>101022</code>(就是一个连通块的左端点表示 <span class="math">\(1\)</span>，右端点表示 <span class="math">\(0\)</span>，)</li>
+</ol>
+<p><img alt="输入图片说明" loading="lazy" src="../assets/images/luogu/6c9597afb159ed3726.png"/></p>
+<p>一般都是使用括号标示法，为了加速，采用四进制。</p>
+<h2>转移有八种情况：</h2>
+<ol>
+<li><code>g[i][j]</code>为障碍物，且该点的下插头和右插头都没有，则可以进行转移</li>
+</ol>
+<pre><code class="language-cpp">	if(!g[i][j]){
+		if(!pr&amp;&amp;!pd)insert(cur,state,w);
+	}
+</code></pre>
+<p>2.<code>g[i][j]</code>不为障碍物，且该点没有两个插头，则插头方式一定在下方和右方。
+修改后两个位置都有插头了，就要对状态进行修改，而且修改后两个插头一定是一个连通块的两端，一个为 <span class="math">\(1\)</span> ,一个为 <span class="math">\(2\)</span>。
+还需要判断下方和右方是不是障碍才能进行转移。</p>
+<pre><code class="language-cpp">	else if(!pr&amp;&amp;!pd){
+		if(g[i+1][j]&amp;&amp;g[i][j+1]){
+			insert(cur,state+ste(j-1,1)+ste(j,2),w);
+		}
+	}
+</code></pre>
+<p>3.没有右插头，只有下插头。
+此时有两种情况：
+1:下插头直接向下，<code>j-1</code>连上了，<code>j</code>没有连上
+2.下插头向右拐弯，则状态表示不变。</p>
+<pre><code class="language-cpp">	else if(!pr&amp;&amp;pd){
+		if(g[i][j+1])insert(cur,state,w);
+		if(g[i+1][j])insert(cur,state+ste(j-1,y)-ste(j,y),w);
+	}
+</code></pre>
+<p>4.没有下插头，只有右插头。
+同理</p>
+<pre><code class="language-cpp">	else if(!pd&amp;&amp;pr) {
+        if(g[i][j + 1]) insert(cur,state-ste(j-1,pr)+ste(j,pr),w);
+        if(g[i + 1][j]) insert(cur,state,w);
+    }
+</code></pre>
+<p>5.下插头，右插头都是两个连通块的左端点。</p>
+<p>转移后，两个左端点去掉，一个右端点变为左端点。</p>
+<pre><code class="language-cpp">		else if(pr==1&amp;&amp;pd==1){
+	        int sum=1;
+            up(pos,j+1,m){
+          		int x=get(state,pos);
+           		if(x==1)sum++;
+           		else if(x==2){
+          		if(--s==0){
+    				insert(cur,state-ste(j-1,1)-ste(j,1)-ste(pos,1),w);
+               		break;
+				}
+			}
+        } 
+
+</code></pre>
+<p>6.下插头，右插头都是两个连通块的右端点。
+同理：</p>
+<pre><code class="language-cpp">				else if(pr==2&amp;&amp;pd==2){
+                	int sum=1;
+                	dn(pos,j-2,0){
+                		int x=get(state,pos);
+                		if(x==2)sum++;
+                		else if(x==1){
+                			if(--s==0){
+                				insert(cur,state-ste(j-1,2)-ste(j,2)+ste(pos,1),w);
+                				break;
+							}
+						}
+					}
+                }
+</code></pre>
+<p>7.右插头为右端点，下插头为左端点。</p>
+<p>连通块直接合在一起。</p>
+<pre><code class="language-cpp">		else if(pr==2&amp;&amp;pd==1) {
+            insert(cur,state-ste(j-1,2)-ste(j, 1),w);
+        }
+</code></pre>
+<p>8.右插头为右端点，下插头为左端点，只当进行到最后一个点时才可能出现。</p>
+<p>统计答案。</p>
+<h2>细节</h2>
+<p>1.换行的时候，将上一行左移一位，因为是四进制，所以左移两位。</p>
+<pre><code class="language-cpp">	up(j,1,cnt[cur])h[cur][q[cur][j]]&lt;&lt;=2;
+</code></pre>
+<p>2.滚动数组的处理</p>
+<pre><code class="language-cpp">			int last=cur;cur^=1;
+			cnt[cur]=0;
+			memset(h[cur],-1,sizeof h[cur]);
+</code></pre>
+<p>3.取四进制的第 <span class="math">\(k\)</span>位</p>
+<pre><code class="language-cpp">inline int get(int state,int k){
+	return (state&gt;&gt;(k*2))&amp;3;
+}
+</code></pre>
+<p>4.第k位加一</p>
+<pre><code class="language-cpp">inline int ste(int k,int v){
+	return v*(1&lt;&lt;(k*2));
+}
+</code></pre>
+<p>5.hash</p>
+<pre><code class="language-cpp">inline int find(int cur,int x){
+	int t=x%mod;
+	while(h[cur][t]!=-1&amp;&amp;h[cur][t]!=x){
+		if(++t==mod)t=0;
+	}
+	return t;
+}
+</code></pre>
+<h2>code</h2>
+<pre><code class="language-cpp">
+#include &lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int __int128
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define ls k&lt;&lt;1
+#define rs k&lt;&lt;1|1
+
+const int N=1e5+7;
+const int mod=590027;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(i128 x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(i128 x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+int n,m,endx,endy;
+char s[50][50];
+int g[50][50],ans;
+int h[2][N],cnt[2],q[2][N],dp[2][N];
+inline int find(int cur,int x){
+	int t=x%mod;
+	while(h[cur][t]!=-1&amp;&amp;h[cur][t]!=x){
+		if(++t==mod)t=0;
+	}
+	return t;
+}
+inline void insert(int cur,int state,int w){
+	int t=find(cur,state);
+	if(h[cur][t]==-1){
+		h[cur][t]=state;
+		dp[cur][t]=w;
+		q[cur][++cnt[cur]]=t;
+	}
+	else dp[cur][t]+=w;
+}
+inline int get(int state,int k){
+	return (state&gt;&gt;(k*2))&amp;3;
+}
+inline int ste(int k,int v){
+	return v*(1&lt;&lt;(k*2));
+}
+signed main(){
+	n=read();m=read();
+	up(i,1,n){
+		scanf("%s",s[i]+1);
+		up(j,1,m){
+			if(s[i][j]=='.'){
+				g[i][j]=1;
+				endx=i;endy=j;	
+			}
+		}
+	}
+	int cur=0;
+	memset(h,-1,sizeof h);
+	insert(cur,0,1);
+	up(i,1,n){
+		up(j,1,cnt[cur])h[cur][q[cur][j]]&lt;&lt;=2;
+		up(j,1,m){
+			int last=cur;cur^=1;
+			cnt[cur]=0;
+			memset(h[cur],-1,sizeof h[cur]);
+			up(k,1,cnt[last]){
+				int state=h[last][q[last][k]],w=dp[last][q[last][k]];
+				int pr=get(state,j-1),pd=get(state,j);
+				if(!g[i][j]){
+					if(!pr&amp;&amp;!pd)insert(cur,state,w);
+				}
+				else if(!pr&amp;&amp;!pd){
+					if(g[i+1][j]&amp;&amp;g[i][j+1]){
+						insert(cur,state+ste(j-1,1)+ste(j,2),w);
+					}
+				}
+				else if(!pr&amp;&amp;pd){
+					if(g[i][j+1])insert(cur,state,w);
+					if(g[i+1][j])insert(cur,state+ste(j-1,pd)-ste(j,pd),w);
+				}
+                else if(!pd&amp;&amp;pr) {
+                    if(g[i][j + 1]) insert(cur,state-ste(j-1,pr)+ste(j,pr),w);
+                    if(g[i + 1][j]) insert(cur,state,w);
+                }
+                else if(pr==1&amp;&amp;pd==1){
+                	int sum=1;
+                	up(pos,j+1,m){
+                		int x=get(state,pos);
+                		if(x==1)sum++;
+                		else if(x==2){
+                			if(--sum==0){
+                				insert(cur,state-ste(j-1,1)-ste(j,1)-ste(pos,1),w);
+                				break;
+							}
+						}
+					}
+                }
+				else if(pr==2&amp;&amp;pd==2){
+                	int sum=1;
+                	dn(pos,j-2,1){
+                		int x=get(state,pos);
+                		if(x==2)sum++;
+                		else if(x==1){
+                			if(--sum==0){
+                				insert(cur,state-ste(j-1,2)-ste(j,2)+ste(pos,1),w);
+                				break;
+							}
+						}
+					}
+                }
+                else if(pr==2&amp;&amp;pd==1) {
+                    insert(cur,state-ste(j-1,2)-ste(j, 1),w);
+                }
+                else if(i==endx&amp;&amp;j==endy){
+                	ans+=w;
+				}
+			}
+		}
+	}
+	write(ans,1);
+	return 0;
+}
+
+/*
+ ふわふわ♪
+*/
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/uon5ntk6" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-wtpn84ve.html"><small>← 上一篇</small><span>数位DP（dfs）</span></a><a href="luogu-bdkb9605.html"><small>下一篇 →</small><span>test20230616</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

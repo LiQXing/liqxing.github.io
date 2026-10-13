@@ -1,0 +1,88 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="题目 大意： 将某一个点删去。设图中原来有 \(k\) 个联通块，如果删掉割点，那么现在就有了 \(k+1\) 个联通块，如果不是割点，联通块数目不变。因此我们可以看出，割去任一个割点，割点两边的联通块都需要设一个逃生口。 故 如果没有割点，至少需要建立两个出口，从任意非割点的地方选择两个点建立;如果这个分组只有一个割点,只需要"><title>P3225 [HNOI2012]矿场搭建题解 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-5vzny2vv.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>P3225 [HNOI2012]矿场搭建题解</h1><p class="hero-meta"><time datetime="2022-12-09T14:11:03+08:00">2022-12-09 14:11</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/5vzny2vv" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><a href="https://www.luogu.com.cn/problem/P3225" rel="noopener noreferrer" target="_blank">题目</a></p>
+<hr/>
+<h2>大意：</h2>
+<p>将某一个点删去。设图中原来有<span class="math">\(k\)</span>个联通块，如果删掉割点，那么现在就有了<span class="math">\(k+1\)</span>个联通块，如果不是割点，联通块数目不变。因此我们可以看出，割去任一个割点，割点两边的联通块都需要设一个逃生口。</p>
+<hr/>
+<p>故 如果没有割点，至少需要建立两个出口，从任意非割点的地方选择两个点建立;如果这个分组只有一个割点,只需要在分组内设立一个出口,可以设立在任意一个非割点的地方;如果有两个及以上个割点，则无需建立，可以直接到达其他联通块</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+int head[505],dfn[505],low[505],vis[505],stack[505];
+bool cut[505];
+int n,m,cnt,num,t,color,ans1,ltk,cases,root,top;
+int ans2;
+vector&lt;int&gt;vec[25000];
+inline void clear(){
+    memset(dfn,0,sizeof(dfn));
+    memset(low,0,sizeof(low));
+    memset(cut,0,sizeof(cut));
+    memset(vis,0,sizeof(vis));
+    int i=1;
+    for(int i=0;i&lt;=n;i++){
+    	vec[i].clear();
+    }
+    top=cnt=t=n=ans1=ltk=0;ans2=1;
+    color=0;
+}
+inline int read(){
+    int x=0,f=1; char c=getchar();
+    while (c&lt;'0'||c&gt;'9'){if(c=='-')f=-1;c=getchar();}
+    while (c&gt;='0'&amp;&amp;c&lt;='9'){x=x*10+c-'0';c=getchar();}
+    return x*f;
+}
+void Tarjan(int u,int fa) {
+    dfn[u]=low[u]=++t;
+    for(auto v:vec[u]){
+            if(!dfn[v]){
+                Tarjan(v,u);
+                low[u]=min(low[u],low[v]);
+                if(low[v]&gt;=dfn[u]){
+                    if(u==root) color++;
+                    else cut[u]=true;
+                }
+            }
+            else if(v!=fa) low[u]=min(low[u],dfn[v]);
+        }
+}
+void dfs(int x){
+    vis[x]=ltk;
+    if(cut[x]) return;
+    cnt++;
+    for(auto v:vec[x]){
+        if(cut[v]&amp;&amp;vis[v]!=ltk) num++,vis[v]=ltk;
+        if(!vis[v])dfs(v);
+    }
+}
+signed main()
+{
+    m=read();
+    while (m){
+        clear();
+        for (int i=1;i&lt;=m;i++){
+            int u=read(),v=read();
+            n=max(n,max(u,v)); 
+            vec[u].push_back(v);
+            vec[v].push_back(u);
+        }
+        for (int i=1;i&lt;=n;i++){
+            if(!dfn[i]){
+            	root=i;
+            	Tarjan(i,0);	
+            }
+            if(color&gt;=2) cut[root]=1;
+            color=0;
+        }
+        for (int i=1;i&lt;=n;i++)
+            if (!vis[i]&amp;&amp;!cut[i]){
+                ltk++; cnt=num=0;
+                dfs(i);
+                if (!num) ans1+=2,ans2*=cnt*(cnt-1)/2;
+                if (num==1) ans1++,ans2*=cnt;
+            }
+        printf("Case %lld: %lld %lld\n",++cases,ans1,ans2);
+        m=read();
+    }
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/5vzny2vv" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><span></span><a href="luogu-2c336rb9.html"><small>下一篇 →</small><span>P4782 【模板】2-SAT 问题 题解</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

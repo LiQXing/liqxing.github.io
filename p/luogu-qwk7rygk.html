@@ -1,0 +1,162 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="蛮有意思的模拟题。 题意十分混乱，一会儿出现 \(gladiator\) ，一会儿出现 \(weapon\) 。 不如把它们归类，把与 \(atk\) 有关的统称为 \(atk\) ，把与 \(def\) 有关的统称为 \(def\) ，把与 \(res\) 有关的统称为 \(res\) 。 注意，题目中提到居民不可以出现在外面"><title>CF105C · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-qwk7rygk.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>CF105C</h1><p class="hero-meta"><time datetime="2023-09-05T17:35:43+08:00">2023-09-05 17:35</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/qwk7rygk" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>蛮有意思的模拟题。</p>
+<p>题意十分混乱，一会儿出现 <span class="math">\(gladiator\)</span>，一会儿出现 <span class="math">\(weapon\)</span>。</p>
+<p>不如把它们归类，把与 <span class="math">\(atk\)</span> 有关的统称为 <span class="math">\(atk\)</span>，把与 <span class="math">\(def\)</span> 有关的统称为 <span class="math">\(def\)</span>，把与 <span class="math">\(res\)</span> 有关的统称为 <span class="math">\(res\)</span>。</p>
+<p>注意，题目中提到居民不可以出现在外面，所以如果居民人数等于所有物品的总容量，那就不可以交换居民的位置。反之，只要有一个空缺的位置，那么就可以任意分配居民的位置。</p>
+<p>当没有空缺的时候，我们只用枚举最多的物品就行了。</p>
+<p>如果有空缺，贪心的寻找那种物品可以达到最大的价值。</p>
+<p>然后还有一个坑点，最后的情况一定是能够容纳所有居民的，所以我们如果一个物品的容量还有多的，就可以把一个无关的居民加入到这个物品中，这样一定更优。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define i64 long long
+#define ull unsigned long long
+#define ldb long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+#define fi first
+#define se second
+#define endl '\n'
+
+const int N=2e5+100,M=1e6+100;
+const int mod=1e9+7;
+const int inf=0x3f3f3f3f;
+const ull uinf=1e18+14;
+
+int n,m;
+struct node{
+    string name,type;
+    int atk,def,res,siz;
+}a[N];
+struct people{
+    string name,type;
+    int bonus;
+    string home;
+}p[N];
+int sumsiz;
+bool vis[N];
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n;
+    up(i,1,n){
+        cin&gt;&gt;a[i].name&gt;&gt;a[i].type&gt;&gt;a[i].atk&gt;&gt;a[i].def&gt;&gt;a[i].res&gt;&gt;a[i].siz;
+        if(a[i].type=="weapon")a[i].type="atk";
+        else if(a[i].type=="armor")a[i].type="def";
+        else if(a[i].type=="orb")a[i].type="res";
+        sumsiz+=a[i].siz;
+    }
+    cin&gt;&gt;m;
+    up(i,1,m){
+        cin&gt;&gt;p[i].name&gt;&gt;p[i].type&gt;&gt;p[i].bonus&gt;&gt;p[i].home;
+        if(p[i].type=="gladiator")p[i].type="atk";
+        else if(p[i].type=="sentry")p[i].type="def";
+        else if(p[i].type=="physician")p[i].type="res";
+    }
+    if(sumsiz==m){
+        int posatk=0,posdef=0,posres=0,maxatk=-inf,maxdef=-inf,maxres=-inf;
+        up(i,1,n){
+            if(a[i].type=="atk"){
+                int atk=a[i].atk;
+                up(j,1,m)if(p[j].home==a[i].name&amp;&amp;p[j].type=="atk")atk+=p[j].bonus;
+                if(atk&gt;maxatk){
+                    posatk=i;
+                    maxatk=atk;
+                }
+            }
+            if(a[i].type=="def"){
+                int def=a[i].def;
+                up(j,1,m)if(p[j].home==a[i].name&amp;&amp;p[j].type=="def")def+=p[j].bonus;                
+                if(def&gt;maxdef){
+                    posdef=i;
+                    maxdef=def;
+                }
+            }
+            if(a[i].type=="res"){
+                int res=a[i].res;
+                up(j,1,m)if(p[j].home==a[i].name&amp;&amp;p[j].type=="res")res+=p[j].bonus;
+                if(res&gt;maxres){
+                    posres=i;
+                    maxres=res;
+                }
+            }
+        }
+        int numatk=0,numres=0,numdef=0;
+        up(j,1,m)if(p[j].home==a[posatk].name)numatk++;
+        cout&lt;&lt;a[posatk].name&lt;&lt;" "&lt;&lt;numatk&lt;&lt;" ";
+        up(j,1,m)if(p[j].home==a[posatk].name)cout&lt;&lt;p[j].name&lt;&lt;" ";cout&lt;&lt;endl;
+        up(j,1,m)if(p[j].home==a[posdef].name)numdef++;
+        cout&lt;&lt;a[posdef].name&lt;&lt;" "&lt;&lt;numdef&lt;&lt;" ";
+        up(j,1,m)if(p[j].home==a[posdef].name)cout&lt;&lt;p[j].name&lt;&lt;" ";cout&lt;&lt;endl;
+        up(j,1,m)if(p[j].home==a[posres].name)numres++;
+        cout&lt;&lt;a[posres].name&lt;&lt;" "&lt;&lt;numres&lt;&lt;" ";
+        up(j,1,m)if(p[j].home==a[posres].name)cout&lt;&lt;p[j].name&lt;&lt;" ";cout&lt;&lt;endl;
+        return 0;
+    } 
+    vector&lt;pii&gt;atk,def,res;
+    up(i,1,m){
+        if(p[i].type=="atk")atk.push_back({p[i].bonus,i});
+        if(p[i].type=="def")def.push_back({p[i].bonus,i});
+        if(p[i].type=="res")res.push_back({p[i].bonus,i});
+    }
+    sort(atk.rbegin(),atk.rend());
+    sort(def.rbegin(),def.rend());
+    sort(res.rbegin(),res.rend());
+    int posatk=0,posdef=0,posres=0,maxatk=-inf,maxdef=-inf,maxres=-inf;
+    up(i,1,n){
+        if(a[i].type=="atk"){
+            int atkw=a[i].atk;
+            up(j,0,min(a[i].siz,(int)atk.size())-1)atkw+=atk[j].first;
+            if(atkw&gt;maxatk){
+                posatk=i;
+                maxatk=atkw;
+            }
+        }
+        if(a[i].type=="def"){
+            int defw=a[i].def;
+            up(j,0,min(a[i].siz,(int)def.size())-1)defw+=def[j].first;     
+            if(defw&gt;maxdef){
+                posdef=i;
+                maxdef=defw;
+            }
+        }
+        if(a[i].type=="res"){
+            int resw=a[i].res;
+            up(j,0,min(a[i].siz,(int)res.size())-1)resw+=res[j].first;
+            if(resw&gt;maxres){
+                posres=i;
+                maxres=resw;
+            }
+        }
+    }
+    vector&lt;int&gt;atkpos,defpos,respos;
+    up(i,0,min(a[posatk].siz,(int)atk.size())-1)atkpos.push_back(atk[i].second),vis[atk[i].second]=1;
+    up(i,0,min(a[posdef].siz,(int)def.size())-1)defpos.push_back(def[i].second),vis[def[i].second]=1;
+    up(i,0,min(a[posres].siz,(int)res.size())-1)respos.push_back(res[i].second),vis[res[i].second]=1;
+    up(i,1,m){
+        if(vis[i])continue;
+        if(atkpos.size()&lt;a[posatk].siz)atkpos.push_back(i),vis[i]=1;;
+    }
+    cout&lt;&lt;a[posatk].name&lt;&lt;" "&lt;&lt;atkpos.size()&lt;&lt;" ";
+    for(auto v:atkpos)cout&lt;&lt;p[v].name&lt;&lt;" ";cout&lt;&lt;endl;
+    up(i,1,m){
+        if(vis[i])continue;
+        if(defpos.size()&lt;a[posdef].siz)defpos.push_back(i),vis[i]=1;;
+    }
+    cout&lt;&lt;a[posdef].name&lt;&lt;" "&lt;&lt;defpos.size()&lt;&lt;" ";
+    for(auto v:defpos)cout&lt;&lt;p[v].name&lt;&lt;" ";cout&lt;&lt;endl;
+    up(i,1,m){
+        if(vis[i])continue;
+        if(respos.size()&lt;a[posres].siz)respos.push_back(i),vis[i]=1;;
+    }
+    cout&lt;&lt;a[posres].name&lt;&lt;" "&lt;&lt;respos.size()&lt;&lt;" ";
+    for(auto v:respos)cout&lt;&lt;p[v].name&lt;&lt;" ";cout&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/qwk7rygk" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-505meb6b.html"><small>← 上一篇</small><span>CF71D</span></a><a href="luogu-6ls3z286.html"><small>下一篇 →</small><span>codeforces练习题11</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

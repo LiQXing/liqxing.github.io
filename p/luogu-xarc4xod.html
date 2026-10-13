@@ -1,0 +1,199 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(problem.1\) #include&lt;bits/stdc++.h&gt; using namespace std; #define int long long inline int read(){ int x=0,f=1;char ch=getchar(); while (ch&lt;&#x27;0&#x27;||ch&gt;&#x27;9&#x27;){if (ch==&#x27;-&#x27;"><title>1.18培训笔记（下） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-xarc4xod.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>1.18培训笔记（下）</h1><p class="hero-meta"><time datetime="2023-01-28T08:41:39+08:00">2023-01-28 08:41</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/xarc4xod" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><a href="https://www.luogu.com.cn/problem/P3177" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.1\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+inline int read(){
+    int x=0,f=1;char ch=getchar();
+    while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+    while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+    return x*f;
+}
+int n,m,k,siz[500500],f[2500][2500];
+vector&lt;pair&lt;int,int&gt; &gt;vec[500500];
+void dfs(int u, int from) {
+	siz[u]=1;f[u][0]=f[u][1]=0;
+	for (auto i:vec[u]){
+		int v=i.first,w=i.second;
+		if (v==from)continue;
+		dfs(v,u);siz[u]+=siz[v];
+		for (int j=min(m, siz[u]);~j;j--) 
+			for (int k=0;k&lt;=min(j,siz[v]);k++) {
+				if (!(~f[u][j - k])) continue;
+				int tmp =w*k*(m-k)+w*(siz[v]-k)*(n-m-siz[v]+ k);
+				f[u][j] = max(f[u][j], f[u][j - k] + f[v][k] + tmp);
+			}
+	}
+	return;
+}
+signed main(){
+	n=read();m=read();
+	int u,v,w;
+	for(int i=1;i&lt;n;i++){
+		u=read();v=read();w=read();
+		vec[u].push_back({v,w});
+		vec[v].push_back({u,w});
+	}
+	memset(f,-1,sizeof f);
+	dfs(1,0);
+	printf("%lld",f[1][m]);
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P2279" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.2\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long 
+inline int read(){
+	register int u=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){u=u*10+ch-48;ch=getchar();}
+	return u*f;
+}
+int n,dp[560050][6];
+vector&lt;int&gt;vec[500500];
+void dfs(int u,int from){
+	int sum2 = 0, sum3 = 0,tot;
+    for(auto v:vec[u]){
+    	 if(v!=from) {
+            dfs(v,u);
+            sum2+=dp[v][2],sum3+= dp[v][3];
+            tot++;
+        }	
+    }
+	if(!tot){
+        dp[u][0]=dp[u][1]=dp[u][2]=1;
+        return;
+    }
+    dp[u][0]=1,dp[u][1]=dp[u][2]=0x3f3f3f3f;
+    for (auto v:vec[u]){
+    	if (v!= from) {
+            dp[u][0]+=dp[v][4];
+            dp[u][1]=min(dp[u][1], dp[v][0] + sum3 - dp[v][3]);
+            dp[u][2]=min(dp[u][2], dp[v][1] + sum2 - dp[v][2]);
+            dp[u][3]+=dp[v][2];
+            dp[u][4]+=dp[v][3];
+        }	
+    }
+    for (int i = 1; i&lt;=4;i++) dp[u][i]=min(dp[u][i],dp[u][i-1]);
+}
+signed main(){
+    n=read();
+    int u;
+    
+    for(int i=1;i&lt;n;i++){
+    	u=read();
+    	vec[u].push_back(i+1);
+    	vec[i+1].push_back(u);
+    }
+    dfs(1,0);
+    printf("%lld",dp[1][2]);
+    return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P3899" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.3\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P2607" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.4\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>数位DP</h2>
+<p><a href="https://www.luogu.com.cn/problem/P2657" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.4\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+int f[250][250]; 
+
+void init(){
+	for(int i=0;i&lt;=9;i++)f[1][i]=1;
+	for(int i=2;i&lt;=15;i++){
+		for(int j=0;j&lt;=9;j++){
+			for(int k=0;k&lt;=9;k++){
+				if(abs(k-j)&lt;2)continue;
+				f[i][j]+=f[i-1][k];	
+			}
+		}
+	}
+}
+
+int dp(int n){
+	if(!n) return 0;
+	vector&lt;int&gt;nums;
+	while(n) nums.push_back(n%10),n/=10;
+	int res=0,last=13;
+	for(int i=nums.size()-1;i&gt;=0;i--){
+		int x=nums[i];
+		for(int j= i==nums.size()-1;j&lt;x;j++){
+			if(abs(j-last)&lt;2)continue;
+			res+=f[i+1][j];
+		}
+		if(abs(x-last)&gt;=2) last=x;
+		else break;
+		if(!i) res++;
+	}
+	for(int i=1;i&lt;nums.size();i++){
+		for(int j=1;j&lt;=9;j++){
+			res+=f[i][j];
+		}
+	}
+	return res;
+}
+signed main(){
+    ios::sync_with_stdio(false);
+	cin.tie(nullptr);cout.tie(nullptr);
+	init();
+	int n,m;
+	cin&gt;&gt;n&gt;&gt;m;
+	cout&lt;&lt;dp(m)-dp(n-1)&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+<h2>状压DP</h2>
+<p><a href="https://www.luogu.com.cn/problem/P1896" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.5\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long 
+inline int read(){
+	int u=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){u=u*10+ch-48;ch=getchar();}
+	return u*f;
+}
+int n,m,f[15][200][100],cnt,all,s[500],sum[500];
+bool check(int a,int b){
+	if((a&amp;b)||((a&gt;&gt;1)&amp;b)||((a&lt;&lt;1)&amp;b)) return 0;
+	return 1;
+}
+void dp(){
+	f[0][1][0]=1;
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=cnt;j++){
+			for(int k=0;k&lt;=m;k++){
+				if(sum[j]&gt;k) continue;
+				for(int p=1; p&lt;=cnt; p++)
+					if(check(s[p],s[j]))
+						f[i][j][k]+=f[i-1][p][k-sum[j]];
+			}
+		}
+	} 
+}
+signed main(){
+	n=read();m=read();
+	all=(1&lt;&lt;n)-1;
+	for(int i=0;i&lt;=all;i++){
+		if(!(i&amp;(i&lt;&lt;1))){
+			s[++cnt]=i;
+			sum[cnt]=__builtin_popcount(i);
+		}
+	}
+	dp();
+	int ans=0;
+	for(int i=1;i&lt;=cnt;i++) ans+=f[n][i][m];
+	printf("%lld",ans);
+    return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P2157" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.6\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/xarc4xod" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-17oy8zln.html"><small>← 上一篇</small><span>1.18培训笔记（上）</span></a><a href="luogu-gtwlxqj9.html"><small>下一篇 →</small><span>ABC288:D</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

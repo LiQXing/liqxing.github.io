@@ -1,0 +1,309 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="题目 \(e\) 这道题 n 很小， W 很大，V却很小。 把重量 w 和价值 v 颠倒，来求 计算完所有状态的值后，只需要选取满足重量上限的最大价值即可。 \(i\) 比较典型的期望 DP 。 \(f[i][j]\) 指抛第 \(i\) 个硬币有 \(j\) 个正面朝上。 \(f[i][j]=f[i-1][j-1]*p+f[i"><title>ATcoderDP26道 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-yegcs0pa.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>ATcoderDP26道</h1><p class="hero-meta"><time datetime="2023-08-05T14:09:07+08:00">2023-08-05 14:09</time><span>·</span><a href="../categories.html#AtCoder">AtCoder</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/yegcs0pa" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><a href="https://www.luogu.com.cn/training/244301#problems" rel="noopener noreferrer" target="_blank">题目</a></p>
+<h2><span class="math">\(e\)</span></h2>
+<p>这道题 n 很小， W 很大，V却很小。</p>
+<p>把重量 w 和价值 v 颠倒，来求</p>
+<p>计算完所有状态的值后，只需要选取满足重量上限的最大价值即可。</p>
+<h2><span class="math">\(i\)</span></h2>
+<p>比较典型的期望 DP 。</p>
+<p><span class="math">\(f[i][j]\)</span> 指抛第 <span class="math">\(i\)</span> 个硬币有 <span class="math">\(j\)</span> 个正面朝上。</p>
+<p><span class="math">\(f[i][j]=f[i-1][j-1]*p+f[i-1][j]*(i-p)\)</span></p>
+<h2><span class="math">\(j\)</span></h2>
+<p>因为是任选盘子，不用考虑顺序。</p>
+<p><span class="math">\(f[i][j][k][l]\)</span>  分别表示有 <span class="math">\(i\)</span> 个空盘子，<span class="math">\(j\)</span>  个一个寿司  <span class="math">\(k\)</span>  个两个寿司，<span class="math">\(l\)</span>  个三个寿司的盘子。</p>
+<p><span class="math">\($f[i][j][k][l]=1+\frac{i}{n}f[i][j][k][l]+\frac{j}{n}f[i+1][j-1][k][l]+\frac{k}{n}f[i][j+1][k-1][l]+\frac{l}{n}f[i][j][k+1][l-1]\)</span>$</p>
+<p><span class="math">\($f[i][j][k][l]=\frac{n}{j+k+l}+\frac{j}{j+k+l}f[i+1][j-1][k][l]+\frac{k}{j+k+l}f[i][j+1][k-1][l]+\frac{l}{j+k+l}f[i][j][k+1][l-1]\)</span>$</p>
+<p>但是这样空间会炸掉。</p>
+<p>因为知道一共有多少个盘子，所以可以压掉一维。</p>
+<p><span class="math">\($f[j][k][l]=\frac{n}{j+k+l}+\frac{j}{j+k+l}f[j-1][k][l]+\frac{k}{j+k+l}f[j+1][k-1][l]+\frac{l}{j+k+l}f[j][k+1][l-1]\)</span>$</p>
+<pre><code class="language-cpp">signed main(){
+	n=read();
+	up(i,1,n){
+		a[i]=read();
+		cnt[a[i]]++;
+	}
+	up(k,0,n){
+		up(j,0,n){
+			up(i,0,n){
+				if(!i&amp;&amp;!j&amp;&amp;!k)continue;
+				if(i)f[i][j][k]+=f[i-1][j][k]*i/(i+j+k);
+				if(j)f[i][j][k]+=f[i+1][j-1][k]*j/(i+j+k);
+				if(k)f[i][j][k]+=f[i][j+1][k-1]*k/(i+j+k);
+				f[i][j][k]+=(double)n/(i+j+k);
+			}
+		}
+	}
+	printf("%.10LF",f[cnt[1]][cnt[2]][cnt[3]]);
+	return 0;
+}
+</code></pre>
+<h2><span class="math">\(l\)</span></h2>
+<p>可以一眼看出，这是一道区间 DP。</p>
+<p>这道题的做法其实还是挺巧妙的。</p>
+<p>另 <code>dp[l][r]</code> 带表一个区间<code>[l,r]</code>可获得的最大值，那么另一个人获得的价值就是 <code>sum[r]-sum[l-1]-dp[l][r]</code></p>
+<p><span class="math">\($dp[i][j]=\max(sum[j]-sum[i-1]-dp[i+1][j],sum[j]-sum[i-1]-dp[i][j-1])\)</span>$</p>
+<h2><span class="math">\(m\)</span></h2>
+<p>经典的 <strong>dp + 前缀和优化</strong>。</p>
+<p>看题一眼，一个 <span class="math">\(nk^2\)</span> 的 dp 就出来了。</p>
+<pre><code class="language-cpp">	dp[0][0]=1;
+	up(i,1,n){
+		up(j,0,m){
+			up(l,0,a[i]){
+				if(j-l&lt;0)break;
+				dp[i][j]+=dp[i-1][j-l];
+			}
+		}
+	}
+	cout&lt;&lt;dp[n][m];
+</code></pre>
+<p>观察代码，我们发现对于每一个<code>dp[i][j]</code> , 其加上的都是<code>[dp[i-1][0],dp[i-1][a[i]]]</code>，这些的区间和。</p>
+<p>所以可以前缀和优化。</p>
+<pre><code class="language-cpp">int n,num;
+int dp[105][N],a[N],sum[N],s[N];
+inline int getsum(int l,int r){
+	return (l==0?s[r]:(s[r]+mod-s[l-1])%mod);
+}
+signed main(){
+	n=read();num=read();
+	dp[0][0]=1;
+	up(i,1,n)a[i]=read(),sum[i]=sum[i-1]+a[i];
+	up(i,1,n){
+		s[0]=dp[i-1][0];
+		up(k,1,num)s[k]=(s[k-1]+dp[i-1][k])%mod;
+		up(j,0,num){
+			dp[i][j]=getsum(max(0ll,j-a[i]),j);
+		}
+	}
+	cout&lt;&lt;dp[n][num]&lt;&lt;endl;
+	return 0;
+}
+</code></pre>
+<h2><span class="math">\(n\)</span></h2>
+<p>石子合并。</p>
+<h2><span class="math">\(p\)</span></h2>
+<p>树上 DP。</p>
+<p>对于点 <span class="math">\(u\)</span></p>
+<p><span class="math">\($dp[u][0]=\prod dp[v][1],dp[u][1]=\prod (dp[v][1]+dp[v][0])\)</span>$</p>
+<h2><span class="math">\(q\)</span></h2>
+<p>求权值最大上升子序列。</p>
+<p>经典的 DS 优化 dp</p>
+<p>dp 方程很一眼。</p>
+<p><span class="math">\($f[i]=\max(f[j]+a[i])\quad h[j]<h[i]\)<>$</h[i]\)<></span></p>
+<p>那么如何快速求出最大的 <span class="math">\(f[j]\)</span>。</p>
+<p>我们可以考虑用树状数组。</p>
+<pre><code class="language-cpp">inline int lowbit(int x){
+	return x&amp;(-x);
+}
+inline void add(int pos,int w){
+	for(int i=pos;i&lt;=N;i+=lowbit(i)){
+		tr[i]=max(tr[i],w);
+	}
+}
+inline int ask(int pos){
+	int res=0;
+	for(int i=pos;i&gt;0;i-=lowbit(i)){
+		res=max(res,tr[i]);
+	}
+	return res;
+}
+signed main(){
+	n=read();
+	up(i,1,n)a[i].h=read();
+	up(i,1,n)a[i].w=read();
+	f[0]=0;
+	up(i,1,n){
+		f[i]=ask(a[i].h-1)+a[i].w;
+		add(a[i].h,f[i]);
+	}
+	int ans=0;
+	up(i,1,n){
+		ans=max(ans,f[i]);
+	}
+	cout&lt;&lt;ans;
+
+</code></pre>
+<h2><span class="math">\(s\)</span></h2>
+<p>数位 DP 水题。</p>
+<pre><code class="language-cpp">inline int dfs(int pos,int sum,int lead,int lim){
+	if(!pos)return sum%d==0;
+	if(f[pos][sum]!=-1&amp;&amp;!lim&amp;&amp;!lead)return f[pos][sum]%mod;
+	int ret=0,res=lim?num[pos]:9;
+	up(i,0,res){
+		if(lead&amp;&amp;!i)ret+=dfs(pos-1,(sum+i)%d,lead&amp;!i,lim&amp;(i==res));
+		else ret+=dfs(pos-1,(sum+i)%d,lead&amp;!i,lim&amp;(i==res));
+	}
+	ret%=mod;
+	if(!lim&amp;&amp;!lead)f[pos][sum]=ret;
+	return ret;
+}
+string a;
+inline int dp(string x){
+	len=0;
+	memset(f,-1,sizeof f);
+	int slen=x.size();
+	dn(i,slen-1,0)num[++len]=x[i]-'0';
+	return dfs(len,0,1,1);
+}
+</code></pre>
+<h2><span class="math">\(t\)</span></h2>
+<p>直接DP会超时。</p>
+<p>考虑前缀和优化。</p>
+<pre><code class="language-cpp">	dp[1][1]=1;
+	up(i,2,n){
+		if(s[i-2]=='&lt;'){
+			up(j,1,i)dp[i][j]=(dp[i][j-1]+dp[i-1][j-1])%mod;
+		}
+		else{
+			dn(j,i-1,1)dp[i][j]=(dp[i][j+1]+dp[i-1][j])%mod;
+		}
+	}
+	up(i,1,n)ans=(ans+dp[n][i])%mod;
+	cout&lt;&lt;ans&lt;&lt;endl;
+</code></pre>
+<h2><span class="math">\(u\)</span></h2>
+<p>看数据范围，状压DP非常明显。</p>
+<p>直接状压就行了。</p>
+<h2><span class="math">\(w\)</span></h2>
+<p>对于这种区间的命令，一种常见的做法是<strong>化区间为点</strong>。</p>
+<p>具体来说，就是按照右端点排序，当<strong>访问到某个区间的右边界时才计算其贡献</strong>。</p>
+<p><span class="math">\(dp[i][j]\)</span> 表示考虑到第 <span class="math">\(i\)</span> 个位置，上一个 0 在 <span class="math">\(j\)</span> 处的最大分数。</p>
+<p><span class="math">\(O(n^3)\)</span> 暴力就出来了。</p>
+<p>考虑优化，把每次修改都丢线段树上去。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ull unsigned long long
+#define ldo long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+
+const int N=5e5+5000;
+const int mod=1e9+7;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(int x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(int x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+struct node{
+	int l,r,w;
+}a[N];
+int n,m;
+vector&lt;node&gt;g[N];
+struct SegmentTree{
+	int maxn[N&lt;&lt;2],tag[N&lt;&lt;2];
+    void change(int p,int k){
+        maxn[p]+=k;tag[p]+=k;
+    }
+    void push_down(int p){
+        if(!tag[p]) return ;
+        change(p&lt;&lt;1,tag[p]);
+        change(p&lt;&lt;1|1,tag[p]);
+        tag[p]=0;
+    }
+    void change(int p,int l,int r,int x,int y,int k){
+        if(x&lt;=l&amp;&amp;r&lt;=y){change(p,k);return ;}
+        push_down(p);
+		int mid=(l+r)&gt;&gt;1;
+        if(x&lt;=mid) change(p&lt;&lt;1,l,mid,x,y,k);
+        if(y&gt;mid) change(p&lt;&lt;1|1,mid+1,r,x,y,k);
+        maxn[p]=max(maxn[p&lt;&lt;1],maxn[p&lt;&lt;1|1]);
+    }
+}T;
+signed main(){
+	n=read();m=read();
+	int l,r,w;
+	up(i,1,m){
+		l=read();r=read();w=read();
+		a[i]={l,r,w};
+		g[r].push_back(a[i]);
+	}
+	for(int i=1;i&lt;=n;i++){
+        T.change(1,1,n,i,i,max(T.maxn[1],0ll));
+        for(auto it:g[i])T.change(1,1,n,it.l,i,it.w);
+    }
+    cout&lt;&lt;max(T.maxn[1],0ll)&lt;&lt;'\n';
+	return 0;
+}
+</code></pre>
+<h2><span class="math">\(x\)</span></h2>
+<p>非常奇怪的一道贪心题。</p>
+<p>使用贪心的思想。对于两个箱子 <span class="math">\(i,j\)</span>，第 <span class="math">\(i\)</span> 个箱子若要比第 <span class="math">\(j\)</span> 个箱子优先考虑，显然应令 <span class="math">\(i\)</span> 上方除 <span class="math">\(j\)</span> 以外能放的箱子总质量 <span class="math">\(s_i​−w_j\)</span>​ 大于 <span class="math">\(j\)</span> 上方除 <span class="math">\(i\)</span> 以外能放的箱子总质量 <span class="math">\(s_j​−w_i\)</span>​。</p>
+<p>所以可以以此来排序。</p>
+<pre><code class="language-cpp">int n;
+struct node{
+	int w,s,v;
+}a[N];
+int f[N];
+inline bool cmp(node x,node y){
+	return x.s+x.w&lt;y.s+y.w;
+}
+signed main(){
+	n=read();
+	up(i,1,n){
+		a[i].w=read();
+		a[i].s=read();
+		a[i].v=read();
+	}
+	memset(f,-0x3f,sizeof f);
+	f[0]=0;
+	sort(a+1,a+1+n,cmp);
+	up(i,1,n){
+		dn(j,a[i].s,0){
+			f[j+a[i].w]=max(f[j+a[i].w],f[j]+a[i].v);
+		}
+	}
+	int ans=0;
+	up(i,0,20000)ans=max(ans,f[i]);
+    write(ans,1);
+	return 0;
+}
+
+</code></pre>
+<h2><span class="math">\(y\)</span></h2>
+<p>挺水的，就是暴力判断影响。</p>
+<h2><span class="math">\(z\)</span></h2>
+<p>很水的斜率优化。</p>
+<pre><code class="language-cpp">int f[N],sum[N];
+int q[N],a[N];
+int n,l;
+inline int X(int i){return a[i];}
+inline int Y(int i){return f[i]+a[i]*a[i];}
+inline db slope(int i,int j){return 1.0*(Y(i)-Y(j))/(X(i)-X(j));}
+signed main(){
+	n=read();l=read();
+	up(i,1,n){
+		a[i]=read();
+	}
+	memset(f,0x3f,sizeof f);
+	f[1]=0;
+	int h=1,t=1;q[1]=1;
+	up(i,2,n){
+		while(h&lt;t&amp;&amp;slope(q[h],q[h+1])&lt;=2*a[i]) ++h;
+        f[i]=f[q[h]]+(a[i]-a[q[h]])*(a[i]-a[q[h]])+l;
+        while(h&lt;t&amp;&amp;slope(i,q[t-1])&lt;=slope(q[t-1],q[t]))--t;
+        q[++t]=i;
+	}
+	cout&lt;&lt;f[n];
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/yegcs0pa" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-69bi0e6u.html"><small>← 上一篇</small><span>OI模板库</span></a><a href="luogu-rtizjklt.html"><small>下一篇 →</small><span>luogu.dp</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

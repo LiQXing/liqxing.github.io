@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>503 - 洛谷日爆</title>
+		<base href="https://cdn.luogu.com.cn/errpage/" />
+	</head>
+	<body>
+		<div class="header"><div class="max"><img src="logo.png" style="height: 3em;"></div></div>
+		<div style="margin-top: 40px;">
+			<div class="card max" style="background-image: url('gg1.svg');">
+				<h1>503 Service Unavailable</h1>
+				<p>服务目前不可用</p>
+				<p><small>请稍候刷新重试，但不要发布无意义帖子</small></p>
+				<p><span class="diag">[2026-10-13T16:38:20+08:00] 2602:ffe4:806:2251:34b3:3e9c:5928:6c3d -&gt; Cloudflare -&gt; CNHAZb.web-008</span></p>
+			</div>
+		</div>
+		<div class="footer max">2013-<span id="year">9999</span>, © 洛谷</div>
+		<style>
+			html, body { padding: 0; margin: 0; font-size: 16px; background-color: #f2f2f2; }
+			h1 { margin: .25em 0; font-size: 3.5em; font-weight: lighter; }
+			small { font-size: .875em; color: #888; }
+			p { font-size: 1em; margin: .25em 0; }
+			.max { box-sizing: border-box; margin-left: auto; margin-right: auto; width: 100%; max-width: 1200px; }
+			.header { margin: 0 !important; width: 100%; box-sizing: border-box; background-color: #fff; box-shadow: 0px 1px 3px rgba(26, 26, 26, 0.1); padding: .25em 20px; }
+			.footer { text-align: center; padding: 12px 0; }
+			.card { text-align: center; background: #fff; box-shadow: 0px 1.03426px 3.10278px rgba(26, 26, 26, 0.1); padding-top: .75em; min-height: 800px; background-position: bottom; background-repeat: no-repeat; background-size: cover; }
+			.beian { color: #999; text-decoration: none; }
+			.diag { font-size: .75em; font-family: monospace, monospace, Arial; color: #ccc; }
+		</style>
+		<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+	</body>
+</html>

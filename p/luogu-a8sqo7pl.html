@@ -1,0 +1,229 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 其实这个题目之前见过类似的。 上帝与集合的正确用法 都需要用到扩展欧拉定理。 $$a^b\equiv\begin{cases} a^{b \mod \phi(m)}, &amp; \gcd(a,m)=1 \ a^b, &amp; b&lt;\phi(m) \ a^{(b\mod \phi(m))+\phi(m)},&amp; \gcd(a,m)"><title>成外培训（数论） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-a8sqo7pl.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>成外培训（数论）</h1><p class="hero-meta"><time datetime="2023-07-14T21:08:05+08:00">2023-07-14 21:08</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/a8sqo7pl" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p>其实这个题目之前见过类似的。</p>
+<p><a href="https://www.luogu.com.cn/problem/P4139" rel="noopener noreferrer" target="_blank">上帝与集合的正确用法</a></p>
+<p>都需要用到扩展欧拉定理。</p>
+<p>$$a^b\equiv\begin{cases}
+a^{b \mod \phi(m)}, &amp; \gcd(a,m)=1 \
+a^b, &amp; b&lt;\phi(m) \
+a^{(b\mod \phi(m))+\phi(m)},&amp; \gcd(a,m)\neq 1 ,b\ge\phi(m)\
+\end{cases}\mod m$$</p>
+<p>如果 <span class="math">\(b&lt;\phi(m)\)</span>,这个东西就不能降幂了，其实在这两道题里欧拉定理就是用来降幂的。</p>
+<p>在本题中，因为 <span class="math">\(p\)</span> 无穷多。</p>
+<p>所以一定有<span class="math">\(a^b\equiv a^{(b\mod \phi(m))+\phi(m)}\mod m\)</span>。</p>
+<p>题目求 <span class="math">\(p^{p^{p^{p...}}}\)</span>.</p>
+<p>在一层层的递归中，<span class="math">\(p \)</span> 一遍遍的被求其 <span class="math">\(\phi\)</span> 值，最终必定会降到 1。</p>
+<p>这就是本题的解决方法。</p>
+<p>另外提一点关于 <span class="math">\(euler\)</span> 函数的证明。</p>
+<p><span class="math">\(\phi(n)=n(1-\dfrac{1}{p_1})(1-\dfrac{1}{p_2})....(1-\dfrac{1}{p_k})\)</span>。</p>
+<pre><code class="language-cpp">int p,m,fac=1;
+inline int euler(int x){
+    int ans=x;
+    up(i,2,sqrt(x)){
+        if(x%i==0){
+            ans=ans/i*(i-1);
+            while(x%i==0)x/=i;
+        }
+    }
+    if(ans&gt;1)ans=ans/x*(x-1);
+    return ans;
+}
+inline int ksm(int a,int b,int mod){
+    i128 res=1;
+    i128 ia=a;
+    while(b){
+        if(b&amp;1)res=(res*ia)%mod;
+        ia=ia*ia%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+inline int dfs(int a,int mod){
+    if(mod==1)return 0;
+    int phi=euler(mod);
+    return ksm(a,phi,mod)*ksm(a,dfs(a,phi),mod)%mod;
+}
+signed main(){
+    p=read();m=read();
+    up(i,2,m)fac*=i;
+    write(dfs(p,fac)%fac,1);
+    return 0;
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>有一个奇妙的结论。</p>
+<p>$\begin{vmatrix} \gcd(a_1,a_1),\gcd(a_1,a_2),...\gcd(a_1,a_n)\\gcd(a_2,a_1),\gcd(a_2,a_2),...\gcd(a_2,a_n)\
+...\
+\gcd(a_n,a_1),\gcd(a_n,a_2),...\gcd(a_n,a_n)\end{vmatrix}=\phi(a_1)\phi(a_2)...\phi(a_n)$</p>
+<p>code
+:</p>
+<pre><code class="language-cpp">inline int euler(int x){
+    int ans=x;
+    up(i,2,sqrt(x+0.5)){
+        if(x%i==0){
+            ans=ans/i*(i-1);
+            while(x%i==0)x/=i;
+        }
+    }
+    if(x&gt;1)ans=ans/x*(x-1);
+    return ans;
+}
+int n;
+signed main(){
+    while(scanf("%lld",&amp;n)==1){
+        int ans=1,x;
+        up(i,1,n){
+            x=read();
+            ans*=euler(x);
+            ans%=mod;
+        }
+        write(ans,1);
+    }
+    return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P1397" rel="noopener noreferrer" target="_blank"><span class="math">\(T4\)</span></a></p>
+<p>$$\begin{aligned}
+F[1, 1] &amp;= 1 \
+F[i, j] &amp;=a\times F[i, j-1]+b, &amp;j\neq 1 \
+F[i, 1] &amp;=c\times F[i-1, m]+d, &amp;i\neq 1 \
+\end{aligned}$$</p>
+<p>看到这里以为是个非常简单的题，直到看见数据范围。</p>
+<p><span class="math">\(1 \le n,m \le 10^{1\,000\,000}\)</span>，<span class="math">\(1 \le a,b,c,d \le 10^9\)</span> 。</p>
+<p>被这个数据范围创死了（悲）。</p>
+<p>首先，这个题看着就像矩阵快速幂。</p>
+<p>构造</p>
+<p><span class="math">\(F(n)=[f(n),f(n+1)] \)</span></p>
+<p><span class="math">\(F(n+1)=[f(n+1),f(n+2)]\)</span></p>
+<p><span class="math">\(F(n)\times A=F(n+1)\)</span></p>
+<p><span class="math">\(F(1)= \begin{matrix} 1,1\end{matrix}\)</span></p>
+<p>初始矩阵为</p>
+<p>所以</p>
+<p><span class="math">\(A_1=\begin{bmatrix} 0,b\\1,a\end{bmatrix}\)</span></p>
+<p>同样的,</p>
+<p><span class="math">\(A_2=\begin{bmatrix} 0,d\\1,c\end{bmatrix}\)</span></p>
+<p>到最后 <span class="math">\(F(1)\times A_1^{m-1}(A_2A_1^{m-1})^{n-1}\)</span></p>
+<p>又有欧拉定理</p>
+<p><span class="math">\($a^{n \mod  \phi(p)}\equiv 1 (\mod p)\)</span>$</p>
+<p>来读入 <span class="math">\(n,m\)</span>。</p>
+<p>注意当 <span class="math">\(a=1\)</span> 时并不成立。</p>
+<p><a href="https://www.luogu.com.cn/problem/CF687B" rel="noopener noreferrer" target="_blank"><span class="math">\(T5\)</span></a></p>
+<p>已知：</p>
+<p><span class="math">\($\begin{cases} x \equiv b_1\ ({\rm mod}\ a_1) \\ x\equiv b_2\ ({\rm mod}\ a_2) \\ ... \\ x \equiv b_n\ ({\rm mod}\ a_n)\end{cases}\)</span>$</p>
+<p>看起来是非常困难的 excrt，然鹅，题目只让你求能否推出<span class="math">\(x\mod k\)</span>。</p>
+<p>这就肥肠简单了。</p>
+<p>判断 <span class="math">\(\lcm\)</span>能否被k整除就行了。</p>
+<p>(代码太简单所以就不放了)。</p>
+<p><a href="https://www.luogu.com.cn/problem/CF906D" rel="noopener noreferrer" target="_blank"><span class="math">\(T6\)</span></a></p>
+<p>一眼看过去，肥肠典型的欧拉降幂。</p>
+<p>再看一眼，时间是 <span class="math">\(O(n^2)\)</span>，会炸掉。</p>
+<p>于是考虑用 map 把每一个 <span class="math">\(\phi\)</span> 都存下来。</p>
+<p>最大的重点</p>
+<p>这里要注意，如果中途出现了<span class="math">\(\ge \mod\)</span>的情况我们要加上<span class="math">\(\mod\)</span>，以满足欧拉降幂的公式</p>
+<pre><code class="language-cpp">int n,p,m;
+unordered_map&lt;int,int&gt;phy;
+inline int euler(int x){
+    int t=x;
+    if(phy.find(x)!=phy.end())return phy[x];
+    int ans=x;
+    up(i,2,sqrt(x)){
+        if(x%i==0){
+            while(x%i==0)x/=i;
+            ans=ans/i*(i-1);
+        }
+    }
+    if(x&gt;1)ans=ans/x*(x-1);
+    phy[t]=ans;
+    return ans;
+}
+inline int mo(int x,int mod){
+	return x&lt;mod?x:(x%mod+mod);
+}
+inline int ksm(int a,int b,int mod){
+	int ret=1;
+	while(b){
+		if(b&amp;1) ret=mo(ret*a,mod);
+		a=mo(a*a,mod);b&gt;&gt;=1;
+	}
+	return ret;
+}
+int a[N];
+inline int dfs(int l,int r,int mod){
+    if(l==r||mod==1)return mo(a[l],mod);
+    int phi=euler(mod);
+    return ksm(a[l],dfs(l+1,r,phi),mod);
+}
+signed main(){
+    n=read();p=read();
+    up(i,1,n)a[i]=read();
+    m=read();
+    int l,r;
+    while(m--){
+        l=read();r=read();
+        write(dfs(l,r,p)%p,1);
+    }
+    return 0;
+}
+</code></pre>
+<p><span class="math">\(T7\)</span></p>
+<pre><code class="language-cpp">inline int ksm(int a,int b){
+    int res=1;
+    while(b){
+        if(b&amp;1)res=(res*a)%mod;
+        a=(a*a)%mod;
+        b&gt;&gt;=1;
+    }
+    return res;
+}
+int p[30],k[30];
+inline void clear(){
+    memset(p,0,sizeof p);
+    memset(k,0,sizeof k);
+}
+signed main(){
+    int T=read();
+    while(T--){
+        clear();
+        n=read();
+        up(i,1,n){
+            p[i]=read();
+            k[i]=read();
+        }
+        int ans=1;
+        up(i,1,n){
+            int t=ksm(p[i],k[i]-1);
+            ans=ans*t%mod;
+            t=(p[i]+p[i]*k[i]%mod-k[i]%mod+mod)%mod;
+            ans=ans*t%mod;
+        }
+        write(ans,1);
+    }
+    return 0;
+}
+</code></pre>
+<p><span class="math">\(T8\)</span></p>
+<pre><code class="language-cpp">int n,k;
+int a[N];
+signed main(){
+    n=read();k=read();
+    up(i,1,n)a[i]=read();
+    int m=a[1];
+	up(i,2,n){
+		if(m==1)break;
+		if(a[i]&gt;m)m=__gcd(a[i],m);
+		else m=__gcd(m,a[i]);
+	}
+	if(m&gt;k)m=__gcd(m,k);
+	else m=gcd(k,m);
+	int ans=k/m;
+	printf("%lld\n",ans);
+	for(int i=0;i&lt;ans;i++){
+		printf("%lld ",i*m);
+	}
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/a8sqo7pl" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-b773ghau.html"><small>← 上一篇</small><span>P3515 [POI2011] Lightning Conductor 题解</span></a><a href="luogu-ummtt4v7.html"><small>下一篇 →</small><span>成外培训（图论）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

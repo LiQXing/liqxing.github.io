@@ -1,0 +1,250 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="比较清新的一道小模拟。 我们可以大力枚举大小王替换成的牌，然后对每一个 \(3\times 3\) 的矩阵进行枚举，如果一个矩阵满足条件，那么就枚举第二个矩阵，注意第二个矩阵和第一个矩阵不能够有重合，如果两个矩阵都满足条件，就直接输出答案。 如何判断矩形是否满足条件，花色相同很简单，给每个花色打标记就行了，数字各不相同，可以考虑"><title>CF71D · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-505meb6b.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>CF71D</h1><p class="hero-meta"><time datetime="2023-09-05T14:43:17+08:00">2023-09-05 14:43</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/505meb6b" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>比较清新的一道小模拟。</p>
+<p>我们可以大力枚举大小王替换成的牌，然后对每一个 <span class="math">\(3\times 3\)</span> 的矩阵进行枚举，如果一个矩阵满足条件，那么就枚举第二个矩阵，注意第二个矩阵和第一个矩阵不能够有重合，如果两个矩阵都满足条件，就直接输出答案。</p>
+<p>如何判断矩形是否满足条件，花色相同很简单，给每个花色打标记就行了，数字各不相同，可以考虑状压，判断是否二进制上有 <span class="math">\(9\)</span> 个一。</p>
+<p>虽然代码看起来很多，实际上只有三分之一。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define i64 long long
+#define ull unsigned long long
+#define ldb long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+#define fi first
+#define se second
+#define endl '\n'
+
+const int N=2e5+100,M=1e6+100;
+const int mod=1e9+7;
+const int inf=0x3f3f3f3f;
+const ull uinf=1e18+14;
+
+int n,m,k;
+string tot[]={
+"AC","AD","AH","AS","2C","2D","2H","2S","3C","3D","3H","3S","4C","4D","4H","4S",
+"5C","5D","5H","5S","6C","6D","6H","6S","7C","7D","7H","7S","8C","8D","8H","8S",
+"9C","9D","9H","9S","TC","TD","TH","TS","JC","JD","JH","JS","QC","QD","QH","QS",
+"KC","KD","KH","KS"};
+string a[22][22];
+map&lt;string,int&gt;mp;
+vector&lt;int&gt;num;
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;m;
+    if(!(n&gt;=6||m&gt;=6)){
+		cout&lt;&lt;"No solution.\n";
+		return 0;
+	}
+    up(i,1,n){
+        up(j,1,m){
+            cin&gt;&gt;a[i][j];
+            mp[a[i][j]]=1;
+        }
+    }
+    if(!mp["J1"]&amp;&amp;!mp["J2"]){
+        //点数
+        up(i,1,n-2){
+            up(j,1,m-2){
+                int x=0,numc=0,numd=0,numh=0,nums=0;
+                up(l,i,i+2){
+                    up(r,j,j+2){
+                        int t=a[l][r][0],p=a[l][r][0];
+                        if(t=='A')t=1;
+                        else if(t=='T')t=10;
+                        else if(t=='J')t=11;
+                        else if(t=='Q')t=12;
+                        else if(t=='K')t=13;
+                        else t=t-'0';
+                        x|=(1&lt;&lt;t);
+                        if(p=='C')numc=1;
+                        if(p=='D')numd=1;
+                        if(p=='H')numh=1;
+                        if(p=='S')nums=1;
+                    }
+                }
+                if(__builtin_popcountll(x)==9||(numc+numd+numh+nums)==1){
+                    up(i2,1,n-2){
+                        up(j2,1,m-2){
+                            if(i2+2&gt;=i&amp;&amp;i2&lt;=i+2&amp;&amp;j2+2&gt;=j&amp;&amp;j2&lt;=j+2)continue;
+                            int x2=0;
+                            numc=0;numd=0;numh=0;nums=0;
+                            up(l2,i2,i2+2){
+                                up(r2,j2,j2+2){
+                                    int t=a[l2][r2][0],p=a[l2][r2][0];
+                                    if(t=='A')t=1;
+                                    else if(t=='T')t=10;
+                                    else if(t=='J')t=11;
+                                    else if(t=='Q')t=12;
+                                    else if(t=='K')t=13;
+                                    else t=t-'0';
+                                    x2|=(1&lt;&lt;t);
+                                    if(p=='C')numc=1;
+                                    if(p=='D')numd=1;
+                                    if(p=='H')numh=1;
+                                    if(p=='S')nums=1;
+                                }
+                            }
+                            if(__builtin_popcountll(x2)==9||(numc+numd+numh+nums)==1){
+                                cout&lt;&lt;"Solution exists."&lt;&lt;endl;
+                                cout&lt;&lt;"There are no jokers."&lt;&lt;endl;
+                                cout&lt;&lt;"Put the first square to ("&lt;&lt;i&lt;&lt;", "&lt;&lt;j&lt;&lt;")."&lt;&lt;endl;   
+                                cout&lt;&lt;"Put the second square to ("&lt;&lt;i2&lt;&lt;", "&lt;&lt;j2&lt;&lt;")."&lt;&lt;endl;      
+                                return 0;
+                            } 
+                        }
+                    }
+                }                
+            }
+        }          
+        cout&lt;&lt;"No solution."&lt;&lt;endl;
+        return 0;
+    }
+    if(mp["J1"]+mp["J2"]==1){
+        int sx,sy;
+        up(i,1,n){
+            up(j,1,m){
+                if(a[i][j]=="J1"||a[i][j]=="J2"){
+                    sx=i;sy=j;
+                    goto F;
+                } 
+            }
+        }
+        F:;
+        up(pos,0,51){
+            if(mp[tot[pos]])continue;
+            a[sx][sy]=tot[pos];
+            up(i,1,n-2){
+                up(j,1,m-2){
+                    int x=0,numc=0,numd=0,numh=0,nums=0;
+                    up(l,i,i+2){
+                        up(r,j,j+2){
+                            int t=a[l][r][0],p=a[l][r][0];
+                            if(t=='A')t=1;
+                            else if(t=='T')t=10;
+                            else if(t=='J')t=11;
+                            else if(t=='Q')t=12;
+                            else if(t=='K')t=13;
+                            else t=t-'0';
+                            x|=(1&lt;&lt;t);
+                            if(p=='C')numc=1;
+                            if(p=='D')numd=1;
+                            if(p=='H')numh=1;
+                            if(p=='S')nums=1;
+                        }
+                    }
+                    if(__builtin_popcountll(x)==9||(numc+numd+numh+nums)==1){
+                        up(i2,1,n-2){
+                            up(j2,1,m-2){
+                                if(i2+2&gt;=i&amp;&amp;i2&lt;=i+2&amp;&amp;j2+2&gt;=j&amp;&amp;j2&lt;=j+2)continue;
+                                int x2=0;
+                                numc=0;numd=0;numh=0;nums=0;
+                                up(l2,i2,i2+2){
+                                    up(r2,j2,j2+2){
+                                        int t=a[l2][r2][0],p=a[l2][r2][0];
+                                        if(t=='A')t=1;
+                                        else if(t=='T')t=10;
+                                        else if(t=='J')t=11;
+                                        else if(t=='Q')t=12;
+                                        else if(t=='K')t=13;
+                                        else t=t-'0';
+                                        x2|=(1&lt;&lt;t);
+                                        if(p=='C')numc=1;
+                                        if(p=='D')numd=1;
+                                        if(p=='H')numh=1;
+                                        if(p=='S')nums=1;
+                                    }
+                                }
+                                if(__builtin_popcountll(x2)==9||(numc+numd+numh+nums)==1){
+                                    cout&lt;&lt;"Solution exists."&lt;&lt;endl;
+                                    cout&lt;&lt;"Replace "&lt;&lt;((mp["J1"]==1)?("J1"):("J2"))&lt;&lt;" with "&lt;&lt;tot[pos]&lt;&lt;"."&lt;&lt;endl;  
+                                    cout&lt;&lt;"Put the first square to ("&lt;&lt;i&lt;&lt;", "&lt;&lt;j&lt;&lt;")."&lt;&lt;endl;   
+                                    cout&lt;&lt;"Put the second square to ("&lt;&lt;i2&lt;&lt;", "&lt;&lt;j2&lt;&lt;")."&lt;&lt;endl;
+                                    return 0;
+                                } 
+                            }
+                        }
+                    }                
+                }
+            }          
+        }
+        cout&lt;&lt;"No solution."&lt;&lt;endl;
+        return 0;
+    }
+    int sx1,sy1,sx2,sy2;
+    up(i,1,n){
+        up(j,1,m){
+            if(a[i][j]=="J1")sx1=i,sy1=j;
+            if(a[i][j]=="J2")sx2=i,sy2=j;
+        }
+    }
+    up(pos1,0,51){
+        if(mp[tot[pos1]])continue;
+        up(pos2,0,51){
+            if(mp[tot[pos2]])continue;
+            if(pos1==pos2)continue;
+            a[sx1][sy1]=tot[pos1];
+            a[sx2][sy2]=tot[pos2];
+            up(i,1,n-2){
+                up(j,1,m-2){
+                    int x=0,numc=0,numd=0,numh=0,nums=0;
+                    up(l,i,i+2){
+                        up(r,j,j+2){
+                            int t=a[l][r][0],p=a[l][r][0];
+                            if(t=='A')t=1;
+                            else if(t=='T')t=10;
+                            else if(t=='J')t=11;
+                            else if(t=='Q')t=12;
+                            else if(t=='K')t=13;
+                            else t=t-'0';
+                            x|=(1&lt;&lt;t);
+                            if(p=='C')numc=1;
+                            if(p=='D')numd=1;
+                            if(p=='H')numh=1;
+                            if(p=='S')nums=1;
+                        }
+                    }
+                    if(__builtin_popcountll(x)==9||(numc+numd+numh+nums)==1){
+                        up(i2,1,n-2){
+                            up(j2,1,m-2){
+                                if(i2+2&gt;=i&amp;&amp;i2&lt;=i+2&amp;&amp;j2+2&gt;=j&amp;&amp;j2&lt;=j+2)continue;
+                                int x2=0;
+                                numc=0;numd=0;numh=0;nums=0;
+                                up(l2,i2,i2+2){
+                                    up(r2,j2,j2+2){
+                                        int t=a[l2][r2][0],p=a[l2][r2][0];
+                                        if(t=='A')t=1;
+                                        else if(t=='T')t=10;
+                                        else if(t=='J')t=11;
+                                        else if(t=='Q')t=12;
+                                        else if(t=='K')t=13;
+                                        else t=t-'0';
+                                        x2|=(1&lt;&lt;t);
+                                        if(p=='C')numc=1;
+                                        if(p=='D')numd=1;
+                                        if(p=='H')numh=1;
+                                        if(p=='S')nums=1;
+                                    }
+                                }
+                                if(__builtin_popcountll(x2)==9||(numc+numd+numh+nums)==1){
+                                    cout&lt;&lt;"Solution exists.\nReplace J1 with "&lt;&lt;tot[pos1]&lt;&lt;" and J2 with "&lt;&lt;tot[pos2]&lt;&lt;"."&lt;&lt;"\nPut the first square to ("&lt;&lt;i&lt;&lt;", "&lt;&lt;j&lt;&lt;").\nPut the second square to ("&lt;&lt;i2&lt;&lt;", "&lt;&lt;j2&lt;&lt;").\n";
+                                    return 0;
+                                } 
+                            }
+                        }
+                    }                
+                }
+            }          
+        }
+    }
+    cout&lt;&lt;"No solution."&lt;&lt;endl;
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/505meb6b" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-nxhizsdo.html"><small>← 上一篇</small><span>codeforces练习题10</span></a><a href="luogu-qwk7rygk.html"><small>下一篇 →</small><span>CF105C</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

@@ -1,0 +1,247 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="The Awesomest Vertex 树上问题，习惯性的拍成 dfs 序。 因为有绝对值，所以可以化成 \(\max(a[i],-a[i])\) 。 \(b\) 是个定值，所以可以预处理出来。 每次修改可以类似吉老师线段树那样去维护。 int n,q; int a[N],b[N],p[N]; vector&lt;int&gt;g[N];"><title>codeforces练习题5 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-qdw820i1.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题5</h1><p class="hero-meta"><time datetime="2023-08-28T08:28:34+08:00">2023-08-28 08:28</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/qdw820i1" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/CF1178G" rel="noopener noreferrer" target="_blank">The Awesomest Vertex</a></h3>
+<p>树上问题，习惯性的拍成 dfs 序。
+因为有绝对值，所以可以化成 <span class="math">\(\max(a[i],-a[i])\)</span>。
+<span class="math">\(b\)</span> 是个定值，所以可以预处理出来。
+每次修改可以类似吉老师线段树那样去维护。</p>
+<pre><code class="language-cpp">int n,q;
+int a[N],b[N],p[N];
+vector&lt;int&gt;g[N];
+int cnt;
+int in[N*2],out[N*2];
+struct node{
+	int k,b;
+}val[N*2];
+struct node2{
+    int l,r,k,b;
+}tr[N&lt;&lt;2];
+int lim[N&lt;&lt;2],d[N&lt;&lt;2];
+inline void dfs(int u,int from){
+    in[u]=++cnt;
+    a[u]+=a[p[u]];
+    b[u]+=b[p[u]];
+    int v=abs(b[u]);
+	val[cnt]={v,a[u]*v};
+    for(auto v:g[u]){
+        if(v==from)continue;
+        dfs(v,u);
+    }
+    out[u]=++cnt;
+    val[cnt]={-v,-a[u]*v};
+}
+inline void push_up(int k){
+    int v=(tr[lc].b&gt;=tr[rc].b?(lc):(rc));
+	tr[k].k=tr[v].k;
+	tr[k].b=tr[v].b;
+	lim[k]=min((tr[v].k&gt;=tr[v^1].k?inf:(tr[v].b-tr[v^1].b)/(tr[v^1].k-tr[v].k)),min(lim[lc],lim[rc]));
+}
+inline void build(int k=1,int l=1,int r=cnt){
+    tr[k].l=l;tr[k].r=r;
+    if(l==r){
+        tr[k].k=val[l].k;
+        tr[k].b=val[l].b; 
+		lim[k]=inf;
+		return;
+	}
+	int mid=(l+r)&gt;&gt;1;
+	build(lc,l,mid);
+	build(rc,mid+1,r);
+	push_up(k);
+}
+inline void upd(int k,int v){
+    tr[k].b+=tr[k].k*v;
+    lim[k]-=v;
+    d[k]+=v;
+}
+inline void push_down(int k){
+    if(!d[k])return;
+    upd(lc,d[k]);
+    upd(rc,d[k]);
+    d[k]=0;
+}
+inline int ask(int k,int l,int r){
+    if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].b;
+    push_down(k);
+    int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+    int ret=-inf;
+    if(l&lt;=mid)ret=ask(lc,l,r);
+    if(r&gt;mid)ret=max(ret,ask(rc,l,r));
+    return ret;
+}
+inline void change(int k,int l,int r,long long v){
+    if(!tr[k].r)return;
+    if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r&amp;&amp;v&lt;=lim[k]){
+        upd(k,v);
+        return; 
+    }
+    push_down(k);
+    int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+    if(l&lt;=mid)change(lc,l,r,v);
+    if(r&gt;mid)change(rc,l,r,v);
+    push_up(k);
+}
+signed main() {
+    n=read();q=read();
+    up(i,2,n){
+        p[i]=read();
+        g[p[i]].push_back(i);
+        //g[i].push_back(p[i]);
+    }
+    up(i,1,n)a[i]=read();
+    up(i,1,n)b[i]=read();
+	dfs(1,0);
+    build();
+    int op,v,x;
+    while(q--){
+        op=read();v=read();
+		if(op==1){
+			x=read();
+			change(1,in[v],out[v],x);
+		}
+		else{
+			printf("%lld\n",ask(1,in[v],out[v]));
+		}
+    }
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF484A" rel="noopener noreferrer" target="_blank">Bits </a></h3>
+<p>从低到高贪心枚举每一位。</p>
+<pre><code class="language-cpp">signed main() {
+    int T=read();
+    int l,r;
+    while(T--){
+        l=read();r=read();
+        for(int i=1;(l|i)&lt;=r;i&lt;&lt;=1)l|=i;
+        write(l,1);
+    }
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1494D" rel="noopener noreferrer" target="_blank">Dogeforces </a></h3>
+<p><strong>祖先的权值严格大于当前点。</strong></p>
+<p>根节点就很好判断，以下每一个子树同理。</p>
+<p>所以可以递归处理每一个子树。</p>
+<pre><code class="language-cpp">int n,m;
+int l[550][550];
+int a[N],vst[N],cnt;
+inline int findrt(vector&lt;int&gt;s) {
+	int mx=0;
+	for(auto u:s) for(auto v:s) if(l[u][v]&gt;mx) mx=l[u][v];
+	return mx;
+}
+int fa[N];
+inline int solve(vector&lt;int&gt;s) {
+	if(s.size()==1) return s[0];
+	int sz=s.size(),u=findrt(s),id=++cnt;
+	a[id]=u;
+	for(auto v:s) vst[v]=0;
+	for(auto v:s) if(!vst[v]) {
+		vector&lt;int&gt;t;
+		for(auto w:s) if(l[v][w]!=u) vst[w]=1,t.push_back(w);
+		fa[solve(t)]=id;
+	}
+	return id;
+}
+signed main(){
+    n=read();cnt=n;
+    up(i,1,n){
+        up(j,1,n){
+            l[i][j]=read();
+        }
+    }
+    up(i,1,n)a[i]=l[i][i];
+    vector&lt;int&gt;s;
+    up(i,1,n)s.push_back(i);
+    int rt=solve(s);
+    write(cnt,1);
+	up(i,1,cnt)write(a[i],0);
+    puts("");
+	write(rt,1);
+	up(i,1,cnt)if(i!=rt)printf("%lld %lld\n",i,fa[i]);
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF825E" rel="noopener noreferrer" target="_blank">Minimal Labels </a></h3>
+<p>拓扑好题。</p>
+<p>因为要求字典序最小，所以直接用优先队列维护。</p>
+<pre><code class="language-cpp">int n,k,m;
+int a[N];
+vector&lt;int&gt;g[N];
+int id[N],tms,deg[N];
+inline void topo() {
+	priority_queue&lt;int&gt; q;
+	up(i,1,n) if(!deg[i]) q.push(i);
+	while(!q.empty()) {
+		int u = q.top(); q.pop();
+		id[u] = ++tms;
+		for(auto v:g[u]) if(!--deg[v]) q.push(v);
+	}
+}
+
+signed main() {
+	
+    n=read();m=read();
+	int u,v;
+    up(i,1,m){
+		u=read();v=read();
+		g[v].push_back(u);
+		++deg[u];
+	}
+	topo();
+	up(i, 1, n) printf("%d%c", n+1-id[i]);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF590C" rel="noopener noreferrer" target="_blank">Three States</a></h3>
+<p>暴力bfs判断。</p>
+<pre><code class="language-cpp">int n,m;
+char a[1500][1500];
+int dis[1500][1500][4];
+int dx[]={0,0,1,-1},dy[]={1,-1,0,0};
+inline void bfs(int s){
+    deque&lt;pii&gt;q;
+    up(i,1,n){
+        up(j,1,m){
+            if(a[i][j]==s+'0'){
+                dis[i][j][s]=0;
+                q.push_back({i,j});
+            }
+        }
+    }
+    while(q.size()){
+        pii u=q.front();q.pop_front();
+        up(i,0,3){
+            int tx=u.first+dx[i],ty=u.second+dy[i];
+            if(tx&lt;1||tx&gt;n||dis[u.first][u.second][s]+1&gt;=dis[tx][ty][s]||ty&lt;1||ty&gt;m||a[tx][ty]=='#')continue;
+			if(a[tx][ty]=='.'){
+				dis[tx][ty][s]=dis[u.first][u.second][s]+1;
+				q.push_back({tx,ty});
+			}
+			else{
+				dis[tx][ty][s]=dis[u.first][u.second][s];
+				q.push_front({tx,ty});
+		    }
+        }
+    }
+}
+signed main() {
+    n=read();m=read();
+    up(i,1,n){
+        scanf("%s",a[i]+1);
+    }
+    memset(dis,0x1f,sizeof dis);
+    bfs(1);bfs(2);bfs(3);
+    int minl=inf;
+    up(i,1,n){
+		up(j,1,m){
+			int cost=dis[i][j][1]+dis[i][j][2]+dis[i][j][3];
+			if(a[i][j]=='.') cost-=2; 
+			minl=min(minl,cost);
+		}
+	}
+	if(minl&gt;=inf)cout&lt;&lt;"-1";
+	else cout&lt;&lt;minl;
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/qdw820i1" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-nn2i5n11.html"><small>← 上一篇</small><span>codeforces练习题6</span></a><a href="luogu-22tcbljn.html"><small>下一篇 →</small><span>test20230828</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

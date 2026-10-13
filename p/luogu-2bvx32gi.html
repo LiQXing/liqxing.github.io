@@ -1,0 +1,146 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="You Are Given a WASD-string... 看到这道题 第一反应是行列减一。 原本面积是 \(a\times b\) ,答案应该是 \((a-1)\times b,a\times(b-1)\) . 然而这个结论是错误的。 但是考虑这样一个操作序列 ADAD 原本是 \(1×2\) ，但任意添加操作之后并不能让权"><title>codeforces练习题8 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-2bvx32gi.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题8</h1><p class="hero-meta"><time datetime="2023-08-31T14:49:14+08:00">2023-08-31 14:49</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/2bvx32gi" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/CF1202C" rel="noopener noreferrer" target="_blank">You Are Given a WASD-string... </a></h3>
+<p>看到这道题 第一反应是行列减一。
+原本面积是 <span class="math">\(a\times b\)</span>,答案应该是 <span class="math">\((a-1)\times b,a\times(b-1)\)</span>.</p>
+<p>然而这个结论是错误的。</p>
+<p>但是考虑这样一个操作序列 <code>ADAD</code> 原本是 <span class="math">\(1×2\)</span>，但任意添加操作之后并不能让权值变为$ 0×2<span class="math">\(，甚至不能变为 \)</span>1×1$。</p>
+<p>那么变化的位置只能是 <strong>一个最值最后一次出现与另一个最值第一次出现</strong> 之间。</p>
+<pre><code class="language-cpp">int n;
+int sum[N],sum2[N];
+inline bool check(int l,int r){
+  for(int i=l+1;i&lt;=r;++i)if(sum[i]!=sum[l])return true;
+  return false;
+}
+inline bool check2(int l,int r){
+  for(int i=l+1;i&lt;=r;++i)if(sum2[i]!=sum2[l])return true;
+  return false;
+}
+string s;
+signed main() { 
+	int T=read();
+	while(T--){
+		cin&gt;&gt;s;
+		n=s.size();s=" "+s;
+		int maxl=0,maxl2=0,minl=0,minl2=0;
+		up(i,1,n){
+      		sum[i]=sum[i-1];
+      		if(s[i]=='A')--sum[i];
+      		if(s[i]=='D')++sum[i];
+      		maxl=max(maxl,sum[i]);minl=min(minl,sum[i]);
+      		sum2[i]=sum2[i-1];
+      		if(s[i]=='S')--sum2[i];
+      		if(s[i]=='W')++sum2[i];
+      		maxl2=max(maxl2,sum2[i]);minl2=min(minl2,sum2[i]);
+		}
+    	int l=1e14,r=-1e14,l2=1e14,r2=-1e14;
+    	for(int i=0;i&lt;=n;++i){
+      		if(sum[i]==minl)l=min(l,i),r=max(r,i);
+      		if(sum[i]==maxl)l2=min(l2,i),r2=max(r2,i);
+    	}
+    	int tot=(maxl2-minl2+1)*(maxl-minl+1),ans=tot;
+    	if((l&gt;r2||r&lt;l2)&amp;&amp;(check(r2,l-1)||check(r,l2-1)))ans=min(ans,tot-(maxl2-minl2+1));
+    	l=l2=1e14;r=r2=-1e14;
+    	up(i,0,n) {
+      		if(sum2[i]==minl2)l=min(l,i),r=max(r,i);
+      		if(sum2[i]==maxl2)l2=min(l2,i),r2=max(r2,i);
+    	}
+    	if((l&gt;r2||l2&gt;r)&amp;&amp;(check2(r2,l-1)||check2(r,l2-1)))ans=min(ans,tot-(maxl-minl+1));
+    	cout&lt;&lt;ans&lt;&lt;endl;
+	}
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF128B" rel="noopener noreferrer" target="_blank">String</a></h3>
+<p>蛮有意思的，本以为要用后缀数组等高级算法，没想到最大堆给艹过去了。</p>
+<pre><code class="language-cpp">string ss;
+struct node{
+    int l,r;
+    bool operator&lt;(const node &amp;y)const{
+        for(int k=0;k&lt;=r-l;k++){
+            int i=l+k,j=y.l+k;
+            if(j&gt;y.r) return 1;
+            if(ss[i]!=ss[j]) return ss[i]&gt;ss[j];
+        }
+        return 0;
+    }
+};
+priority_queue&lt;node&gt; q;
+
+int k;
+signed main(){
+    cin&gt;&gt;ss&gt;&gt;k;
+    for(int i=0;i&lt;ss.length();i++){
+       q.push({i,i});
+    }
+    up(i,1,k-1){
+        node u=q.top();q.pop();
+        if(u.r&lt;ss.length()-1){
+          	u.r++;
+            q.push(u);
+        }
+        if(q.empty()){
+            printf("No such line.");
+            return 0;
+        }
+    }
+    for(int i=q.top().l;i&lt;=q.top().r;i++)cout&lt;&lt;ss[i];
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1411D" rel="noopener noreferrer" target="_blank">Grime Zoo</a></h3>
+<p>一个显然的结论，<code>?</code>中一定有一个分界点，在这个点之前全部填<code>1</code>,之后全部填<code>0</code>。</p>
+<pre><code class="language-cpp">int x,y,n;
+char s[N];
+int f[N], g[N], Pre[N], Suf[N];
+signed main(){
+	scanf("%s",s+1);
+	x=read();y=read();
+	n=strlen(s+1);
+	if(x &lt; y) {
+		swap(x, y);
+		up(i,1,n) s[i] ^= isdigit(s[i]);
+	}
+	up(i,1,n){
+		if(s[i]=='0')f[i]=f[i-1]+y*Pre[i-1];
+		else f[i]=f[i-1]+x*(i-1-Pre[i-1]);
+		Pre[i]=Pre[i-1]+(s[i]!='0');
+	}
+	dn(i,n,1){
+		if(s[i]=='1')g[i]=g[i+1]+y*Suf[i + 1];
+		else g[i] = g[i + 1] + x * (n - i - Suf[i + 1]);
+		Suf[i] = Suf[i + 1] + (s[i] != '1');
+	}
+	int res = 1e18;
+	up(i,0,n)res=min(res,f[i] + g[i + 1] + x * (i - Pre[i]) * (n - i - Suf[i + 1])+ y * Pre[i] * Suf[i + 1]);
+	printf("%lld\n", res);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF731F" rel="noopener noreferrer" target="_blank">Video Cards </a></h3>
+<p>柿子化简：</p>
+<p><span class="math">\($\max_{k=1}^{n}\sum(a_i-a_i\mod a_k)=\max_{k=1}^{n}a_k\times\sum(a_i/a_k)\)</span>$</p>
+<p>考虑枚举 <span class="math">\(k\)</span>,然后快速算出 <span class="math">\(\sum(a_i/a_k)\)</span>。</p>
+<p>开个桶来维护前缀和。</p>
+<pre><code class="language-cpp">
+int n;
+int a[N],b[N],maxl,ans;
+bool vis[N];
+signed main(){
+	n=read();
+    up(i,1,n)a[i]=read();
+    sort(a+1,a+1+n);
+    up(i,1,n)b[a[i]]++;
+    maxl=a[n];
+    up(i,1,maxl)b[i]+=b[i-1];
+    up(i,1,n){
+        if(vis[a[i]])continue;
+        for(int j=a[i];j&lt;=maxl;j+=a[i])vis[j]=1;
+        int cnt=0;
+        for(int j=a[i];j&lt;=maxl-a[i];j+=a[i])cnt=cnt+(b[j+a[i]-1]-b[j-1])*j;
+		cnt+=(b[maxl]-b[maxl/a[i]*a[i]-1])*(maxl/a[i])*a[i];
+        ans=max(ans,cnt);
+    }
+    cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/2bvx32gi" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-c5a6sbbs.html"><small>← 上一篇</small><span>codeforces练习题7</span></a><a href="luogu-ja3vdhn0.html"><small>下一篇 →</small><span>P5503</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

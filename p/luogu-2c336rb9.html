@@ -1,0 +1,155 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="题目 \(2-SAT\) 问题： 有 \(n\) 个变量，每一个变量都是 \(bool\) 类型的，除了这 \(n\) 个变量以外，我们还有 m 个关系表达式，关系表达式差不多是这样的 \(x1\) &amp; \(x2\) = \(false\) （注意每个表达式只会有两个变量） 问给出 \(m\) 个关系表达式后，能否给这 \(n\"><title>P4782 【模板】2-SAT 问题 题解 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-2c336rb9.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>P4782 【模板】2-SAT 问题 题解</h1><p class="hero-meta"><time datetime="2022-12-09T14:30:53+08:00">2022-12-09 14:30</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/2c336rb9" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://www.luogu.com.cn/problem/P4782" rel="noopener noreferrer" target="_blank">题目</a></h2>
+<h2><span class="math">\(2-SAT\)</span>问题：</h2>
+<p>有<span class="math">\(n\)</span>个变量，每一个变量都是<span class="math">\(bool\)</span>类型的，除了这<span class="math">\(n\)</span>个变量以外，我们还有 m
+个关系表达式，关系表达式差不多是这样的</p>
+<p><span class="math">\(x1\)</span>&amp;<span class="math">\(x2\)</span>=<span class="math">\(false\)</span>（注意每个表达式只会有两个变量）</p>
+<p>问给出<span class="math">\(m\)</span>个关系表达式后，能否给这<span class="math">\(n\)</span>个变量找出一个赋值的方法，使得满足所有的表达式； </p>
+<h2>建边方式：</h2>
+<p>核心问题只需要考虑有没有解；</p>
+<p>对于每个变量都只有两种取值<span class="math">\(0||1\)</span>
+，那么对于每个点，我们把每个变量拆成<span class="math">\(true\)</span> 点和<span class="math">\(false\)</span>点；</p>
+<p>假如我们有一个关系：<span class="math">\(x1\)</span> &amp; <span class="math">\(x2\)</span>=<span class="math">\(false\)</span></p>
+<p>说明<span class="math">\(x1\)</span>和 <span class="math">\(x2\)</span> 中一定有一个为 <span class="math">\(false\)</span>；</p>
+<p>那么我们可以从 <span class="math">\(x1\)</span>的$ true$ 连向$ x1$ 的 <span class="math">\(false\)</span>，从<span class="math">\(x2\)</span> 的 <span class="math">\(true\)</span> 连向 <span class="math">\(x1\)</span> 的 <span class="math">\(false\)</span>；
+要注意只有关系明确的时候才能建边；</p>
+<p>解释一下为什么这么连边：</p>
+<p>如果 <span class="math">\(x1\)</span>的值为 <span class="math">\(true\)</span> ，那么如果我们 <span class="math">\(x2\)</span> 的值再为 <span class="math">\(true\)</span> 的话，就不满足 “ <span class="math">\(x1\)</span>&amp;<span class="math">\(x2\)</span>=<span class="math">\(false\)</span>” 这个式子了，所以如果<span class="math">\(x1\)</span> 为 <span class="math">\(true\)</span> 的话是能明确推出 <span class="math">\(x2\)</span> 为 <span class="math">\(false\)</span> 的；</p>
+<p>我们可以从 <span class="math">\(x2\)</span>
+的 <span class="math">\(flase\)</span> 向 <span class="math">\(x1\)</span> 的 <span class="math">\(true\)</span>连边吗？这样也能满足关系式；</p>
+<p>显然不能，因为如果 <span class="math">\(x2\)</span>
+为 <span class="math">\(false\)</span> 的话，<span class="math">\(x1\)</span> 为 <span class="math">\(true\)</span> 或 <span class="math">\(false\)</span>
+都是可以的，这不是明确的关系，我们不能建边；</p>
+<p>所以一般的建边方式为：</p>
+<p>若 “ <span class="math">\(xa=p\)</span>或 <span class="math">\(xb=q\)</span>” 中至少有一个满足，那么我们建两条有向边：</p>
+<p><span class="math">\(xa\)</span>(¬<span class="math">\(p\)</span>)−&gt;<span class="math">\(xb\)</span>(<span class="math">\(q\)</span>)</p>
+<p><span class="math">\(xb\)</span>(¬<span class="math">\(q\)</span>)−&gt;<span class="math">\(xa\)</span>(<span class="math">\(p\)</span>)</p>
+<p>可以简单总结为：其中一个不成立则另一个一定成立（这是明确的关系）；</p>
+<p>如果一个变量必须等于 <span class="math">\(true\)</span>，那么我们从这个点的 <span class="math">\(false\)</span> 连向这个点的 <span class="math">\(true\)</span>，表示我们从 <span class="math">\(false\)</span> 走也会走到 <span class="math">\(true\)</span>，也就是说只能等于 <span class="math">\(true\)</span>；
+这样的话对于一个变量 <span class="math">\(k\)</span>，编号为 <span class="math">\(k\)</span> 的点代表了这个变量的 <span class="math">\(false\)</span> 点，编号为 <span class="math">\(k+n\)</span> 的点代表了这个变量的 <span class="math">\(true\)</span>点；</p>
+<p>判解方式： </p>
+<p>这么判断是否有解？</p>
+<p>无解的情况：某一个变量的$ false$
+能走到 <span class="math">\(true\)</span>，从 <span class="math">\(true\)</span> 也能走到 <span class="math">\(false\)</span></p>
+<p>也就是说，某一个变量的两个取值在同一个强连通分量内的话，就说明无解。</p>
+<p>求强联通分量的话常用的方法是 <span class="math">\(Tarjan\)</span>
+我们发现，从 <span class="math">\(x1\)</span> 的 <span class="math">\(false\)</span> 出发会走到 <span class="math">\(x1\)</span> 的 <span class="math">\(true\)</span> ，也就是说 <span class="math">\(x1\)</span> 现在只能等于 <span class="math">\(true\)</span> 了；同理从 <span class="math">\(x2\)</span> 的 <span class="math">\(true\)</span> 出发能走到 <span class="math">\(x2\)</span> 的 <span class="math">\(false\)</span>，说明 <span class="math">\(x2\)</span> 只能等于 <span class="math">\(false\)</span></p>
+<p>如果我们不将 <span class="math">\(x1\)</span>赋值为 <span class="math">\(true\)</span>，而是赋值为 <span class="math">\(false\)</span>，那会发生什么呢？</p>
+<p>由 <span class="math">\(x1\)</span>
+的 <span class="math">\(false \)</span>是能明确推出 <span class="math">\(x2\)</span> 是为 <span class="math">\(true\)</span> 的，但是又有 <span class="math">\(x2\)</span> 的 <span class="math">\(true\)</span> 能明确推出 <span class="math">\(x1\)</span> 为 <span class="math">\(true\)</span>，这与刚刚我们将 <span class="math">\(x1\)</span> 赋值为 <span class="math">\(false\)</span> 是相矛盾的；（你也可以这么理解：假如你在解方程，实在是解不出来了，你就来了个特殊值法，将 <span class="math">\(x \)</span>代入 <span class="math">\(1 \)</span>试试看，结果解出来等式不成立，就说明 x≠1）；</p>
+<p>有了这个性质，就说明在有解的情况下，一个变量的两个取值是有前后推导关系的，也就是一个取值直接或间接的指向了另一个取值；</p>
+<p>我们所要选的就是被指向的这个取值，不然会产生像上例那样的矛盾；</p>
+<p>在拓扑序上的表现为：我们要在两种取值中选择拓扑序较大的那个值； </p>
+<p>所以我们接下来要：缩点 + 拓扑 + 染色</p>
+<p>其实我们在 <span class="math">\(Tarjan\)</span></p>
+<p>的时候就已经求出了强联通分量的拓扑序了，只不过是反序；</p>
+<p>建边小练习：</p>
+<p>（1） 2-SAT问题，要求对于每个限制条件的两个 boolbool 元素的要求至少不满足 11 个，求建边方法。</p>
+<p>解：至少不满足一个说明若一个元素合法，则另一个元素一定不合法，连边 (u-&gt;v'),(v-&gt;u')(u−&gt;v
+′
+),(v−&gt;u
+′
+) 。</p>
+<p>（2） 2-SAT问题，要求对于每个限制条件的两个 boolbool 元素的要求至少满足 11 个，求建边方法。</p>
+<p>解：至少满足说明若一个元素不合法，则另一个元素一定合法，连边 (u'-&gt;v),(v'-&gt;u)(u
+′
+−&gt;v),(v
+′
+−&gt;u) 。</p>
+<p>（3） 2-SAT问题，每个限制条件的两个元素要求若第一个要求非法，则第二个要求一定非法，求建边方法。</p>
+<p>解：同上面开始时的建边方式讲解大体一样，除题目要求的条件外还有隐含的若第二个要求合法，则第一个要求一定合法的条件，连边 (u'-&gt;v'),(v-&gt;u)(u
+′
+−&gt;v
+′
+),(v−&gt;u) 。</p>
+<p>（4）2-SAT问题，要求对于每个条件给出的两个元素的值 a\ xor\ b=0a xor b=0 ，求元素 u,vu,v 建边方法。</p>
+<p>解：当 a=1,b=1a=1,b=1 或 a=0,b=0a=0,b=0 时条件成立，所以只要一个元素确定，另一个元素与之相同，连 (u-&gt;v)(v-&gt;u)(u'-&gt;v')(v'-&gt;u')(u−&gt;v)(v−&gt;u)(u
+′
+−&gt;v
+′
+)(v
+′
+−&gt;u
+′
+) 。</p>
+<h2>代码</h2>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+vector&lt;int&gt;vec[2005000];
+stack&lt;int&gt;s;
+int n,m;
+int dfn[2005000],instack[2005000],low[2005000],color[2005000],num[2005000];
+int colornum,cnt,ans,t;
+void tarjan(int x){
+    dfn[x]=low[x]=++cnt;
+    s.push(x);
+    instack[x]=1;
+    for(int i=0;i&lt;vec[x].size();i++){
+        int q=vec[x][i];
+        if (!dfn[q]){
+            tarjan(q);
+            low[x]=min(low[x],low[q]);
+        }
+        else if(instack[q]) low[x]=min(low[x],dfn[q]);
+    }
+    if(low[x]==dfn[x]){
+        colornum++;
+        do{
+        	t=s.top();
+            s.pop();
+            color[t]=colornum;
+            num[colornum]++;
+            instack[t]=0;
+        }
+        while(t!=x);
+    }
+}
+int main(){
+    n=read();m=read();
+    int x,y,a,b;
+    for(int i=1;i&lt;=m;i++){
+    	a=read();x=read();
+    	b=read();y=read();
+    	if(x==0&amp;&amp;y==0){
+    		vec[a+n].push_back(b);
+    		vec[b+n].push_back(a);
+    	}
+    	else if(x==0&amp;&amp;y==1){
+    		vec[a+n].push_back(b+n);
+    		vec[b].push_back(a);
+    	}
+    	else if(x==1&amp;&amp;y==0){
+    		vec[a].push_back(b);
+    		vec[b+n].push_back(a+n);
+    	}
+    	else{
+    		vec[a].push_back(b+n);
+    		vec[b].push_back(a+n);
+    	}
+    }
+    for(int i=1;i&lt;=2*n;i++){
+    	if(!dfn[i]) tarjan(i);
+    }
+    for(int i=1;i&lt;=n;i++){
+    	if(color[i]==color[i+n]){
+    		printf("IMPOSSIBLE\n");
+            return 0;
+    	}
+    }
+    printf("POSSIBLE\n");
+    for(int i=1;i&lt;=n;i++){
+    	if(color[i]&gt;color[i+n])printf("1 ");
+    	else printf("0 ");
+    }
+    return 0;
+}
+```cpp
+
+## [另一个模板](https://www.luogu.com.cn/problem/P4171)
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/2c336rb9" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-5vzny2vv.html"><small>← 上一篇</small><span>P3225 [HNOI2012]矿场搭建题解</span></a><a href="luogu-aruu1m0r.html"><small>下一篇 →</small><span>P2491 [SDOI2011] 消防</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

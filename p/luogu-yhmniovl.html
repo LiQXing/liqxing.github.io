@@ -1,0 +1,302 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="图论 \(01BFS:\) #include &lt;bits/stdc++.h&gt; using namespace std; #define int long long inline int read(){ int x=0,f=1;char ch=getchar(); while (ch&lt;&#x27;0&#x27;||ch&gt;&#x27;9&#x27;){if (ch==&#x27;-"><title>1.15培训笔记（下） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-yhmniovl.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>1.15培训笔记（下）</h1><p class="hero-meta"><time datetime="2023-01-16T15:57:59+08:00">2023-01-16 15:57</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/yhmniovl" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h1>图论</h1>
+<p><span class="math">\(01BFS:\)</span></p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,dis[500500];
+bool vis[500500];
+vector&lt;pair&lt;int,int&gt; &gt;vec[500500];
+deque&lt;int&gt;q;//常数极大，很慢
+signed main(){
+	memset(dis,0x3f,sizeof dis);
+	n=read();m=read();
+	int u,v,w;
+	for(int i=1;i&lt;=m;i++){
+		u=read();v=read();w=read();
+		vec[u].push_back({v,w});
+	}
+	dis[1]=0;
+	q.push_back(1);
+	while(q.size()){
+		u=q.front();q.pop_front();
+		if(vis[u])continue;
+		vis[u]=1;
+		for(auto i:vec[u]){
+			v=i.first;w=i.second;
+			if(dis[u]+w&lt;dis[v]){
+				dis[v]=dis[u]+w;
+				if(w==0)q.push_front(v);
+				else q.push_back(v);
+			}
+		}
+	}
+	for(int i=1;i&lt;=n;i++)printf("%lld",dis[i]);
+    return 0;
+}
+
+
+</code></pre>
+<p><span class="math">\(problem.1\)</span></p>
+<p>给定一个 <span class="math">\(n\)</span> 个点 <span class="math">\(m\)</span> 条边的无向图，可以每次选两个点，并把这两个点缩起来，锁起来后两个点的相邻点集合合并，直到最后缩成一条链，求链长度最大值（<span class="math">\(n&lt;=1000,m&lt;=10^5\)</span>）</p>
+<p>提示：如果一个连通图缩成一个<span class="math">\(s\)</span>到<span class="math">\(t\)</span>的链，其长度一定不大于<span class="math">\(s\)</span>到<span class="math">\(t\)</span>最短路的距离</p>
+<p><span class="math">\(problem.2\)</span></p>
+<p>给定一个<span class="math">\(n\)</span>个点<span class="math">\(m\)</span>条边的有向带权图，你可以选择一个边集<span class="math">\(E\)</span>,并将这个边集里所有的边反向，花费的代价是边集里的边的权值最大值，求最小的代价使得该图不存在环。
+<span class="math">\(n,m&lt;=10^5,w_i≤10^9\)</span></p>
+<p>提示：二分答案</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><span class="math">\(problem.3\)</span></p>
+<p>给出一个<span class="math">\(N\)</span>个顶点<span class="math">\(M\)</span>条边的无向无权图，顶点编号为<span class="math">\(1\)</span>-&gt;<span class="math">\(N\)</span>。问从顶点<span class="math">\(1\)</span>开始，到其他每个点的最短路有几条。</p>
+<p>提示：如何保证走的是最短路？ 只走分层图上跨两层的边!计数<span class="math">\(DP\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;  
+int mod=100003,ans,book[1092983],f,dep[1023746],step[1234537],n;
+vector&lt;int&gt;a[1005000];
+void bfs(int k){
+	int u,v;
+	queue&lt;int&gt;que;
+    que.push(1);
+    book[1]=true;
+    while(!que.empty()){
+        u=que.front();
+        que.pop();
+        for(int i=0;i&lt;a[u].size();i++){
+            v=a[u][i];
+            if(!book[v]){
+                dep[v]=dep[u]+1;
+                que.push(v);
+                book[v]=1;
+            }
+            if(dep[v]==dep[u]+1){
+            	step[v]=(step[v]+step[u])%mod;
+            }
+        }
+    }
+    for(int i=1;i&lt;=n;i++)cout&lt;&lt;step[i]&lt;&lt;endl;
+}
+int main(){
+	step[1]=1;
+	int m,x,y;
+	scanf("%d%d",&amp;n,&amp;m);
+	for(int i=1;i&lt;=m;i++){
+		scanf("%d%d",&amp;x,&amp;y);
+		a[x].push_back(y);
+		a[y].push_back(x);
+	}
+	memset(book,0,sizeof book);
+	bfs(1);
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/CF1765I" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.4\)</span></a></p>
+<p>注意到由于点数过多，所以不能直接建图<span class="math">\(bfs\)</span>。</p>
+<p>由于棋子很稀疏，所以中间一定存在很多段没有棋子的连续段，同时这些连续段只有若干行不能走，启发我们压缩棋盘。
+对于每个连续段只建立左边<span class="math">\(8\)</span>个点以及右边<span class="math">\(8\)</span>个点，中间边加权即可。</p>
+<p>压缩完之后在图上跑<span class="math">\(dijkstra\)</span>求最短路即可。</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/CF986F" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.5\)</span></a></p>
+<p>观察到对于非质数的因数一定可以拆成若干质因数的和，所以我们可以只考虑质因数。</p>
+<p>设质因数为<span class="math">\(p_1,p_2,,p_m\)</span></p>
+<p>分类讨论：</p>
+<p><span class="math">\(m=0\)</span>, 此时<span class="math">\(k=1\)</span>，无解</p>
+<p><span class="math">\(m=1\)</span>, 只用判断<span class="math">\(n\)</span>是不是<span class="math">\(k\)</span>的倍数即可</p>
+<p><span class="math">\(m=2\)</span>, 标准二元一次方程，使用扩欧求出通解。</p>
+<p><span class="math">\(m\ge2\)</span>, 此时<span class="math">\(p_1\)</span>&lt;<span class="math">\(10^5\)</span>, 记<span class="math">\(d_x\)</span>表示模<span class="math">\(p_1\)</span>余<span class="math">\(x\)</span>，用后面质因数组成的数最小是多少，可以使用<span class="math">\(dijkstra\)</span>计算最短路。</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/P2865" rel="noopener noreferrer" target="_blank">次短路</a></h2>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long 
+inline int read(){
+	register int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,dis[500500],dis2[500500];
+vector&lt;pair&lt;int,int&gt; &gt;vec[500500];
+priority_queue&lt;pair&lt;int,int&gt;, vector&lt;pair&lt;int,int&gt; &gt;,greater&lt;pair&lt;int,int&gt; &gt; &gt;q;
+void djs(){
+	//fill(dis,dis+500000,1e15);
+	//fill(dis2,dis2+500000,1e15);
+	memset(dis,0x3f,sizeof dis);
+	memset(dis2,0x3f,sizeof dis);
+	dis[1]=0;//dis2[1]=0;
+	q.push({0,1});
+	while(q.size()){
+		int u=q.top().second,dist=q.top().first;q.pop();
+		for(auto i:vec[u]){
+			int v=i.second,w=i.first;
+			bool flag=0;
+			if(dist+w&lt;dis[v]){
+				dis[v]=dist+w;
+				flag=1;
+			}
+			if(dist+w&gt;dis[v]&amp;&amp;dist+w&lt;dis2[v]){
+				dis2[v]=dist+w;
+				flag=1;
+			}
+			if(dis2[u]+w&lt;dis2[v]){
+				dis2[v]=dis2[u]+w;
+				flag=1;
+			}
+			if(flag==1) q.push({dis[v],v});
+		}
+	}
+}
+signed main(){
+    n=read();m=read();
+    int x,y,z;
+    for(int i=1;i&lt;=m;i++){
+    	x=read();y=read();z=read();
+    	vec[x].push_back({z,y});
+    	vec[y].push_back({z,x});
+    }
+    djs();
+    printf("%lld",dis2[n]);
+    return 0;
+}
+
+
+</code></pre>
+<h2>差分约束</h2>
+<p><span class="math">\(problem.6\)</span></p>
+<p><span class="math">\(A\)</span>国一天有<span class="math">\(N\)</span>个小时，某座工厂每天每个小时都有生产任务，第<span class="math">\(i\)</span>小时至少需要<span class="math">\(a_i\)</span>个工人，<span class="math">\(A\)</span>国规定每个工人每天只能正好工作<span class="math">\(c\)</span>小时且每个工人每天的开工时间是固定的。现在工厂举行招聘，来应聘的工人有<span class="math">\(b_i\)</span>个人的开工时间是????时，即这些人会从每天的????时开始连续工作????个小时(注意这些人结束工作的时间可能已经是第二天了)，为了完成生产任务，至少需要招聘多少工人。</p>
+<p><span class="math">\(C≤N≤700,a_i,b_i\le10^9\)</span></p>
+<p>解：</p>
+<p>设在第<span class="math">\(1,2,...i\)</span>个小时开工的人有<span class="math">\(x_i\)</span>个</p>
+<p>则在第<span class="math">\(C\)</span>个小时开工的人数为<span class="math">\(x_i-x_{i-1}\)</span></p>
+<p>则有限制：<span class="math">\(x_i-x_{i-1}\le b_i\)</span></p>
+<p>由于让人数尽可能小，变成大于号：<span class="math">\(x_i-x_{i-1}\ge -b_i\)</span></p>
+<p>第<span class="math">\(C\)</span>小时开工的人数，若这些人都在同一天，则有：<span class="math">\(x_i-x_{i-c}\ge a_i\)</span>.</p>
+<p>否则:<span class="math">\(C-(x_{i-C+n-1}-x_{i-1})\ge   a_i\)</span></p>
+<p>其中<span class="math">\(C\)</span>为总人数，注意到<span class="math">\(C\)</span>越大限制越松，我们可以二分<span class="math">\(C\)</span>,用差分约束判定是否存在负环。</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><span class="math">\(problem.7\)</span></p>
+<p>给出一个<span class="math">\(mn\)</span>矩阵，问是否存在 <span class="math">\(n\)</span> 个数 <span class="math">\(a_1,a_2,...a_n\)</span>以及<span class="math">\(m\)</span>个数<span class="math">\(b_1,b_2,...,b_n\)</span>,使矩阵的第<span class="math">\(i\)</span>行的元素乘上<span class="math">\(a_i\)</span>，第<span class="math">\(j\)</span>列的元素乘上<span class="math">\(b_j\)</span>，使得操作后矩阵中的每个元素都在<span class="math">\([L,R]\)</span>范围内。</p>
+<p>注意选择的<span class="math">\(a\)</span>和<span class="math">\(b\)</span>可以是任意正实数。</p>
+<p><span class="math">\(n,m\le400\)</span>,<span class="math">\(1\le L\le R \le 10^4\)</span></p>
+<p>解：</p>
+<p>限制可以写成：<span class="math">\(L_{i,j}\le a_ib_j\le R_{i,j}\)</span></p>
+<p>取对数，令<span class="math">\(A_i=loga_i,B_i=-logb_j\)</span></p>
+<p>则<span class="math">\(logL_{i,j}\le A_i-B_i\le logR_{i,j}\)</span></p>
+<p>即为差分约束标准模型。</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>最小生成树</h2>
+<h3><span class="math">\(Kruskal\)</span></h3>
+<p>扩展<span class="math">\(1\)</span>：最小瓶颈生成树</p>
+<p>即边权最大值最小的生成树</p>
+<p>易证最小生成树一定是最小瓶颈生成树</p>
+<p>最小瓶颈生成树不一定为最小生成树</p>
+<p>扩展<span class="math">\(2\)</span>：<span class="math">\(Kruskal\)</span>重构树</p>
+<p><a href="https://loj.ac/p/137" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.7\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P4768" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.8\)</span></a></p>
+<p><span class="math">\(Kruskal\)</span>重构树</p>
+<p>一个点能走到的点集为 <span class="math">\(Kruskal\)</span> 重构树上的一个子树，可以通过倍增求出这个子树的根。</p>
+<p>预处理<span class="math">\(1\)</span>号点到所有点的最短路，和每个子树的最短路最小值即可在线回答询问</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P2573" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.9\)</span></a></p>
+<p>题目是有特殊性质的最小树形图问题。</p>
+<p>改进<span class="math">\(Kruskal\)</span>: 首先求出能走到的节点集合，然后以有向边终点高度为第一关键字从大到小，边权从小到大为第二关键字, 使用<span class="math">\(Kruskal\)</span> 求最小生成树。</p>
+<p>如果按照高度从高到低将点排成一排，那么生成树的每个前缀的导出子图也一定是树，所以贪心的正确性能够保证。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 10000007
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,ans,tot,cnt;
+int h[1500500],fa[1500500];
+struct node{
+	int u,v,w;
+}e[1500500];
+int find(int x){
+	if(x==fa[x])return x;
+	return fa[x]=find(fa[x]);
+}
+void merge(int x,int y){
+	fa[find(x)]=find(y);
+}
+bool cmp(node x,node y){
+	return x.w&lt;y.w;
+}
+vector&lt;pair&lt;int,int&gt; &gt;vec[500500];
+void kruskal(){
+	sort(e+1,e+1+cnt,cmp);
+	for(int i=0;i&lt;=n;i++)fa[i]=i;
+	for(int i=1;i&lt;=cnt;i++){
+		if(find(e[i].u)!=find(e[i].v)){
+			ans+=e[i].w;
+			merge(e[i].u,e[i].v);
+			cout&lt;&lt;ans&lt;&lt;endl;
+		}
+	}
+}
+queue&lt;int&gt;q;
+bool vis[500500];
+void bfs(){
+	q.push(1);vis[1]=1;
+	while(q.size()){
+		int u=q.front();q.pop();
+		for(auto i:vec[u]){
+			int v = i.first,w = i.second;
+			e[++cnt]=node{u,v,w};
+			//cout&lt;&lt;e[cnt].v&lt;&lt;endl;
+			if (!vis[v]){
+				vis[v]=1;
+				q.push(v);
+				tot++;	
+			}
+		}
+	}
+}
+
+signed main() {
+	n=read();m=read();
+	for(int i=1;i&lt;=n;i++)h[i]=read();
+	for(int i=1,u,v,w;i&lt;=m;i++){
+		u=read();v=read();w=read();
+		if(h[u]&gt;=h[v])vec[u].push_back({v,w});
+		if(h[u]&lt;=h[v])vec[v].push_back({u,w});
+	}
+	bfs();
+	printf("%lld \n",tot+1);
+	kruskal();
+	printf("%lld",ans);
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/CF1508C" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.10\)</span></a></p>
+<p>注意到在最优解里面，没有填长度的边只有一个非零的值。这是因为如果<span class="math">\(MST\)</span>里面包含所有没填的边，那么把所有权值分配到一条边上一定不会变得更差。如果<span class="math">\(MST\)</span>里面不包含所有每填的边，那么把一条没有填的边设置成<span class="math">\(x\)</span>，其他设置成<span class="math">\(0\)</span>就得到了一个不会更差的生成树。</p>
+<p>对已经分配了权值的边有三类：</p>
+<ol>
+<li>一定存在于<span class="math">\(MST\)</span>里的边</li>
+<li>一定不存在于<span class="math">\(MST\)</span>里的边</li>
+<li>其他的边</li>
+</ol>
+<p>对于没有分配权值的边，如果它们存在环，那么直接把环上一个边设置成<span class="math">\(x\)</span>，其他设置成<span class="math">\(0\)</span>。
+如果不存在环，那么最优解就是用最小的第三类边替换这个<span class="math">\(x\)</span>,因为第三类边加入之后一定能构成一个包含未分配权值边的环。</p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/CF1515F" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.11\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/yhmniovl" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-bsm5xdra.html"><small>← 上一篇</small><span>1.15培训笔记（上）</span></a><a href="luogu-fyx1jm0x.html"><small>下一篇 →</small><span>1.16培训笔记（上）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

@@ -1,0 +1,259 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Quantity of Strings 结论题。 如果 \(k\) 为奇数，输出 \(m^2\) ，否则输出 \(m\) 。 然后再加上一些特判。 signed main(){ ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0); cin&gt;&gt;n&gt;&gt;m&gt;&gt;k; if(k&gt;n){ "><title>codeforces练习题11 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-6ls3z286.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题11</h1><p class="hero-meta"><time datetime="2023-09-07T16:53:50+08:00">2023-09-07 16:53</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/6ls3z286" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/CF150B" rel="noopener noreferrer" target="_blank">Quantity of Strings </a></h3>
+<p>结论题。</p>
+<p>如果 <span class="math">\(k\)</span> 为奇数，输出 <span class="math">\(m^2\)</span>，否则输出 <span class="math">\(m\)</span>。
+然后再加上一些特判。</p>
+<pre><code class="language-cpp">signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;m&gt;&gt;k;
+    if(k&gt;n){
+        cout&lt;&lt;ksm(m,n);
+        return 0;
+    }
+    if(k==n){
+        cout&lt;&lt;ksm(m,(n+1)/2);
+        return 0;
+    }
+    if(k==1){
+        cout&lt;&lt;ksm(m,n);
+        return 0;
+    }
+    if(k%2==1){
+        cout&lt;&lt;m*m&lt;&lt;endl;
+        return 0;
+    }
+    else {
+        cout&lt;&lt;m;
+    }
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF28B" rel="noopener noreferrer" target="_blank">pSort</a></h3>
+<p>并查集神秘题。</p>
+<pre><code class="language-cpp">
+int n;
+int a[N],d[N];
+int fa[N];
+inline int find(int x){
+    if(x==fa[x])return x;
+    return fa[x]=find(fa[x]);
+}
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n;
+    up(i,1,n)cin&gt;&gt;a[i],fa[i]=i;
+    up(i,1,n){
+        cin&gt;&gt;d[i];
+        if(i&gt;d[i])fa[find(i)]=find(i-d[i]);
+        if(i+d[i]&lt;=n)fa[find(i)]=find(i+d[i]);
+    } 
+    up(i,1,n){
+        if(fa[find(i)]!=fa[find(a[i])]){
+            cout&lt;&lt;"NO";
+            return 0;
+        }
+    }
+    cout&lt;&lt;"YES";
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF377A" rel="noopener noreferrer" target="_blank">Maze</a></h3>
+<p>有一种正难则反的美。</p>
+<pre><code class="language-cpp">
+int n,m;
+char s[555][555];
+int sx,sy,num,k,dx[]={0,0,1,-1},dy[]={1,-1,0,0};
+bool vis[555][555];
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n&gt;&gt;m&gt;&gt;k;
+    up(i,1,n){
+        cin&gt;&gt;(s[i]+1);
+        up(j,1,m){
+            if(s[i][j]=='.')s[i][j]='X',sx=i,sy=j,num++;
+        }
+    }
+    queue&lt;pii&gt;q;
+    q.push({sx,sy});
+    s[sx][sy]='.';
+    vis[sx][sy]=1;
+    int cnt=1;
+    if(cnt==num-k)goto F;
+    while(q.size()){
+        pii u=q.front();q.pop();
+        int ux=u.first,uy=u.second;
+        up(i,0,3){
+            int tx=ux+dx[i],ty=uy+dy[i];
+            if(tx&lt;1||ty&lt;1||tx&gt;n||ty&gt;m)continue;
+            if(vis[tx][ty])continue;
+            if(s[tx][ty]=='#')continue;
+            vis[tx][ty]=1;
+            q.push({tx,ty});
+            s[tx][ty]='.';
+            cnt++;
+            if(cnt==num-k)goto F;
+        }
+    }
+    F:;
+    up(i,1,n){
+        cout&lt;&lt;(s[i]+1)&lt;&lt;endl;
+    }
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF74C" rel="noopener noreferrer" target="_blank">Chessboard Billiard</a></h3>
+<p>离谱题，答案是 <span class="math">\(\gcd(n-1,m-1)+1\)</span>，不会证明！</p>
+<h3><a href="https://www.luogu.com.cn/problem/CF156B" rel="noopener noreferrer" target="_blank">Suspects</a></h3>
+<p>因为罪犯只有一个，所以可以枚举罪犯，来判断是否合理。</p>
+<pre><code class="language-cpp">int n,m;
+int a[N],fake[N],num,vis[N],cnt;
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n&gt;&gt;m;
+    up(i,1,n){
+        cin&gt;&gt;a[i];
+        if(a[i]&gt;0)fake[a[i]]++;
+        else fake[-a[i]]--,num++;
+    }
+    up(i,1,n){
+        if(num+fake[i]==m)vis[i]=1,cnt++;
+    }
+    up(i,1,n){
+        if(a[i]&gt;0){
+            if(!vis[a[i]]) puts("Lie");
+			else if(cnt==1) puts("Truth");
+			else puts("Not defined");
+        }
+        else{
+            if(!vis[-a[i]]) puts("Truth");
+			else if(cnt==1) puts("Lie");
+			else puts("Not defined");
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF467D" rel="noopener noreferrer" target="_blank">Fedor and Essay</a></h3>
+<p>暴力跑最短路。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int m,n,cnt=0,name[100005];
+string a,b1,b2;
+map&lt;string,int&gt;mp;
+class node{
+    public:
+        int r,len,name;
+    bool operator &lt; (const node &amp; n) const {
+        if(r==n.r)return len&gt;n.len;
+        else return r&gt;n.r;
+    } 
+};
+struct edge {
+	int r,len;
+}c[100005];
+priority_queue&lt;node&gt;q;
+vector&lt;int&gt;e[100005]; 
+bool vis[100005];
+void dijkstra(){
+    memset(vis,0,sizeof(vis));
+    for(int i=1;i&lt;=cnt;i++) {
+    	node t;
+    	t.r=c[i].r;
+    	t.len=c[i].len;
+    	t.name=i;
+    	q.push(t);
+    }
+    while(!q.empty()) {
+        int now=q.top().name; 
+        q.pop();
+        if(vis[now])continue;
+        vis[now]=1;
+        for(int i=0;i&lt;e[now].size();i++) {
+            int v=e[now][i];
+            if(c[v].r&gt;c[now].r||(c[v].r==c[now].r&amp;&amp;c[v].len&gt;c[now].len))c[v]=c[now];
+            node t;
+            t.r=c[v].r;
+            t.len=c[v].len;
+            t.name=v;
+            q.push(t);
+        }
+    }
+}
+int main() {
+	cin&gt;&gt;m;
+	for(int i=1;i&lt;=m;i++) {
+		cin&gt;&gt;a;
+		int sum=0;
+		for(int j=0;j&lt;a.size();j++) {
+			if(a[j]&gt;='A'&amp;&amp;a[j]&lt;='Z')a[j]+='a'-'A';
+			if(a[j]=='r')sum++;
+		}
+		if(!mp[a])mp[a]=++cnt,c[cnt].r=sum,c[cnt].len=a.size();
+		name[i]=mp[a];
+	}	
+	cin&gt;&gt;n;
+	for(int i=1;i&lt;=n;i++) {
+		cin&gt;&gt;b1&gt;&gt;b2;
+		int sum=0;
+		for(int j=0;j&lt;b1.size();j++) {
+			if(b1[j]&gt;='A'&amp;&amp;b1[j]&lt;='Z')b1[j]+='a'-'A';
+			if(b1[j]=='r')sum++;
+		}
+		if(!mp[b1])mp[b1]=++cnt,c[cnt].r=sum,c[cnt].len=b1.size();
+		sum=0;
+		for(int j=0;j&lt;b2.size();j++) {
+			if(b2[j]&gt;='A'&amp;&amp;b2[j]&lt;='Z')b2[j]+='a'-'A';
+			if(b2[j]=='r')sum++;
+		}
+		if(!mp[b2])mp[b2]=++cnt,c[cnt].r=sum,c[cnt].len=b2.size();
+		e[mp[b2]].push_back(mp[b1]);
+	}
+    /*for(int i=1;i&lt;=m;i++) {
+		cout&lt;&lt;c[name[i]].r&lt;&lt;" "&lt;&lt;c[name[i]].len&lt;&lt;endl;
+	}*/
+	dijkstra();
+	long long ans1=0,ans2=0;
+	for(int i=1;i&lt;=m;i++) {
+		ans1+=c[name[i]].r;
+		ans2+=c[name[i]].len;
+	}
+ 
+	cout&lt;&lt;ans1&lt;&lt;" "&lt;&lt;ans2&lt;&lt;endl;
+	return 0;
+}
+
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF813C" rel="noopener noreferrer" target="_blank">The Tag Game</a></h3>
+<p>直接暴力跑两遍 dfs，求出 1 号点到每个点的距离和 x 号点到每个点的距离。之后暴力 i 号点和 x 号点到某个点的距离。因为 alice 跑的一定需要比 bob 远（如果 bob 跑得远说明在这之前已经被抓到了），所以答案为 alice 跑的距离*2（在alice没抓到 bob 前 bob 可以随便跑。</p>
+<pre><code class="language-cpp">
+int n,x;
+vector&lt;int&gt;g[N];
+int dep[2][N];
+inline void dfs(int u,int from,int d[]){
+    d[u]=d[from]+1;
+    for(auto v:g[u]){
+        if(v==from)continue;
+        dfs(v,u,d);
+    }
+}
+signed main(){
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin&gt;&gt;n&gt;&gt;x;
+    int u,v;
+    up(i,1,n-1){
+        cin&gt;&gt;u&gt;&gt;v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    dfs(1,0,dep[0]);
+    dfs(x,0,dep[1]);
+    int ans=0;
+    up(i,2,n){
+        if(dep[0][i]&gt;dep[1][i]){
+			ans=max((dep[0][i]-1)*2,ans);
+		}
+    }
+    cout&lt;&lt;ans;
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/6ls3z286" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-qwk7rygk.html"><small>← 上一篇</small><span>CF105C</span></a><a href="luogu-hovzxogd.html"><small>下一篇 →</small><span>test20230913</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

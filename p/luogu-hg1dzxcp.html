@@ -1,0 +1,345 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 题意：给出两条线段（注意是线段！）求其最短距离。 注意，以后这种题都要把所有 \(int\) 换成 \(double\) ,不然很可能出现一些SB的错误 比如 inline double dist(int x1,int y1,int x2,int y2){ return sqrt((x1-x2)*(x1-x2)+("><title>《Re~关于我考试脑子坏掉了这档事~傻逼的考试头脑战》 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-hg1dzxcp.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>《Re~关于我考试脑子坏掉了这档事~傻逼的考试头脑战》</h1><p class="hero-meta"><time datetime="2023-04-21T15:39:10+08:00">2023-04-21 15:39</time><span>·</span><a href="../categories.html#比赛记录">比赛记录</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/hg1dzxcp" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p>题意：给出两条线段（注意是线段！）求其最短距离。</p>
+<p>注意，以后这种题都要把所有<span class="math">\(int\)</span> 换成<span class="math">\(double\)</span>,不然很可能出现一些SB的错误</p>
+<p>比如</p>
+<pre><code class="language-cpp">inline double dist(int x1,int y1,int x2,int y2){
+	return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+</code></pre>
+<p>注意细节。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+
+//#define int long long
+#define eps 1e-7
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+struct node{
+	double x,y;
+}a[10];
+double ans;
+double lx1,rx1,lx2,rx2;
+double k1,k2,b1,b2;
+inline double dist(double x1,double y1,double x2,double y2){
+	return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+inline double check(int i){
+	if(i==1||i==2){
+		double k3=-1/k2,b3=a[i].y-k3*a[i].x;
+		double x1=((b2-b3)/(k3-k2));
+		double y1=k2*x1+b2;
+		double dis=dist(a[i].x,a[i].y,x1,y1);
+		if(k2==0&amp;&amp;a[1].x&gt;=lx2&amp;&amp;a[1].x&lt;=rx2)return dis;
+		if(x1&gt;lx2&amp;&amp;x1&lt;rx2)return dis;
+		else return 1e12;
+	}
+	if(i==3||i==4){
+		double k3=-1/k1,b3=a[i].y-k3*a[i].x;
+		double x1=((b1-b3)/(k3-k1));
+		double y1=k1*x1+b1;
+		double dis=dist(a[i].x,a[i].y,x1,y1);
+		//cout&lt;&lt;dis&lt;&lt;endl;
+		//if(x1==nan)return dis
+		if(k1==0&amp;&amp;a[3].x&gt;=lx1&amp;&amp;a[3].x&lt;=rx1)return dis;
+		if(x1&gt;lx1&amp;&amp;x1&lt;rx1)return dis;
+		else return 1e12;
+	}
+	return 1e12;
+}
+signed main(){
+	//ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+	for(int i=1;i&lt;=4;i++){
+		cin&gt;&gt;a[i].x&gt;&gt;a[i].y;
+	}
+	k1=(a[1].y-a[2].y)/(a[1].x-a[2].x);
+	k2=(a[3].y-a[4].y)/(a[3].x-a[4].x);
+	b1=a[1].y-a[1].x*k1;
+	b2=a[3].y-a[3].x*k2;
+	lx1=min(a[1].x,a[2].x);
+	rx1=max(a[1].x,a[2].x);
+	lx2=min(a[3].x,a[4].x);
+	rx2=max(a[3].x,a[4].x);
+	if(fabs(k1-k2)&lt;eps&amp;&amp;fabs(b1-b2)&lt;eps){
+		cout&lt;&lt;"0.0000"&lt;&lt;endl;
+		return 0;
+	}
+	double x0=(b2-b1)/(k1-k2);
+	double y0=(k1*x0)+b1;
+	if(x0&gt;lx1&amp;&amp;x0&gt;lx2&amp;&amp;x0&lt;rx1&amp;&amp;x0&lt;rx2){
+		cout&lt;&lt;"0.0000"&lt;&lt;endl;
+		return 0;
+	}
+	ans=min(min(dist(a[1].x,a[1].y,a[3].x,a[3].y),dist(a[2].x,a[2].y,a[4].x,a[4].y)),min(dist(a[1].x,a[1].y,a[4].x,a[4].y),dist(a[2].x,a[2].y,a[3].x,a[3].y)));
+	for(int i=1;i&lt;=4;i++){
+        double t=check(i);
+        ans=min(ans,t);
+        //cout&lt;&lt;t&lt;&lt;endl;
+    }
+    
+	printf("%.4lf",ans);
+	return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>二叉树+树上 $ DP$，</p>
+<p><span class="math">\(d[u][x]\)</span> 指 $ u $ 元件变为 <span class="math">\(x \)</span> 状态需要几步</p>
+<p>如果原件是 &amp;</p>
+<p>则</p>
+<pre><code class="language-cpp">		d[u][1] = d[x][1] + d[y][1];
+		d[u][0] = min(d[x][0], d[y][0]);
+</code></pre>
+<p>如果原件是|</p>
+<p>则</p>
+<pre><code class="language-cpp">		d[u][0] = d[x][0] + d[y][0];
+		d[u][1] = min(d[x][1], d[y][1]);
+</code></pre>
+<p>如果原件是^</p>
+<p>则</p>
+<pre><code class="language-cpp">		d[u][0] = min(d[x][1] + d[y][1], d[x][0] + d[y][0]);
+		d[u][1] = min(d[x][1] + d[y][0], d[x][0] + d[y][1]);	
+</code></pre>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define eps 1e-7
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m;
+struct node{
+	int son[2];
+	int fa;
+	int id;
+}a[500500];
+int d[500500][2];
+inline void dfs(int u){
+	if(a[u].son[0]) dfs(a[u].son[0]);
+	if(a[u].son[1]) dfs(a[u].son[1]);
+	int x = a[u].son[0], y = a[u].son[1];
+	if(x == 0 &amp;&amp; y == 0) return;
+	if(a[u].id == 1) {
+		d[u][1] = d[x][1] + d[y][1];
+		d[u][0] = min(d[x][0], d[y][0]);
+	}
+	if(a[u].id == 2) {
+		d[u][0] = d[x][0] + d[y][0];
+		d[u][1] = min(d[x][1], d[y][1]);
+	}
+	if(a[u].id== 3) {
+		d[u][0] = min(d[x][1] + d[y][1], d[x][0] + d[y][0]);
+		d[u][1] = min(d[x][1] + d[y][0], d[x][0] + d[y][1]);	
+	}
+	return;
+}
+signed main(){
+	n=read();m=read();
+	int x;
+	memset(d,0x3f,sizeof d);
+	for(int i=1;i&lt;=n;i++){
+		a[i].son[0]=read();
+		a[i].son[1]=read();
+		a[i].fa=read();
+		if(a[i].fa==0)x=i;
+		a[i].id=read();
+	}
+	for(int i=1,u,v;i&lt;=m;i++){
+		u=read();v=read();
+		d[u][v]=0;
+		d[u][v^1]=1;
+	}
+	dfs(x);
+	if(d[x][0])cout&lt;&lt;d[x][0]&lt;&lt;endl;
+	else cout&lt;&lt;d[x][1]&lt;&lt;endl;
+	return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>首先是考试的时候想的大暴力（写挂了）</p>
+<p><span class="math">\(AC\)</span> 自动机+（<span class="math">\(n=1\)</span> 时 <span class="math">\(kmp\)</span> ）+ <span class="math">\(dfs\)</span> +输出大样例=<span class="math">\(80pts \)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define eps 1e-7
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,l;
+int val[50990];
+struct node{
+	int son[26];
+	int ed;
+}tr[550000];
+int cnt,fail[100500];
+inline void insert(string s,int x){
+	int p=0;
+	for(int i=0;i&lt;s.size();i++){
+		int ch=s[i]-'a';
+		if(!tr[p].son[ch])tr[p].son[ch]=++cnt;
+		p=tr[p].son[ch];
+	}
+	tr[p].ed+=x;
+}
+queue&lt;int&gt;q;
+inline void getfail(){
+	for(int i=0;i&lt;26;i++){
+		if(tr[0].son[i])q.push(tr[0].son[i]);
+	}
+	while(q.size()){
+		int u=q.front();q.pop();
+		for(int i=0;i&lt;=25;i++){
+			int v=tr[u].son[i];
+			//cout&lt;&lt;v&lt;&lt;endl;
+			if(v){
+				fail[v]=tr[fail[u]].son[i];
+           			tr[v].ed+=tr[tr[fail[u]].son[i]].ed;
+           			q.push(v);
+			}
+			else tr[u].son[i]=tr[fail[u]].son[i];
+		}
+	}
+}
+int sum;
+inline void dfs(int step,int ans,int u){
+	if(step==l+1){
+		sum=max(sum,ans);
+		if(clock()&gt;970000){
+			cout&lt;&lt;sum;
+			exit(0);
+		}
+		return;
+	}
+	for(int i=0;i&lt;=25;i++){
+		if(tr[u].son[i]){
+			//cerr&lt;&lt;tr[tr[u].son[i]].ed&lt;&lt;endl;
+			dfs(step+1,ans+tr[tr[u].son[i]].ed,tr[u].son[i]);
+		}
+	}
+}
+signed main(){
+	ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n&gt;&gt;l;
+	string a;
+	for(int i=1;i&lt;=n;i++){
+		cin&gt;&gt;val[i];
+	}
+	for(int i=1;i&lt;=n;i++){
+		cin&gt;&gt;a;
+		insert(a,val[i]);
+	}
+	getfail();
+	dfs(1,0,0);
+	cout&lt;&lt;sum;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(dfs\)</span>会超时，那么就写一个<span class="math">\(dp\)</span>+滚动数组优化。</p>
+<p><span class="math">\(dp[i][j]\)</span>指长度为i,最后一个字符节点为j的字符串的最大价值</p>
+<p>易得转移方程</p>
+<div class="math">$$
+dp[ cur+1 ][ tr[ k ].son [ j ] ]  = \max( dp[cur + 1][tr[k].son[j]], dp[cur][k] + tr[tr[k].son[j]].ed);
+$$</div>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define eps 1e-7
+#define Inf -1e9
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&gt;'9'||ch&lt;'0'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&lt;='9'&amp;&amp;ch&gt;='0'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,l;
+int val[50990];
+struct node{
+	int son[26];
+	int ed;
+}tr[550000];
+int cnt,fail[100500],dp[2][500500];
+inline void insert(string s,int x){
+	int p=0;
+	for(int i=0;i&lt;s.size();i++){
+		int ch=s[i]-'a';
+		if(!tr[p].son[ch])tr[p].son[ch]=++cnt;
+		p=tr[p].son[ch];
+	}
+	tr[p].ed+=x;
+}
+queue&lt;int&gt;q;
+inline void getfail(){
+	for(int i=0;i&lt;26;i++){
+		if(tr[0].son[i])q.push(tr[0].son[i]);
+	}
+	while(q.size()){
+		int u=q.front();q.pop();
+		for(int i=0;i&lt;=25;i++){
+			int v=tr[u].son[i];
+			if(v){
+				fail[v]=tr[fail[u]].son[i];
+                tr[v].ed+=tr[tr[fail[u]].son[i]].ed;
+                q.push(v);
+			}
+			else tr[u].son[i]=tr[fail[u]].son[i];
+		}
+	}
+}
+int sum;
+inline void dpsolve(){
+	int cur = 0;
+	for(int i = 1; i &lt;=cnt; i ++) dp[0][i] = dp[1][i] = Inf;
+	dp[1][0] =Inf;
+	for(int i = 1; i &lt;=l;i ++) {
+		for(int j=0;j&lt;26;j++) {
+			for(int k = 0; k &lt;=cnt; k ++) {
+				dp[cur^1][tr[k].son[j]] = max(dp[cur ^ 1][tr[k].son[j]], dp[cur][k] + tr[tr[k].son[j]].ed);
+			}
+		}
+		for(int j = 0; j &lt;=cnt; j ++)dp[cur][j] = Inf;
+		cur ^= 1;
+	} 
+	int  res = 0;
+	for(int i = 0; i &lt;=cnt; i ++) res = max(res, dp[cur][i]);
+	cout &lt;&lt;res &lt;&lt;endl;
+	return;
+}
+signed main(){
+	ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+	cin&gt;&gt;n&gt;&gt;l;
+	string a;
+	for(int i=1;i&lt;=n;i++){
+		cin&gt;&gt;val[i];
+	}
+	for(int i=1;i&lt;=n;i++){
+		cin&gt;&gt;a;
+		insert(a,val[i]);
+	}
+	getfail();
+	dpsolve();
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/hg1dzxcp" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-rtauwclp.html"><small>← 上一篇</small><span>联合省选游寄</span></a><a href="luogu-x4jkt51z.html"><small>下一篇 →</small><span>痛，太痛了。</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

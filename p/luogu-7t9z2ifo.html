@@ -1,0 +1,104 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Maximum Submatrix 2 很巧妙的一道题。 行是可以随便换的，因此从第 \(m\) 列到第 \(1\) 列递推，每次只与当前列右边第一串 \(1\) 的个数有关，这样每次就可以从第 \(i+1\) 列递推到第 \(i\) 列，就记一下极长的 \(1\) 个数，然后逆序排序统计答案即可。 Counting Recta"><title>codeforces练习题3 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-7t9z2ifo.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题3</h1><p class="hero-meta"><time datetime="2023-08-24T20:02:49+08:00">2023-08-24 20:02</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/7t9z2ifo" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2><a href="https://www.luogu.com.cn/problem/CF375B" rel="noopener noreferrer" target="_blank">Maximum Submatrix 2</a></h2>
+<p>很巧妙的一道题。</p>
+<p>行是可以随便换的，因此从第 <span class="math">\(m\)</span> 列到第 <span class="math">\(1\)</span> 列递推，每次只与当前列右边第一串 <span class="math">\(1\)</span> 的个数有关，这样每次就可以从第 <span class="math">\(i+1\)</span> 列递推到第 <span class="math">\(i\)</span> 列，就记一下极长的 <span class="math">\(1\)</span> 个数，然后逆序排序统计答案即可。</p>
+<h2><a href="https://www.luogu.com.cn/problem/CF372B" rel="noopener noreferrer" target="_blank">Counting Rectangles is Fun</a></h2>
+<p>看一下数据，是一道<span class="math">\(O(n^4)\)</span> 的题。
+<span class="math">\(f[i][j][k][l]\)</span>  表示以 <span class="math">\((i,j)\)</span> 为左上角，<span class="math">\((k,l)\)</span> 为右下角的个数。</p>
+<p><span class="math">\(dp[i][j][k][l]\)</span> 为答案。</p>
+<pre><code class="language-cpp">inline bool clac(int i,int j,int k,int l){
+    return sum[k][l]-sum[k][j-1]-sum[i-1][l]+sum[i-1][j-1]==0;
+}
+int q;
+signed main(){
+    n=read();m=read();q=read();
+    up(i,1,n){
+        up(j,1,m){
+            scanf("%1lld",&amp;a[i][j]);
+            sum[i][j]=sum[i-1][j]+sum[i][j-1]-sum[i-1][j-1]+a[i][j];
+        }
+    }
+    up(i,1,n){
+        up(j,1,m){
+            up(k,i,n){
+                up(l,j,m){
+                    f[i][j][k][l]=f[i][j][k-1][l]+f[i][j][k][l-1]-f[i][j][k-1][l-1]+clac(i,j,k,l);
+                }
+            }
+        }
+    }
+
+    dn(i,n,1){
+        dn(j,m,1){
+            dn(k,n,i){
+                dn(l,m,j){
+                    dp[i][j][k][l]=dp[i+1][j][k][l]+dp[i][j+1][k][l]-dp[i+1][j+1][k][l]+f[i][j][k][l];
+                }
+            }
+        }
+    }
+    while(q--){
+        int a=read(),b=read(),c=read(),d=read();
+        write(dp[a][b][c][d],1);
+    }
+	return 0;
+}
+</code></pre>
+<h2><a href="https://www.luogu.com.cn/problem/CF354B" rel="noopener noreferrer" target="_blank">Game with Strings </a></h2>
+<p>假设已经走了<span class="math">\(x\)</span>歩，那么我们可以发现，此时可能的位置的范围是在一条对角线的位置，一条对角线长度最多只有20，利用状压的思想，可以用一组二进制数来表示走这条对角线的位置是否是等价的，那么通过这个就可以向下推导下一步的情况。</p>
+<pre><code class="language-cpp">char a[55][55];
+int dp[40][1&lt;&lt;20],n;
+bool vis[40][1&lt;&lt;20];
+inline int dfs(int step,int st){
+	if(vis[step][st])return dp[step][st];
+	int&amp;res=dp[step][st];
+	vis[step][st]=1;
+	if(step==n*2-2)res=0;
+	else{
+		if(step&amp;1)res=-inf;
+		else res=inf;
+		int mask[30];
+		memset(mask,0,sizeof mask);
+		int cnt=0;
+		for(int j=0;j&lt;=step+1;j++){
+			int x=step+1-j;
+			int y=j;
+			if(x&gt;=n||y&gt;=n)continue;
+			mask[a[x][y]-'a']|=(1&lt;&lt;cnt);
+			cnt++;
+		}
+		up(i,0,25){
+			if(mask[i]){
+				int x;
+				if(step+1&lt;n)x=(st|(st&lt;&lt;1))&amp;mask[i];
+				else x=(st|(st&gt;&gt;1))&amp;mask[i];
+				if(x==0)continue;
+				int tmp=0;
+				if(i==0)tmp=1;
+				else if(i==1)tmp=-1;
+				if(step&amp;1)res=max(res,tmp+dfs(step+1,x));
+				else res=min(res,tmp+dfs(step+1,x));
+			}
+		}
+	}
+	if(step==0){
+		if(a[0][0]=='a')res++;
+		else if(a[0][0]=='b')res--;
+	}
+	return res;
+	
+}
+
+signed main(){
+	n=read();
+	up(i,0,n-1){
+		scanf("%s",a[i]);
+	}
+	memset(vis,0,sizeof vis);
+	int res=dfs(0,1);
+	if(res==0)cout&lt;&lt;"DRAW";
+	else if(res&gt;0)cout&lt;&lt;"FIRST";
+	else cout&lt;&lt;"SECOND";
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/7t9z2ifo" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-9crt2axg.html"><small>← 上一篇</small><span>codeforces练习题2</span></a><a href="luogu-y3dv7ee1.html"><small>下一篇 →</small><span>codeforces练习题4</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

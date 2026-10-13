@@ -1,0 +1,191 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 傻逼爆搜。 挺简单的一道搜索，不要想复杂了。 \(T2\) 有意思的 DP。 \(T3\) 傻逼线段树。 #include&lt;bits/stdc++.h&gt; using namespace std; //#define int long long #define i64 long long #define ull un"><title>test20231002 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-dp63ucmp.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20231002</h1><p class="hero-meta"><time datetime="2023-10-02T14:27:54+08:00">2023-10-02 14:27</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/dp63ucmp" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p>傻逼爆搜。</p>
+<p>挺简单的一道搜索，不要想复杂了。</p>
+<p><span class="math">\(T2\)</span></p>
+<p>有意思的 DP。</p>
+<p><span class="math">\(T3\)</span></p>
+<p>傻逼线段树。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define i64 long long
+#define ull unsigned long long
+#define ldb long double
+#define db double
+#define i128 __int128
+#define up(a,b,c) for(int a=(b);a&lt;=(c);a++)
+#define dn(a,b,c) for(int a=(b);a&gt;=(c);a--)
+#define pii pair&lt;int,int&gt;
+#define pivi pair&lt;int,vector&lt;int&gt; &gt;
+#define lc k&lt;&lt;1
+#define rc k&lt;&lt;1|1
+#define fi first
+#define se second
+#define endl '\n'
+#define i16 short
+
+const int N=2e5+100,M=2e6+100;
+const int mod=2019;
+const int inf=0x3f3f3f3f;
+const ull uinf=1e18+14;
+
+namespace IO{
+    inline int read(){
+        char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+    }
+    inline void wt(int x){
+        if(x&lt;0){x=-x;putchar('-');}
+        if(x&gt;9)wt(x/10);
+        putchar((x%10)^48);
+    }
+    inline void write(int x,bool op){
+        wt(x);
+        putchar(op?'\n':' ');
+    }
+}using namespace IO;
+int n,q;
+vector&lt;int&gt;g[N];
+int a[N];
+struct treelca{
+    int siz[N],son[N],fa[N],dep[N],top[N];
+    int dfn[N],cnt,idx[N];
+    inline void dfs1(int u,int from){
+        siz[u]=1;son[u]=0;
+        dep[u]=dep[from]+1;
+        for(auto v:g[u]){
+            if(v==from) continue;
+            fa[v]=u;dfs1(v,u);
+            if(siz[v]&gt;siz[son[u]])son[u]=v;
+            siz[u]+=siz[v];
+        }
+    }
+    inline void dfs2(int u,int tp){
+        top[u]=tp;dfn[u]=++cnt;
+        idx[cnt]=u;
+        if(son[u])dfs2(son[u],tp);
+        for(auto v:g[u]){
+            if(v==fa[u]||v==son[u]) continue;
+            dfs2(v,v);
+        }
+    }
+    inline int lca(int x,int y){
+        while(top[x]!=top[y]){
+            if(dep[top[x]]&gt;dep[top[y]])x=fa[top[x]];
+            else y=fa[top[y]];
+        }
+        return dep[x]&lt;dep[y]?x:y;
+    }
+    struct node{
+        int l,r,sum,tag,siz;
+        int num,rel;
+    }tr[N&lt;&lt;1];
+    inline void push_up(int k){
+        tr[k].sum=(tr[lc].sum+tr[rc].sum)%mod;
+        tr[k].siz=(tr[lc].siz+tr[rc].siz)%mod;
+        tr[k].num=(tr[lc].num+tr[rc].num)%mod;
+        tr[k].rel=(tr[lc].rel+tr[rc].rel)%mod;
+    }
+    inline void build(int k,int l,int r){
+        tr[k].l=l;tr[k].r=r;
+        if(l==r){
+            tr[k].siz=siz[idx[l]]%mod;
+            tr[k].sum=tr[k].siz*a[idx[l]]%mod;
+            tr[k].num=tr[k].siz*tr[k].siz%mod;
+            tr[k].rel=tr[k].num*a[idx[l]]%mod;
+            return;
+        }
+        int mid=(l+r)&gt;&gt;1;
+        build(lc,l,mid);
+        build(rc,mid+1,r);
+        push_up(k);
+    }
+    inline int asksum(int k,int l,int r){
+        if(l&gt;r)return 0;
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].sum;
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1,res=0;
+        push_down(k);
+        if(mid&gt;=l)res=(res+asksum(lc,l,r))%mod;
+        if(mid&lt;r)res=(res+asksum(rc,l,r))%mod;
+        return res;
+    }
+    inline int askrel(int k,int l,int r){
+        if(l&gt;r)return 0;
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].rel;
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1,res=0;
+        push_down(k);
+        if(mid&gt;=l)res=(res+askrel(lc,l,r))%mod;
+        if(mid&lt;r)res=(res+askrel(rc,l,r))%mod;
+        return res;
+    }
+    inline void push_down(int k){
+        if(tr[k].tag){
+            int w=tr[k].tag;
+            tr[lc].sum=(tr[lc].sum+tr[lc].siz*w)%mod;
+            tr[rc].sum=(tr[rc].sum+tr[rc].siz*w)%mod;
+            tr[lc].rel=(tr[lc].rel+tr[lc].num*w)%mod;
+            tr[rc].rel=(tr[rc].rel+tr[rc].num*w)%mod;
+            tr[lc].tag=(tr[lc].tag+w)%mod;
+            tr[rc].tag=(tr[rc].tag+w)%mod;
+            tr[k].tag=0;
+        }
+    }
+    inline void add(int k,int l,int r,int w){
+        if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+            tr[k].sum=(tr[k].sum+tr[k].siz*w)%mod;
+            tr[k].rel=(tr[k].rel+tr[k].num*w)%mod;
+            tr[k].tag=(tr[k].tag+w)%mod;
+            return;
+        }
+        int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+        push_down(k);
+        if(mid&gt;=l)add(lc,l,r,w);
+        if(mid&lt;r)add(rc,l,r,w);
+        push_up(k);
+    }
+    inline void change(int x,int y,int w) {
+        if(x==y)return;
+        while(top[x]!=top[y]) {
+            if(dep[top[x]]&lt;dep[top[y]])swap(x, y);
+            add(1,dfn[top[x]],dfn[x],w);
+            x=fa[top[x]];
+        }
+        if(x==y)return;
+        if(dep[x]&gt;dep[y])swap(x, y);
+        add(1,dfn[x]+1,dfn[y],w);
+    }
+    inline int ask(int x){
+        return (asksum(1,dfn[x]+1,dfn[x]+siz[x]-1)*siz[x]%mod-askrel(1,dfn[x]+1,dfn[x]+siz[x]-1)%mod+mod)%mod;
+    }
+}T;
+signed main(){
+    n=read();q=read();
+    int u,v,w;
+    up(i,2,n){
+        u=read();a[i]=read();
+        g[u].push_back(i);
+        g[i].push_back(u);
+    }
+    T.dfs1(1,0);
+    T.dfs2(1,1);
+    T.build(1,1,n);
+    char s[50];
+    while(q--){
+        scanf("%s",s+1);
+        if(s[1]=='I'){
+            u=read();v=read();w=read();
+            T.change(u,v,w);
+        }
+        if(s[1]=='A'){
+            u=read();
+            write(T.ask(u),1);
+        }
+    }
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/dp63ucmp" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-vzm37jbv.html"><small>← 上一篇</small><span>AT_abc321_e</span></a><a href="luogu-hhxbrn4n.html"><small>下一篇 →</small><span>ジョイッターで友だちをつくろう (Making Friends on Joitter is Fun)</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

@@ -1,0 +1,325 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="Shortest Path Problem? 我们来考虑一下没有环的情况，就是简单异或和。 如果有一个环，那么可以异或上这个环。 如果有多条路径，可以有一条路径异或上其他的环得到另一条路径。 namespace Linear_basis{ int p[100],cnt,flag0=0; inline void insert(in"><title>codeforces练习题6 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-nn2i5n11.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>codeforces练习题6</h1><p class="hero-meta"><time datetime="2023-08-28T08:14:30+08:00">2023-08-28 08:14</time><span>·</span><a href="../categories.html#Codeforces">Codeforces</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/nn2i5n11" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h3><a href="https://www.luogu.com.cn/problem/CF845G" rel="noopener noreferrer" target="_blank">Shortest Path Problem?</a></h3>
+<p>我们来考虑一下没有环的情况，就是简单异或和。</p>
+<p>如果有一个环，那么可以异或上这个环。</p>
+<p>如果有多条路径，可以有一条路径异或上其他的环得到另一条路径。</p>
+<pre><code class="language-cpp">
+namespace Linear_basis{
+	int p[100],cnt,flag0=0;
+	inline void insert(int x){
+		if(x==0)flag0=1;
+		dn(i,62,0){
+			if(x&amp;(1ll&lt;&lt;i)){
+				if(!p[i]){
+					p[i]=x;
+					cnt++;
+					break;
+				}
+				else x^=p[i];
+			}
+		}
+	}
+	inline bool ask(int x){
+		dn(i,62,0){
+			if(x&amp;(1ll&lt;&lt;i)){
+				x^=p[i];
+			}
+		}
+		return x==0;
+	}
+	inline int askmax(int x) {
+		int ans=x;
+		dn(i,62,0)if((ans^p[i])&gt;ans)ans^=p[i];
+		return ans;
+	}
+	inline int askmin(){
+		if(flag0)return 0;
+		up(i,0,62)if(p[i])return p[i];
+		return 0;
+	}
+}using namespace Linear_basis;
+int n,m;
+vector&lt;pii&gt;g[N];
+bool vis[N];
+int d[N];
+inline void dfs(int u,int res){
+	d[u]=res;vis[u]=1;
+	for(auto [v,w]:g[u]){
+		if(vis[v])insert(res^w^d[v]);
+		else dfs(v,res^w);
+	}
+}
+signed main(){
+	n=read();m=read();
+	int u,v,w;
+	up(i,1,m){
+		u=read();v=read();w=read();
+		g[u].push_back({v,w});
+		g[v].push_back({u,w});
+	}
+	dfs(1,0);
+	cout&lt;&lt;askmax(d[n]);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF609E" rel="noopener noreferrer" target="_blank">Minimum spanning tree for each edge</a></h3>
+<p>树链剖分乱搞查询每一条边。</p>
+<pre><code class="language-cpp">int n,m;
+vector&lt;pii&gt;g[N];
+struct treelca{
+    int siz[N],son[N],fa[N],dep[N],top[N];
+    int a[N];
+	inline void dfs1(int u,int from){
+        siz[u]=1;son[u]=0;
+        dep[u]=dep[from]+1;
+        for(auto [v,w]:g[u]){
+            if(v==from) continue;
+            a[v]=w;
+			fa[v]=u;dfs1(v,u);
+            if(siz[v]&gt;siz[son[u]])son[u]=v;
+            siz[u]+=siz[v];
+        }
+    }
+	int idx[N],cnt,dfn[N];
+    inline void dfs2(int u,int tp){
+        top[u]=tp;idx[u]=++cnt;
+		dfn[cnt]=u;
+        if(son[u]!=0) dfs2(son[u],tp);
+        for(auto [v,w]:g[u]){
+            if(v==fa[u]||v==son[u]) continue;
+            dfs2(v,v);
+        }
+    }
+    inline int lca(int x,int y){
+        while(top[x]!=top[y]){
+            if(dep[top[x]]&gt;dep[top[y]])x=fa[top[x]];
+            else y=fa[top[y]];
+        }
+        return dep[x]&lt;dep[y]?x:y;
+    }
+	int tr[N&lt;&lt;2];
+	inline void push_up(int k){
+		tr[k]=max(tr[lc],tr[rc]);
+	}
+	inline void build(int k=1,int l=1,int r=n){
+		if(l==r){
+			tr[k]=a[dfn[l]];
+			return;
+		}
+		int mid=(l+r)&gt;&gt;1;
+		build(lc,l,mid);
+		build(rc,mid+1,r);
+		push_up(k);
+	}
+	inline int ask(int x,int y,int k=1,int l=1,int r=n) {
+    	if (x &lt;= l &amp;&amp; r &lt;= y) return tr[k];
+    	int mid=(l+r)&gt;&gt;1,res=0;
+    	if (x&lt;=mid)res=max(res,ask(x,y,lc,l,mid));
+    	if (y&gt;mid)res=max(res,ask(x,y,rc,mid+1,r));
+    	return res;
+	}
+	inline int qmax(int x, int y) {
+    	int res=0; 
+    	while(top[x]^top[y]){
+        	if(dep[top[x]]&lt;dep[top[y]]) swap(x, y);
+        	res=max(res,ask(idx[top[x]],idx[x]));
+        	x=fa[top[x]];
+    	}
+    	if(dep[x]&gt;dep[y])swap(x, y);
+    	return max(res,ask(idx[x]+1,idx[y]));
+	}
+}T;
+struct edge{
+	int u,v,w,id;
+}e[N&lt;&lt;1];
+inline bool cmp(edge x,edge y){
+	return x.w&lt;y.w;
+}
+inline bool cmp2(edge x,edge y){
+	return x.id&lt;y.id;
+}
+int fa[N];
+inline int find(int x){
+	if(x==fa[x])return x;
+	return fa[x]=find(fa[x]);
+}
+bool vis[N];
+signed main(){
+	n=read();m=read();
+	int u,v,w;
+	up(i,1,m){
+		e[i].u=read();
+		e[i].v=read();
+		e[i].w=read();
+		e[i].id=i;
+	}
+	sort(e+1,e+1+m,cmp);
+	int ans=0;
+	up(i,1,n)fa[i]=i;
+	up(i,1,m){
+		int fu=find(e[i].u),fv=find(e[i].v);
+		if(fu==fv)continue;
+		vis[e[i].id]=1;
+		fa[fu]=fv;
+		g[e[i].u].push_back({e[i].v,e[i].w});
+		g[e[i].v].push_back({e[i].u,e[i].w});
+		ans+=e[i].w;
+	}
+	T.dfs1(1,0);
+	T.dfs2(1,0);
+	T.build();
+	sort(e+1,e+1+m,cmp2);
+	up(i,1,m) {
+        if(vis[i])write(ans,1);
+		else write(ans+e[i].w-T.qmax(e[i].u,e[i].v),1);
+    }
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF915D" rel="noopener noreferrer" target="_blank">Almost Acyclic Graph</a></h3>
+<p>有意思的暴力乱搞题。</p>
+<p>因为 <span class="math">\(n\le500\)</span>,所以可以考虑暴力减少每个点的度数。</p>
+<pre><code class="language-cpp">int n,m;
+vector&lt;int&gt;g[N];
+bool vis[N];
+int deg[N],t[N];
+inline bool top(){
+	int cnt=0;
+	queue&lt;int&gt; q;
+	up(i,1,n)if(!deg[i])q.push(i);
+	while(q.size()){
+		int u=q.front();q.pop();
+		cnt++;
+		for(auto v:g[u])if(--deg[v]==0)	q.push(v);
+	}
+	return cnt==n;
+}
+signed main(){
+	n=read();m=read();
+	int u,v;
+	up(i,1,m){
+		u=read();v=read();
+		g[u].push_back(v);
+		deg[v]++;
+	}
+	up(i,1,n) t[i]=deg[i];
+	up(i,1,n){
+		if(deg[i]){
+			deg[i]--;
+			if(top())	return puts("YES"),0;
+		}
+		up(i,1,n)deg[i]=t[i];
+	}
+	puts("NO");
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1000E" rel="noopener noreferrer" target="_blank">We Need More Bosses</a></h3>
+<p>缩点之后跑直径。</p>
+<h3><a href="https://www.luogu.com.cn/problem/CF920E" rel="noopener noreferrer" target="_blank">Connected Components?</a></h3>
+<p>暴力用 set 乱搞。</p>
+<p>把每个点都加到 set 里面，然后对每个点进行 bfs。</p>
+<p>搜到的点可以删除。</p>
+<pre><code class="language-cpp">int n,m;
+set&lt;int&gt;g[N];
+set&lt;int&gt;p;
+queue&lt;int&gt;q;
+inline int bfs(int u){
+	q.push(u);
+	int siz=0;
+	while(q.size()){
+		int u=q.front();q.pop();
+		siz++;
+		for(auto it=p.begin();it!=p.end();){
+			if(g[u].count(*it)==0){
+				q.push(*it);
+				auto del=it;
+				it++;
+				p.erase(del);
+			}
+			else it++;
+		}
+	}
+	return siz;
+}
+int ans[N];
+signed main(){
+	n=read();m=read();
+	up(i,1,n)p.insert(i);
+	int u,v;
+	up(i,1,m){
+		u=read();v=read();
+		g[u].insert(v);
+		g[v].insert(u);
+	}
+	int top=0;
+    while(!p.empty()){
+        u=*p.begin();
+		p.erase(p.begin());
+        ans[++top]=bfs(u);
+    }
+    sort(ans+1,ans+top+1);
+    printf("%lld\n",top);
+    up(i,1,top)printf("%lld ",ans[i]);
+	return 0;
+}
+</code></pre>
+<h3><a href="https://www.luogu.com.cn/problem/CF1418D" rel="noopener noreferrer" target="_blank">Trash Problem</a></h3>
+<p>有关 set 的妙题。</p>
+<p>答案可以表示为 <span class="math">\(\max(p_n-p_1-(p_{k+1}-p_k))\)</span></p>
+<pre><code class="language-cpp">
+set&lt;int&gt;s;
+multiset&lt;int&gt;gap;
+int n,q;
+inline void insert(int x){
+    s.insert(x);
+    auto it=s.find(x);
+    int pre=-1,nxt=-1;
+    if(it!=s.begin()){
+        gap.insert(x-*prev(it));
+        pre=(*prev(it));
+    }
+    it++;
+    if(it!=s.end()){
+        gap.insert(*it-x);
+        nxt=(*it);
+    }
+    if(pre!=-1&amp;&amp;nxt!=-1)gap.erase(gap.find(nxt-pre));
+}
+inline void del(int x){
+    auto it=s.find(x);
+    int pre=-1,nxt=-1;
+    if(it!=s.begin()){
+        gap.erase(gap.find(x-*prev(it)));
+        pre=*prev(it);
+    }
+    it++;
+    if(it!=s.end()){
+        gap.erase(gap.find(*it-x));
+        nxt=*it;
+    }
+    s.erase(x);
+    if(pre!=-1&amp;&amp;nxt!=-1)gap.insert(nxt-pre);
+}
+int ans;
+signed main(){
+	n=read();q=read();
+    int x;
+    up(i,1,n){
+        x=read();
+        insert(x);
+    }
+    if(gap.size())ans=*prev(s.end())-*s.begin()-*prev(gap.end());
+	cout&lt;&lt;ans&lt;&lt;"\n";
+    int op;
+    while(q--){
+        op=read();x=read();
+        if(op==0)del(x);
+        else insert(x);
+        ans=0;
+        if(gap.size())ans=*prev(s.end())-*s.begin()-*prev(gap.end());
+	    cout&lt;&lt;ans&lt;&lt;"\n";
+    }
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/nn2i5n11" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-k16c9lw8.html"><small>← 上一篇</small><span>AT_abc317_f</span></a><a href="luogu-qdw820i1.html"><small>下一篇 →</small><span>codeforces练习题5</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

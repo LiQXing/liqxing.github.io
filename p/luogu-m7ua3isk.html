@@ -1,0 +1,280 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="这次考试比较简单，所以分数比较高 \(T1\) 分析：贪心一波,鹰只会向上飞或向右飞或斜上飞，正确性十分显然； 所以每一行只会走一次斜线 又一个贪心，走的斜线越多，路程越短，同样显然 所以，来想一想，把每一行看做一个状态，对每个行观察是否能取一条斜线，找出斜线最多的路径，是不是有点像 \(LIS\) 于是你写出了如下代码 记得注"><title>test20230222 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-m7ua3isk.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20230222</h1><p class="hero-meta"><time datetime="2023-02-23T22:00:53+08:00">2023-02-23 22:00</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/m7ua3isk" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>这次考试比较简单，所以分数比较高</p>
+<p><span class="math">\(T1\)</span></p>
+<p>分析：贪心一波,鹰只会向上飞或向右飞或斜上飞，正确性十分显然；</p>
+<p>所以每一行只会走一次斜线</p>
+<p>又一个贪心，走的斜线越多，路程越短，同样显然</p>
+<p>所以，来想一想，把每一行看做一个状态，对每个行观察是否能取一条斜线，找出斜线最多的路径，是不是有点像<span class="math">\(LIS\)</span></p>
+<p>于是你写出了如下代码</p>
+<p>记得注意这题的输入格式，起点是<span class="math">\(（n，m）\)</span>，终点是<span class="math">\(（1,1）\)</span>，十分奇怪，我在这里看了很久</p>
+<pre><code class="language-cpp">	n=read();m=read();K=read();
+	for(int i=1,u,v;i&lt;=K;i++){
+		u=read();v=read();
+		a[v]=-u;
+	}
+	int len=1;
+	h[1]=a[m];
+	for(int i=m;i&gt;=1;i--){
+		int k=lower_bound(h+1,h+1+len,a[i]);
+		if(a[i]&lt;h[k]){
+			h[k]=a[i];
+		}
+		if(k==len+1){
+			len++;
+			h[len]=a[i];
+		}
+	}
+</code></pre>
+<p>（这串代码是我手胡地，编译都过不了，明白我意思就行）</p>
+<p>恭喜，你想出了一个错误但是接近正解的想法</p>
+<p><span class="math">\(ps\)</span>:我在这里卡了很久，直到手膜出一组样例才发现<span class="math">\(----------\)</span></p>
+<p><strong>同一行可以有多个斜线！！！！！！！！！！</strong></p>
+<p>于是问题又来了，我们该怎样取舍这些斜线呢？</p>
+<p>等等，也许不需要取舍，我们在求lis时，当a[i]&lt;a[j]时就进行更改，把他改一下</p>
+<pre><code class="language-cpp">	if(a[j].x&lt;a[i].x&amp;&amp;a[j].y&lt;a[i].y)
+		f[i]=max(f[i],f[j]+1);
+</code></pre>
+<p>然后为了确保读入顺序，我们需要小排个序</p>
+<pre><code class="language-cpp">inline cmp(node a,node b){
+	if(a.x==b.x)return a.y&gt;b.y;//tmdzhelikenlewolianggexiaoshi
+	return a.x&lt;b.x;
+}
+</code></pre>
+<p>注意是<span class="math">\(a.y&gt;b.y\)</span>，本体读入有坑, 又卡了<span class="math">\(10min\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int a=0;int f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9') {if(ch=='-') f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9') {a=(a&lt;&lt;1)+(a&lt;&lt;3)+ch-'0';ch=getchar();}
+	return a*f;
+}
+struct node{
+	int x,y;
+}a[5005];
+double eps=1.4142135;
+int K,n,m,h[1500500];
+inline cmp(node a,node b){
+	if(a.x==b.x)return a.y&gt;b.y;//tmdzhelikenlewolianggexiaoshi
+	return a.x&lt;b.x;
+}
+signed main(){
+	freopen("fly.in","r",stdin);
+	freopen("fly.out","w",stdout);
+	n=read();m=read();
+	K=read();
+	for(int i=1;i&lt;=K;i++)f[i]=1;
+	for(int i=1;i&lt;=K;i++){
+		a[i].x=read();
+		a[i].y=read();
+	}
+	sort(a+1,a+1+K,cmp);
+    int len；
+	for(int i = 1; i &lt;= K; i ++) {
+        int pos = lower_bound(h + 1, h + 1 + len, a[i].y) - h;
+        h[pos] = a[i].y;
+        len = max(len, pos);
+    }
+	//cout&lt;&lt;len&lt;&lt;endl;
+	double s=(n+m)*100-len*200+len*eps*100;
+	int t=s*10;
+	if(t%10&gt;=5)t+=10;
+	cout&lt;&lt;t/10;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>看到<span class="math">\(n\le5\)</span>,直接狂喜，dfs安排上</p>
+<p>题不难，但是有点小坑,</p>
+<p>比如</p>
+<pre><code class="language-cpp">if(a[id].m[i-x+1][j-y+1]==0)continue;
+</code></pre>
+<p>等于0的时候直接跳过就行，不需要进行清空</p>
+<p>然后开始直接开始搜索就好了。一个剪枝都不用加，搜到了就输出然后<span class="math">\(exit(0)\)</span> 就好了。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+
+inline int read(){
+	int a=0;int f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9') {if(ch=='-') f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9') {a=(a&lt;&lt;1)+(a&lt;&lt;3)+ch-'0';ch=getchar();}
+	return a*f;
+}
+int n,vis[5005],sl;
+struct node{
+	int m[20][20];
+	int chang,kuan;
+}a[3200];
+int g[505][50];
+bool check(){
+	for(int i=1;i&lt;=sl;i++){
+		for(int j=1;j&lt;=sl;j++){
+			if(g[i][j]==0)return 0;
+		}
+	}
+	return 1;
+}
+void print(){
+	for(int i=1;i&lt;=sl;i++){
+		for(int j=1;j&lt;=sl;j++){
+			printf("%d",g[i][j]);
+		}
+		printf("\n");
+	}
+}
+bool kefang(int x,int y,int id){
+	for(int i=x;i&lt;x+a[id].chang;i++){
+		for(int j=y;j&lt;y+a[id].kuan;j++){
+			if(a[id].m[i-x+1][j-y+1]==0)continue;
+			if(i&gt;sl||j&gt;sl)return 0;
+			if(g[i][j]!=0)return 0;
+		}
+	}
+	return 1;
+}
+void filld(int x,int y,int id){
+	for(int i=x;i&lt;x+a[id].chang;i++){
+		for(int j=y;j&lt;y+a[id].kuan;j++){
+			if(a[id].m[i-x+1][j-y+1]==0)continue;
+			if(i&gt;sl||j&gt;sl)continue;
+			g[i][j]=id;
+		}
+	}
+}
+void cleard(int x,int y,int id){
+	for(int i=x;i&lt;x+a[id].chang;i++){
+		for(int j=y;j&lt;y+a[id].kuan;j++){
+			if(a[id].m[i-x+1][j-y+1]==0)continue;
+			if(i&gt;sl||j&gt;sl)continue;
+			g[i][j]=0;
+		}
+	}
+}
+void dfs(int step){
+	if(step==n){
+		print();
+		exit(0);
+	}
+	if(step&gt;n){
+		printf("-1");
+		return;
+	}
+	for(int i=1;i&lt;=sl;i++){
+		for(int j=1;j&lt;=sl;j++){
+			if(g[i][j]==0){
+				for(int k=1;k&lt;=n;k++){
+					//cout&lt;&lt;n&lt;&lt;endl;
+					//if(i==1&amp;&amp;j==3)cout&lt;&lt;k&lt;&lt;"  hfdjskfh"&lt;&lt;endl;
+					if(vis[k])continue;
+					if(kefang(i,j,k)){
+						vis[k]=1;
+						filld(i,j,k);
+						//print();
+						dfs(step+1);
+						cleard(i,j,k);
+						vis[k]=0;
+						//cout&lt;&lt;"hfdjskhfdjks"&lt;&lt;endl;
+					}
+				}
+			}
+		}
+	}
+}
+signed main(){
+	freopen("puzzling.in","r",stdin);
+	freopen("puzzling.out","w",stdout);
+	n=read();
+	for(int i=1,l,r;i&lt;=n;i++){
+		l=read();r=read();
+		for(int j=1;j&lt;=l;j++){
+			for(int k=1;k&lt;=r;k++){
+				scanf("%1d",&amp;a[i].m[j][k]);
+				if(a[i].m[j][k])sl++;
+			}
+		}
+		a[i].chang=l;a[i].kuan=r;
+	}
+	//cout&lt;&lt;sl&lt;&lt;endl;
+	sl=(int)sqrt(sl);
+	//cout&lt;&lt;sl&lt;&lt;endl;
+	dfs(0);
+	printf("-1");
+	return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>分析：</p>
+<p>显然，当<span class="math">\(a\)</span>的对手是<span class="math">\(b\)</span>时，<span class="math">\(b\)</span>的对手是<span class="math">\(a\)</span></p>
+<p>又显然，当自己轮空后，之后的就是一样的</p>
+<p>手膜几组数据，可以得出这样一个公式</p>
+<p>第<span class="math">\(t\)</span>天第<span class="math">\(i\)</span>队的对手为</p>
+<p><span class="math">\($ a[(t-b[i]+b[m]+n-1)\mod n+1]\)</span>$</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int a=0;int f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9') {if(ch=='-') f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9') {a=(a&lt;&lt;1)+(a&lt;&lt;3)+ch-'0';ch=getchar();}
+	return a*f;
+}
+int n,m,t,a[500500],b[50050];
+signed main(){
+	freopen("match.in","r",stdin);
+	freopen("match.out","w",stdout);
+	n=read();m=read();t=read();
+	for(int i=1;i&lt;=n;i++)a[i]=read();
+	int l=0;
+	for(int i=1;i&lt;=n;i++){
+		if(a[i]==m){
+			l=i;
+			break;	
+		}
+	}
+	for(int i=1;i&lt;=l;i++){
+		a[n+i]=a[i];
+	}
+	for(int i=1;i&lt;=n;i++){
+		if(t&gt;=i)b[a[i]]=a[l+t-i];
+		else b[a[i]]=a[l+t+n-i];
+	}
+	for(int i=1;i&lt;=n;i++){
+		printf("%lld ",b[i]);
+	}
+	return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T4\)</span></p>
+<p>事实上，这是一道结论题</p>
+<p><span class="math">\(A=\max(a_i+a_{i-1},\dfrac{sum}{\left\lfloor\dfrac{n}{2}\right\rfloor})\)</span></p>
+<p>具体的证法<a href="https://www.luogu.com.cn/problem/solution/P4409" rel="noopener noreferrer" target="_blank">点这里</a></p>
+<pre><code class="language-cpp">#include&lt;stdio.h&gt;
+#include&lt;math.h&gt;
+int ans;
+int a[20001],m,n,i,j;
+int main()
+{
+    scanf("%d",&amp;n);
+    for (i=1;i&lt;=n;++i) scanf("%d",&amp;a[i]);
+    for (i=1;i&lt;n;++i)
+        if (a[i]+a[i+1]&gt;ans) ans=a[i]+a[i+1];
+    for (i=1;i&lt;=n;++i) m+=a[i];
+    double mm=m,nn=n,tem;
+    tem=ceil(mm/((int)(nn/2)));
+    if ((int)tem&gt;ans) ans=(int)tem;
+    printf("%d",ans);
+    return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/m7ua3isk" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-iy94beui.html"><small>← 上一篇</small><span>P1584 魔杖题解</span></a><a href="luogu-gbpdc9wp.html"><small>下一篇 →</small><span>test20230226</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

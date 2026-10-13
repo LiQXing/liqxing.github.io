@@ -1,0 +1,350 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 题目 题解的做法是贪心，但这里提供一种不一样的的解法。 浅浅的打下表 0 3 2 3 2 3 4 5 4 5 6 7 6 7 8 9 8 9 10 11 10 3 2 1 2 3 4 3 4 5 6 5 6 7 8 7 8 9 10 9 10 11 2 1 4 3 2 3 4 5 4 5 6 7 6 7 8 9 8"><title>test20230430 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-s94armcm.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20230430</h1><p class="hero-meta"><time datetime="2023-04-30T18:47:21+08:00">2023-04-30 18:47</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/s94armcm" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p><a href="https://www.luogu.com.cn/problem/P2060" rel="noopener noreferrer" target="_blank">题目</a></p>
+<p>题解的做法是贪心，但这里提供一种不一样的的解法。</p>
+<p>浅浅的打下表</p>
+<pre><code>  0  3  2  3  2  3  4  5  4  5  6  7  6  7  8  9  8  9 10 11 10
+  3  2  1  2  3  4  3  4  5  6  5  6  7  8  7  8  9 10  9 10 11
+  2  1  4  3  2  3  4  5  4  5  6  7  6  7  8  9  8  9 10 11 10
+  3  2  3  2  3  4  3  4  5  6  5  6  7  8  7  8  9 10  9 10 11
+  2  3  2  3  4  3  4  5  4  5  6  7  6  7  8  9  8  9 10 11 10
+  3  4  3  4  3  4  5  4  5  6  5  6  7  8  7  8  9 10  9 10 11
+  4  3  4  3  4  5  4  5  6  5  6  7  6  7  8  9  8  9 10 11 10
+  5  4  5  4  5  4  5  6  5  6  7  6  7  8  7  8  9 10  9 10 11
+  4  5  4  5  4  5  6  5  6  7  6  7  8  7  8  9  8  9 10 11 10
+  5  6  5  6  5  6  5  6  7  6  7  8  7  8  9  8  9 10  9 10 11
+  6  5  6  5  6  5  6  7  6  7  8  7  8  9  8  9 10  9 10 11 10
+  7  6  7  6  7  6  7  6  7  8  7  8  9  8  9 10  9 10 11 10 11
+  6  7  6  7  6  7  6  7  8  7  8  9  8  9 10  9 10 11 10 11 12
+  7  8  7  8  7  8  7  8  7  8  9  8  9 10  9 10 11 10 11 12 11
+  8  7  8  7  8  7  8  7  8  9  8  9 10  9 10 11 10 11 12 11 12
+  9  8  9  8  9  8  9  8  9  8  9 10  9 10 11 10 11 12 11 12 13
+  8  9  8  9  8  9  8  9  8  9 10  9 10 11 10 11 12 11 12 13 12
+  9 10  9 10  9 10  9 10  9 10  9 10 11 10 11 12 11 12 13 12 13
+ 10  9 10  9 10  9 10  9 10  9 10 11 10 11 12 11 12 13 12 13 14
+ 11 10 11 10 11 10 11 10 11 10 11 10 11 12 11 12 13 12 13 14 13
+ 10 11 10 11 10 11 10 11 10 11 10 11 12 11 12 13 12 13 14 13 14
+
+</code></pre>
+<p>(以下距离均指曼哈顿距离，<span class="math">\(s\)</span> 指跳动的步数)</p>
+<p>一些比较显然的隐藏条件。</p>
+<p><span class="math">\(1. \)</span> 第 <span class="math">\(s\)</span> 步扩展到的最大距离为 <span class="math">\(3s\)</span>。</p>
+<p><span class="math">\(2. \)</span> 如果 <span class="math">\(s\)</span> 为奇数，最小距离为 <span class="math">\(2s-3\)</span>，<span class="math">\(s\)</span> 为偶数，最小距离为 <span class="math">\(2s-2\)</span>。</p>
+<p><span class="math">\(3. \)</span> <span class="math">\(s\)</span> 的奇偶性与 <span class="math">\(dis\)</span> 相同。</p>
+<p>读者自证不难。</p>
+<p>然后是一些隐藏的比较深的限制条件。</p>
+<p>(<span class="math">\((\Delta x,\Delta y)\)</span>指末状态与出状态坐标差)</p>
+<p><span class="math">\(1.\)</span> <span class="math">\(\max(\Delta x,\Delta y)\le 2s\)</span></p>
+<p><span class="math">\(2. \)</span> <span class="math">\(\min(\Delta x,\Delta y)\le s-1\)</span></p>
+<p><del>证明：自己看图</del></p>
+<p>对每一个<span class="math">\(s\)</span> ,均满足这些条件，那么是否可以通过这些条件通过 <span class="math">\(dis\)</span> 反推出 <span class="math">\(s\)</span> 呢?</p>
+<p><del>反证法：反正就是这样</del></p>
+<p>通过观察图像, 每一个步数出没的宽度只有 <span class="math">\(4\)</span> 行,这四行会出现三种步数，又通过奇偶性，便可以判断该步数。</p>
+<p>注：在 <span class="math">\(s\)</span> 比较小的情况，由于步数太少，有可能发生回跳的情况，所以只有 <span class="math">\(s \ge 5 \)</span>时该做法才成立</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+#define pii pair&lt;int,int&gt;
+
+const int mod=1e9+7;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+queue&lt;pii&gt;q;
+int dx[]={0,1,1,2,2,-1,-1,-2,-2},dy[]={0,2,-2,1,-1,2,-2,1,-1};
+map&lt;pii,int&gt;mp;
+int x2,y2;
+inline void bfs1(int x,int y){
+	q.push({x,y});
+	mp[{x,y}]=0;
+	while(q.size()){
+		pii u=q.front();q.pop();
+		int ux=u.first,uy=u.second;
+		for(int i=1,tx,ty;i&lt;=8;i++){
+			tx=ux+dx[i];ty=uy+dy[i];
+			if(mp[{tx,ty}]!=0)continue;
+			mp[{tx,ty}]=mp[u]+1;
+			if(tx==x2&amp;&amp;ty==y2){
+				cout&lt;&lt;mp[{tx,ty}]&lt;&lt;endl;
+				return;
+			}
+			q.push({tx,ty});
+		}
+	}
+}
+signed main(){
+    int x1=read(),y1=read();x2=read(),y2=read();
+	 int l=abs(x2-x1),r=abs(y1-y2);
+    int len=max(l,r);
+    int dis=l+r;
+    if(dis&lt;=60){
+        bfs1(x1,y1);
+        return 0;
+    }
+    if(dis%2==1){
+        int r1=(dis+3)/2;
+        int l1=ceil(dis/3);
+        for(int i =l1;i&lt;=r1;i++){
+            if(dis&gt;=2*i-3&amp;&amp;dis&lt;=i*3&amp;&amp;2*i&gt;=len&amp;&amp;len&gt;=i-1&amp;&amp;i%2==1){
+                cout&lt;&lt;i&lt;&lt;endl;
+                return 0;
+            }
+        }
+    }
+    if(dis%2==0){
+        int r1=(dis+2)/2;
+        int l1=ceil(dis/3);
+        for(int i =l1;i&lt;=r1;i++){
+            if(dis&gt;=2*i-2&amp;&amp;dis&lt;=i*3&amp;&amp;2*i&gt;=len&amp;&amp;len&gt;=i-1&amp;&amp;i%2==0){
+                cout&lt;&lt;i&lt;&lt;endl;
+                return 0;
+            }
+        }
+    }
+	return ~~(0-0);
+}
+</code></pre>
+<p>而且该做法跑的飞快，目前最优解第一。</p>
+<p><span class="math">\(T3\)</span></p>
+<p>一道非常有趣的构造题。解法十分精妙。</p>
+<p>我们先把每个自然数之间的关系相连</p>
+<p><img alt="" loading="lazy" src="../assets/images/luogu/30c398590f0b2049b3.png"/></p>
+<p>选了一个点，则与其相邻的点便都不能选。</p>
+<p>但这样不是很好做。我们仔细观察图形，发现每个点最多被连四条边，可以看做来自四个方向的约束。有点熟悉，不是么？</p>
+<p>我们尝试把每一个菱形拉成正方形。</p>
+<p><img alt="" loading="lazy" src="../assets/images/luogu/33c98a1159dc140cd2.png"/></p>
+<p>使之构成一个网格图。选了一个点，则上下左右均不能选。想到状压 <span class="math">\(dp\)</span>。</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define pii pair&lt;int,int&gt;
+
+const int mod=1e9+1;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n;
+int a[200][200],len[105],ans=1;
+int vis[500500];
+int dp[45][1&lt;&lt;13];
+int g[1&lt;&lt;15];
+int lens;
+inline void init(int x) {
+    lens=0;
+    for(int i=1;i&lt;=18;i++) {
+        a[i][1] = (i == 1) ? x : a[i - 1][1] * 2;
+        if(a[i][1]&gt; n) break;
+        lens++;
+		len[i]=vis[a[i][1]]=1;
+		for(int j=2;j&lt;=11;j++) {
+            a[i][j]=a[i][j-1]*3;
+            if(a[i][j]&gt;n)break;
+            len[i]=j;
+    	    vis[a[i][j]]=1;
+        }
+    }
+}
+inline int solve(){
+	for(int i=0;i&lt;=(1&lt;&lt;len[1])-1;i++)dp[1][i]=g[i];
+    for(int i=2;i&lt;=lens;i++){
+        for(int j=0;j&lt;=(1 &lt;&lt;len[i])-1;j++){
+            if(!g[j])continue;
+            dp[i][j]=0;
+            for(int k=0;k&lt;=(1&lt;&lt;len[i-1])-1;k++) {
+                if(g[k]&amp;&amp;(k&amp;j)==0)dp[i][j]+=dp[i-1][k];
+            }
+        }
+    }
+    int t=0;
+    for(int i=0;i&lt;=(1&lt;&lt;len[lens])-1;i++)t=(t+dp[lens][i]) % mod;
+    return t;
+}
+signed main(){
+	n=read();
+    int all=(1&lt;&lt;11)-1;
+    for(int i=0;i&lt;=1;i++)g[i]=!(i&amp;(i&lt;&lt;1));
+    for(int i=1;i&lt;=n;i++){
+    	if(!vis[i]){
+			init(i);
+			ans = ans * solve() % mod;
+		} 
+	} 
+    cout&lt;&lt;ans;
+	return ~~(0-0);
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>一眼数位<span class="math">\(DP\)</span>,然后就没有然后哩。</p>
+<p><span class="math">\($a=\overline{a_1a_2...a_n} ,f(a)=\prod_{i=1}^n a_i \)</span>$</p>
+<p><span class="math">\($F(a)=a \times f(a)\)</span>$</p>
+<p>求有多少<span class="math">\(a\)</span> 使 <span class="math">\(F(a)\in[L,R]\)</span></p>
+<p>显然 <span class="math">\(f(x)<x\)<></x\)<></span></p>
+<p>则<span class="math">\(f(x)\le \sqrt{R}\)</span></p>
+<p>故<span class="math">\(f(x)&lt;10^9\)</span></p>
+<p>显然，<span class="math">\(f(x)=2^a 3^b 5^c 7^d\)</span></p>
+<p>故<span class="math">\(f(x)\)</span>只有 <span class="math">\(5000\)</span> 多个.</p>
+<p>所以该题可以被简化为</p>
+<p><span class="math">\(P\in N,\)</span>有多少<span class="math">\(x\in[L/P,R/P]\)</span>使<span class="math">\(f(x)=P\)</span></p>
+<p>设计状态 <span class="math">\(\mathrm{dp[pos][cnt[0]][cnt[1]][cnt[2]][cnt[3]]}\)</span> ，其中 \mathrm{pos}pos 表示当前数位，<span class="math">\(\mathrm{cnt[0-3]}\)</span>  分别表示还需填入的 <span class="math">\(2,3,5,7\)</span> 的数量。</p>
+<p>注意 <span class="math">\(0\)</span> 对答案的干扰。除了作为前导零以外，为了与上面枚举过程相契合，我们不能在数位上填 <span class="math">\(0\)</span>。</p>
+<pre><code class="language-cpp">
+#include &lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+const int mod=1e9+7;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+
+int dp[18][30][19][13][11],f[4]={2,3,5,7},k[4],st,ed,ans;
+int zt[10][4]={{0,0,0,0},
+			  {0,0,0,0},
+			  {1,0,0,0},
+			  {0,1,0,0},
+			  {2,0,0,0},
+			  {0,0,1,0},
+			  {1,1,0,0},
+			  {0,0,0,1},
+			  {3,0,0,0},
+			  {0,2,0,0}};
+inline int getsum(int sum,int a,int maxl,int st,int ed) {
+	int b=a+maxl-1,siz=0,num=0;
+	maxl/=10;
+	if(a&gt;ed||b&lt;st) return 0;
+	if(a&gt;=st&amp;&amp;b&lt;=ed) siz=1;
+	if(sum==18)return !k[0]&amp;&amp;!k[1]&amp;&amp;!k[2]&amp;&amp;!k[3];
+	if(siz&amp;&amp;dp[sum][k[0]][k[1]][k[2]][k[3]]&gt;=0)return dp[sum][k[0]][k[1]][k[2]][k[3]];   
+	for(int l=(a!=0);l&lt;=9;l++){
+		bool flag=1;
+		for(int i=0;i&lt;4;i++){
+			if(zt[l][i]&gt;k[i])flag=0;
+		}
+		if(!flag)continue;
+		for(int i=0;i&lt;4;i++)k[i]-=zt[l][i];
+		num+=getsum(sum+1,a+l*maxl,maxl,st,ed);
+		for(int i=0;i&lt;4;i++)k[i]+=zt[l][i];
+	}
+	if(siz)dp[sum][k[0]][k[1]][k[2]][k[3]]=num;
+	return num;
+	}
+inline void solve(int maxl,int sum,int num) {
+	if(sum&gt;1000000000)return;
+  	if(num==4){
+		ans+=getsum(0,0,1e18,(st+sum-1)/sum,ed/sum);
+		return;
+	}
+	solve(maxl,sum,num+1);
+	k[num]++;//
+	solve(maxl,sum*f[num],num);
+	k[num]--;
+}
+signed main() {
+   cin&gt;&gt;st&gt;&gt;ed;
+   memset(dp,-1,sizeof dp);
+   solve(ed,1,0);
+   cout&lt;&lt;ans;
+   return 0;
+}
+</code></pre>
+<p><span class="math">\(T4\)</span></p>
+<p>分析 :
+根据 <span class="math">\(Dilworth\)</span> 定理，一个 <span class="math">\(DAG\)</span> 中最长反链的大小，等于其中最小可重链覆盖大小。</p>
+<p>最长反链 : 一张有向无环图的最长反链为一个集合 <span class="math">\(S \subseteq V\)</span> , 满足对于 <span class="math">\(S\)</span> 中任意两个不同的点 <span class="math">\(u, v \in S (u \ne v)\)</span>
+</p>
+<p><span class="math">\(u\)</span> 不能到达 <span class="math">\(v\)</span>， <span class="math">\(v\)</span> 也不能到达 <span class="math">\(u\)</span>。</p>
+<p>最小可重链覆盖：在 <span class="math">\(DAG\)</span> 中选出若干条链，经过每个点至少一次，一个点可被一条链经过多次，且链数尽量少。</p>
+<p>其实 <span class="math">\(Dilworth\)</span> 定理描述的是：一个偏序集中的最长反链大小，等于其中最小不可重链覆盖大小。</p>
+<p>发现当我们将问题抽象到偏序集时，对于该偏序集的关系全集 <span class="math">\(R\)</span> 无法与 <span class="math">\(DAG\)</span> 的边集 <span class="math">\(E\)</span> 一一对应(例如 我们有 <span class="math">\(E = \left\{(a, b), (b, c)\right\}, R = \left\{(a, b), (a, c), (b, c)\right\}\)</span>。</p>
+<p>于是我们就要已知 <span class="math">\(E\)</span> 而求出 <span class="math">\(R\)</span>（或者说 "补全" <span class="math">\(E\)</span>）， 这也可以叫做求 传递闭包</p>
+<p>我们根据求闭包之后的原图建立一个二分图， 将每个点分裂为 两个点， 记为 <span class="math">\((x, x')\)</span>。</p>
+<p>而不可重链覆盖实际上就是把原图划分为一条条链（图意义下），可以想象为：一个 <span class="math">\(n\)</span> 个点的 <span class="math">\(DAG\)</span> 一开始有 <span class="math">\(n\)</span> 条链（一个点为一条）；我们一条条，并尽可能多地选边使剩下的链数目尽量少，同时要求一个点最多有一条出边一条入边（满足链要求）。</p>
+<p>这实际上就和求转化的二分图的最大匹配的意义一致：对应原图同一编号的点最多被匹配两次，并尽可能多地选边。</p>
+<p>每匹配一条边，就相当在原图取一条边，就能使链数目减少一；于是答案（最小不可重链覆盖数）就等于 <span class="math">\(\text{原图点数目}- \text{最大匹配数}\)</span>。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define ll long long
+#define re register
+#define gc getchar
+#define pc putchar
+#define cs const
+
+inline int getint(){
+	re int num;
+	re char c;
+	while(!isdigit(c=gc()));num=c^48;
+	while(isdigit(c=gc()))num=(num&lt;&lt;1)+(num&lt;&lt;3)+(c^48);
+	return num;
+}
+
+cs int N=505;
+int n;
+bool g[N][N],to[N];
+int match[N],idx;
+int vis[N];
+bool ban[N],s[N],t[N];
+
+inline bool find(int u){
+	if(ban[u])return false;
+	for(int re v=1;v&lt;=n;++v){
+		if((vis[v]^idx)&amp;&amp;g[u][v]&amp;&amp;!ban[v]){
+			vis[v]=idx;
+			if(!match[v]||find(match[v])){
+				to[u]=true,match[v]=u;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+inline void dfs(int u){
+	if(s[u])return ;
+	s[u]=true;
+	for(int re v=1;v&lt;=n;++v){
+		if(g[u][v]&amp;&amp;!t[v])t[v]=true,dfs(match[v]);
+	}
+}
+
+int m;
+signed main(){
+	n=getint(),m=getint();
+	for(int re i=1;i&lt;=m;++i){
+		int u=getint(),v=getint();
+		g[u][v]=1;
+	}
+	for(int re k=1;k&lt;=n;++k)
+		for(int re i=1;i&lt;=n;++i)
+			for(int re j=1;j&lt;=n;++j)
+				g[i][j]=g[i][j]||(g[i][k]&amp;&amp;g[k][j]);
+	
+	int ans=n;
+	for(int re i=1;i&lt;=n;++i){
+		++idx;
+		if(find(i))--ans;
+	}
+	printf("%d\n",ans);
+	
+	for(int re i=1;i&lt;=n;++i)if(!to[i])dfs(i);
+	for(int re i=1;i&lt;=n;++i)if(s[i]&amp;&amp;!t[i])printf("%d ",i);
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/s94armcm" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-o4xdp2og.html"><small>← 上一篇</small><span>无向图的双连通分量</span></a><a href="luogu-yc3vcj6p.html"><small>下一篇 →</small><span>test20230525</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

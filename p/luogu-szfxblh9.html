@@ -1,0 +1,236 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="\(T1\) 考虑DP，有一种非常快的方法。 已知一个点的排名，还有与他相同排名的点的个数。 把每个点的排名区段求出来，并用vector存起来。 然后把每个点都进行排序。 有一个非常显然的Dp方程。 \($dp[r]=\max (dp[r],dp[l-1]+num)\) $ 然后就结束了。 dp复杂度为 \(O(n)\) ,瓶颈"><title>test20230628 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-szfxblh9.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20230628</h1><p class="hero-meta"><time datetime="2023-06-28T14:20:37+08:00">2023-06-28 14:20</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/szfxblh9" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p><span class="math">\(T1\)</span></p>
+<p>考虑DP，有一种非常快的方法。</p>
+<p>已知一个点的排名，还有与他相同排名的点的个数。</p>
+<p>把每个点的排名区段求出来，并用vector存起来。</p>
+<p>然后把每个点都进行排序。</p>
+<p>有一个非常显然的Dp方程。</p>
+<p><span class="math">\($dp[r]=\max (dp[r],dp[l-1]+num)\)</span>$</p>
+<p>然后就结束了。</p>
+<p>dp复杂度为<span class="math">\(O(n)\)</span>,瓶颈主要在排序</p>
+<p>一些坑点：</p>
+<p>1.写逆推不要写正推，如果写正推的话，状态的传递会变得非常困难，要是没写好就会像我一样想出了这个方程却写挂。</p>
+<pre><code class="language-cpp">
+#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ldo long double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define ls k&lt;&lt;1
+#define rs k&lt;&lt;1|1
+
+const int N=5e5+5000;
+const int mod=998244353;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(int x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(int x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+int n;
+int len=0;
+vector&lt;int&gt;g[N];
+int dp[N];
+signed main(){
+	n=read();
+	int l,r;
+	int cnt=0;
+	up(i,1,n){
+		l=read()+1;r=n-read();
+		if(r&lt;l)continue;
+		g[r].push_back(l);
+	}
+	up(i,1,n)sort(g[i].begin(),g[i].end());
+	up(i,1,n){
+		dp[i]=dp[i-1];
+		int num=0;
+		for(int j=0;j&lt;g[i].size();j++){
+			if(j!=0)if(g[i][j]!=g[i][j-1])num=0;
+			num++;
+			if(num&lt;=i-g[i][j]+1){
+				dp[i]=max(dp[i],dp[g[i][j]-1]+num);	
+			}	
+		}
+	}
+	cout&lt;&lt;n-dp[n]&lt;&lt;endl;
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>应该算的上一道期望<span class="math">\(DP\)</span></p>
+<p>设</p>
+<p><span class="math">\($dp[i]=dp[i-1]+\Delta\)</span>$</p>
+<p>当 <span class="math">\(k=3\)</span> 时</p>
+<p><span class="math">\(\Delta=((x+1)^3-x^3)p[i]=(3x^2+3x+1)p[i]\)</span></p>
+<p>当 <span class="math">\(k=2\)</span> 时</p>
+<p><span class="math">\(\Delta=((x+1)^2-x^2)p[i]=(2x+1)p[i]\)</span></p>
+<p>······</p>
+<p>所以，用<span class="math">\(x[i]\)</span>表示<span class="math">\(x^i\)</span></p>
+<p>可以解决。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ldo long double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define ls k&lt;&lt;1
+#define rs k&lt;&lt;1|1
+
+const int N=5e5+5000;
+const int mod=998244353;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(int x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(int x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+int n,k;
+int c[10][10]={
+	{1,0,0,0},
+	{1,1,0,0},
+	{1,2,0,0},
+	{1,3,3,0},
+	{1,4,6,4,1}
+};
+ldo p[N],dp[N],x[5];
+signed main(){
+	n=read();k=read();
+	up(i,1,n){
+		scanf("%LF",&amp;p[i]);
+	}
+	up(i,1,n){
+		dp[i]=dp[i-1]+p[i]*(c[k][1]*x[1]+c[k][2]*x[2]+c[k][3]*x[3]+1);
+		x[3]=(x[3]+3*x[2]+3*x[1]+1)*p[i];
+		x[2]=(x[2]+2*x[1]+1)*p[i];
+		x[1]=(x[1]+1)*p[i];
+	}
+	printf("%LF",dp[n]);
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>暴力很轻松有60pts</p>
+<p>首先很容易想到的是把每个旋转点给标记出来。</p>
+<p>每个点都有一个优先级，这个点的优先级等于所有没有打上标记的点的乘积。</p>
+<p>可以自己手摸几组数据</p>
+<p>之后就简单了。</p>
+<p>像求等价于求平衡树第k大</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+#define ldo long double
+#define i128 __int128
+#define up(a,b,c) for(int a=b;a&lt;=c;a++)
+#define dn(a,b,c) for(int a=b;a&gt;=c;a--)
+#define pii pair&lt;int,int&gt;
+#define ls k&lt;&lt;1
+#define rs k&lt;&lt;1|1
+
+const int N=5e5+5000;
+const int mod=998244353;
+
+namespace IO{
+	inline int read(){
+		char c=getchar();int x=0,fh=0;
+        while(c&lt;'0'||c&gt;'9'){fh|=c=='-';c=getchar();}
+        while(c&gt;='0'&amp;&amp;c&lt;='9'){x=(x&lt;&lt;1)+(x&lt;&lt;3)+(c^48);c=getchar();}
+        return fh?-x:x;
+	}
+	inline void wt(int x){
+		if(x&lt;0){x=-x;putchar('-');}
+		if(x&gt;9)wt(x/10);
+		putchar((x%10)^48);
+	}
+	inline void write(int x,bool op){
+		wt(x);
+		putchar(op?'\n':' ');
+	}
+}using namespace IO;
+int n,k;
+int c[50][50];
+int r[5000],cnt;
+bool vis[5050];
+int g[50][50];
+inline int calc(){
+	int res=1;
+	up(i,1,cnt){
+		if(!vis[i])res*=r[i];
+	}
+	return res;
+}
+signed main(){
+	n=read();k=read();
+	k=(1ll&lt;&lt;(n*n/2))-k+1;
+	int x,y;
+	up(i,1,n){
+		up(j,1,n){
+			if(!c[i][j]){
+				r[++cnt]=4;
+				x=i;y=j;
+				up(i,1,4){
+					c[x][y]=cnt;
+					x=n-x+1;
+					swap(x,y);
+				}
+			}
+		}
+	}
+	int tmp;
+	up(i,1,n){
+		up(j,1,n){
+			if(!vis[c[i][j]]){
+				vis[c[i][j]]=1;
+				tmp=calc();
+				if(tmp&gt;=k)g[i][j]=1;
+				else{
+					k-=tmp;
+					r[c[i][j]]--;
+					vis[c[i][j]]=0;
+				}
+			}
+		}
+	}
+	up(i,1,n){
+		up(j,1,n){
+			printf("%lld",g[i][j]);
+		}
+		printf("\n");
+	}
+	return 0;
+}
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/szfxblh9" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-91ph11hl.html"><small>← 上一篇</small><span>计划表</span></a><a href="luogu-e5w7r46f.html"><small>下一篇 →</small><span>成外培训（数据结构）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

@@ -1,0 +1,43 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="公平组合游戏 只有 \(sg\) 函数 巴什博弈 首先，如果 \(n\le k\) ,则先手可以一次性取完，必胜。 如果 \(n=k+1\) 那么先手必败。 扩展，如果 \(n\equiv 0(\mod m+1)\) 不管甲拿多少个，乙都可以使剩下的是 \(m+1\) 的倍数。 若不是，甲一定可以让乙的局面达到 \(n\equi"><title>博弈论 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-slztey9u.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>博弈论</h1><p class="hero-meta"><time datetime="2023-08-14T18:29:07+08:00">2023-08-14 18:29</time><span>·</span><a href="../categories.html#算法笔记">算法笔记</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/slztey9u" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h2>公平组合游戏</h2>
+<p>只有<span class="math">\(sg\)</span> 函数</p>
+<h3><a href="https://loj.ac/p/10241" rel="noopener noreferrer" target="_blank">巴什博弈</a></h3>
+<p>首先，如果<span class="math">\(n\le k\)</span>,则先手可以一次性取完，必胜。
+如果 <span class="math">\(n=k+1\)</span> 那么先手必败。
+扩展，如果 <span class="math">\(n\equiv 0(\mod m+1)\)</span> 不管甲拿多少个，乙都可以使剩下的是 <span class="math">\(m+1\)</span> 的倍数。</p>
+<p>若不是，甲一定可以让乙的局面达到 <span class="math">\(n\equiv 0(\mod m+1)\)</span>。</p>
+<h3><a href="https://loj.ac/p/10242" rel="noopener noreferrer" target="_blank">巴什博弈-pro</a></h3>
+<p><span class="math">\(sg(x)=0\)</span> 的点是必败点。</p>
+<h3>nim游戏</h3>
+<p>对于nim游戏而言，必败状态当且仅当<span class="math">\(x_1⊕x_2⊕...⊕x_n=0\)</span>，对于其他情况，先手必能使当前局面变成必败状态。</p>
+<p>证明：</p>
+<p>所有物品被取完是一个必败局面，此时<span class="math">\(x_1⊕x_2⊕...⊕x_n=0\)</span>。
+当<span class="math">\(x_1⊕x_2⊕...⊕x_n=0\)</span>时，无论如何取都无法使对方达成必败局面，而当<span class="math">\(x_1⊕x_2⊕...⊕x_n!=0\)</span> 时，我们有一定可以取数使之达成<span class="math">\(x_1⊕x_2⊕...⊕x_n=0\)</span>的情况，所以最终总是对方落败。</p>
+<h3>nimk</h3>
+<p>计算所有物品数在某一个二进制位上的 <span class="math">\(1\)</span> 的个数再模 <span class="math">\(k+1\)</span> ，若对任意一个二进制位结果都为 <span class="math">\(0\)</span> ，那么先手必败。</p>
+<p>证明：</p>
+<ul>
+<li class="task-list-item">对于最终局面，每堆物品个数都为 <span class="math">\(0\)</span> ，为必败态</li>
+<li class="task-list-item">对于任意一个局面如果存在某些二进制位上 <span class="math">\(1\)</span> 的个数模 <span class="math">\(k+1\)</span> 不为 <span class="math">\(0\)</span>，肯定有一种方案使其为 <span class="math">\(0\)</span>。</li>
+<li class="task-list-item">-   对于某个局面，如果每个二进制位上 <span class="math">\(1\)</span> 的个数模 <span class="math">\(k+1\)</span> 都为 <span class="math">\(0\)</span> ，那一定不存在一种合法移动使移动后每个二进制位上 <span class="math">\(1\)</span> 的个数模 <span class="math">\(k+1\)</span> 仍为 <span class="math">\(0\)</span> ，因为这至少要在一位上对 <span class="math">\(k+1\)</span> 个数字进行改变，但最多对 <span class="math">\(k\)</span> 个数字进行改变。</li>
+</ul>
+<h3>Wythoff's Game</h3>
+<p>满足奇异局势，则先手必败。</p>
+<p>奇异局势的第一个值总是等于这个局势的差值乘上黄金分割比然后取整。</p>
+<h3>Fibonacci Nim</h3>
+<p>先手必败态构成<strong>Fibonacci数列</strong>。</p>
+<p>证明：</p>
+<ul>
+<li class="task-list-item">任何正整数可以表示为若干个不连续的<strong>Fibonacci数</strong>之和。</li>
+<li class="task-list-item"><span class="math">\(f_{n+1}&lt;2\times f_n<f_{n+2}\)<></f_{n+2}\)<></span></li>
+<li class="task-list-item"><span class="math">\(f_{n+2}&lt;3\times f_n\)</span></li>
+</ul>
+<p>然后就不会了。</p>
+<h3>Anti-nim</h3>
+<p>先手必胜条件：</p>
+<ol>
+<li><p>所有石子个数都为1且有偶数堆。</p>
+</li>
+<li><p>至少有一个堆的石子数&gt;1，且石子堆的异或和≠0。</p>
+</li>
+</ol>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/slztey9u" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-ejc5dpra.html"><small>← 上一篇</small><span>浅谈离散对数</span></a><a href="luogu-u35uc116.html"><small>下一篇 →</small><span>奇奇怪怪的贪心</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

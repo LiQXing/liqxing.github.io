@@ -1,0 +1,312 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="春测前的最后一次考试，炸的稀烂，考前讲的一道例题 \(zero\) 了,春测rp-- \(T1\) 题意：给出一个矩阵，找出其中只包含 \(0\) 的最大子矩阵 分析：单调栈的板子，如果只是枚举矩形的端点，复杂度无疑是 \(O(n^4)\) ,绝对超时，所以我们可以考虑先枚举下边界，处理出每个下边界上有多少个连续的 \(0\) "><title>test20230301 · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-jnlhtc16.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>test20230301</h1><p class="hero-meta"><time datetime="2023-03-05T16:06:16+08:00">2023-03-05 16:06</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/jnlhtc16" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><p>春测前的最后一次考试，炸的稀烂，考前讲的一道例题 <span class="math">\(zero\)</span> 了,春测rp--</p>
+<p><span class="math">\(T1\)</span></p>
+<p>题意：给出一个矩阵，找出其中只包含<span class="math">\(0\)</span>的最大子矩阵</p>
+<p>分析：单调栈的板子，如果只是枚举矩形的端点，复杂度无疑是<span class="math">\(O(n^4)\)</span>,绝对超时，所以我们可以考虑先枚举下边界，处理出每个下边界上有多少个连续的<span class="math">\(0\)</span>，如图</p>
+<p><img alt="" loading="lazy" src="../assets/images/luogu/42aa54d69235e40613.png"/></p>
+<p>判断出能取出的最大矩形，复杂度为<span class="math">\(O(n^3)\)</span>,</p>
+<p>上代码</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+const int mod=1e8;
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,a[2500][2500],f[2500],ans,h[2500][2500];
+signed main(){
+	n=read();m=read();
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			a[i][j]=read();
+		}
+	}
+	/*for(int i=1;i&lt;=n;i++){
+		if(i==1)
+		for(int j=1;j&lt;=m;j++){
+			if(a[i][j])h[i][j]=0;
+			else h[i][j]+=[i-1][j];
+		}
+	}*/
+	for(int i=1;i&lt;=n;i++){
+		for(int j=1;j&lt;=m;j++){
+			if(a[i][j])f[j]=0;
+			else f[j]++;
+		}
+		for(int j=1;j&lt;=m;j++){
+			if(!f[j])continue;
+			int l=j,r=j;
+			while(f[j]&lt;=f[l-1])l--;
+			while(f[j]&lt;=f[r+1])r++;
+			ans=max(ans,(r-l+1)*f[j]);
+		}
+	}
+	cout&lt;&lt;ans;
+    return 0;
+}
+</code></pre>
+<p><span class="math">\(T2\)</span></p>
+<p>最简单的一道题，只需要知道一个结论，树上离一个点距离最远的点是直径的两个端点之一,</p>
+<p>所以只用求出直径就好了</p>
+<p>上代码</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,dis[500500],dis2[500500];
+vector&lt;int&gt;vec[500500];
+void dfs(int u,int from){
+	for(auto v:vec[u]){
+		if(v==from)continue;
+		dis[v]=dis[u]+1;
+		dfs(v,u);
+	}
+}
+void dfs2(int u,int from){
+	for(auto v:vec[u]){
+		if(v==from)continue;
+		dis2[v]=dis2[u]+1;
+		dfs2(v,u);
+	}
+}
+signed main(){
+	n=read();
+	for(int i=1,u,v;i&lt;n;i++){
+		u=read();v=read();
+		vec[u].push_back(v);
+		vec[v].push_back(u);
+	}
+	dfs(1,0);
+	int l=1,r=1;
+	for(int i=1;i&lt;=n;i++){
+		if(dis[i]&gt;dis[l])l=i;
+	}
+	memset(dis,0,sizeof dis);
+	dfs(l,0);
+	for(int i=1;i&lt;=n;i++){
+		if(dis[i]&gt;dis[r])r=i;
+	}
+	dfs2(r,0);
+	for(int i=1;i&lt;=n;i++){
+		cout&lt;&lt;max(dis[i],dis2[i])&lt;&lt;endl;
+	}
+	return 0;
+}
+
+</code></pre>
+<p><span class="math">\(T3\)</span></p>
+<p>分析：判断路径是否合法</p>
+<p>用dis二维数组保存点与点之间的距离</p>
+<p>还有每种情况的读入需要想字符串一行的读入然后一点一点的判断，很简单</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+//#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,k;
+double dis[1200][1200];
+string s;
+signed main(){
+	//freopen("compare.in","r",stdin);
+	//freopen("compare.out","w",stdout);
+	n=read();m=read();k=read();
+	memset(dis,77,sizeof dis);
+	double w;
+	for(int i=0;i&lt;=n;i++)dis[i][i]=0;
+	for(int i=1,u,v;i&lt;=m;i++){
+		u=read();v=read();scanf("%lf",&amp;w);
+		dis[u][v]=dis[v][u]=min(w,dis[u][v]);
+	}
+	getline(cin,s);
+	int tag=0;
+	double maxl=1e14;
+	while(k--){
+		getline(cin,s);
+		//cout&lt;&lt;s&lt;&lt;endl;
+		if(s[0]=='I')continue;
+		if(s[0]!='1'||s[1]!=' ')continue;
+		int last=s[0]-48,flag=0,flag2=0;
+		double ans=0;
+		for(int i=1;i&lt;s.size();i++){
+			int x=0;
+			while(s[i]&gt;='0'&amp;&amp;s[i]&lt;='9'){x=x*10+s[i]-48;i++;}
+			if(x!=0){
+				//cout&lt;&lt;x&lt;&lt;endl;
+				if(x&gt;n){
+					flag=1;
+					break;
+				}
+				if(x==n)flag2=1;
+				if(dis[last][x]==dis[1][0]){
+					flag=1;
+					break;	
+				}
+				ans+=dis[last][x];
+				last=x;
+			}
+		}
+		//cout&lt;&lt;ans&lt;&lt;endl;
+		if(!flag&amp;&amp;flag2){
+			tag=1;
+			maxl=min(maxl,ans);	
+		}
+	}
+	if(tag==1)printf("%.4lf",maxl);
+	else printf("Wrong");
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(T4\)</span></p>
+<p>正解应该是数位DP或推式子，不过写的暴力加打表也能A</p>
+<p>假做法：</p>
+<p>ans[i][j]指i位限制j个1有多少种情况</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+
+using namespace std;
+
+#define int long long
+
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while(ch&lt;'0'||ch&gt;'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int ans[32][32]={
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,3,6,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,4,10,14,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,5,15,25,30,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,6,21,41,56,62,63,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,7,28,63,98,119,126,127,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,8,36,92,162,218,246,254,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,9,45,129,255,381,465,501,510,511,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,10,55,175,385,637,847,967,1012,1022,1023,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,11,66,231,561,1023,1485,1815,1980,2035,2046,2047,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,12,78,298,793,1585,2509,3301,3796,4016,4082,4094,4095,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,13,91,377,1092,2379,4095,5811,7098,7813,8099,8177,8190,8191,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,14,105,469,1470,3472,6475,9907,12910,14912,15913,16277,16368,16382,16383,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,15,120,575,1940,4943,9948,16383,22818,27823,30826,32191,32646,32751,32766,32767,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,16,136,696,2516,6884,14892,26332,39202,50642,58650,63018,64838,65398,65518,65534,65535,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,17,153,833,3213,9401,21777,41225,65535,89845,109293,121669,127857,130237,130917,131053,131070,131071,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,18,171,987,4047,12615,31179,63003,106761,155381,199139,230963,249527,258095,261155,261971,262124,262142,262143,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,19,190,1159,5035,16663,43795,94183,169765,262143,354521,430103,480491,507623,519251,523127,524096,524267,524286,524287,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,20,210,1350,6195,21699,60459,137979,263949,431909,616665,784625,910595,988115,1026875,1042379,1047224,1048364,1048554,1048574,1048575,0,0,0,0,0,0,0,0,0,0,0},
+{0,21,231,1561,7546,27895,82159,198439,401929,695859,1048575,1401291,1695221,1898711,2014991,2069255,2089604,2095589,2096919,2097129,2097150,2097151,0,0,0,0,0,0,0,0,0,0},
+{0,22,253,1793,9108,35442,110055,280599,600369,1097789,1744435,2449867,3096513,3593933,3913703,4084247,4158860,4185194,4192509,4194049,4194280,4194302,4194303,0,0,0,0,0,0,0,0,0},
+{0,23,276,2047,10902,44551,145498,390655,880969,1698159,2842225,4194303,5546381,6690447,7507637,7997951,8243108,8344055,8377704,8386559,8388330,8388583,8388606,8388607,0,0,0,0,0,0,0,0},
+{0,24,300,2324,12950,55454,190050,536154,1271625,2579129,4540385,7036529,9740685,12236829,14198085,15505589,16241060,16587164,16721760,16764264,16774890,16776914,16777190,16777214,16777215,0,0,0,0,0,0,0},
+{0,25,325,2625,15275,68405,245505,726205,1807780,3850755,7119515,11576915,16777215,21977515,26434915,29703675,31746650,32828225,33308925,33486025,33539155,33551805,33554105,33554405,33554430,33554431,0,0,0,0,0,0},
+{0,26,351,2951,17901,83681,313911,971711,2533986,5658536,10970271,18696431,28354131,38754731,48412431,56138591,61450326,64574876,66137151,66794951,67025181,67090961,67105911,67108511,67108836,67108862,67108863,0,0,0,0,0},
+{0,27,378,3303,20853,101583,397593,1285623,3505698,8192523,16628808,29666703,47050563,67108863,87167163,104551023,117588918,126025203,130712028,132932103,133820133,134116143,134196873,134214423,134217348,134217699,134217726,134217727,0,0,0,0},
+{0,28,406,3682,24157,122437,499177,1683217,4791322,11698222,24821332,46295512,76717267,114159427,154276027,191718187,222139942,243614122,256737232,263644132,266752237,267936277,268313017,268411297,268431772,268435048,268435426,268435454,268435455,0,0,0},
+{0,29,435,4089,27840,146595,621615,2182395,6474540,16489545,36519555,71116845,123012780,190876695,268435455,345994215,413858130,465754065,500351355,520381365,530396370,534688515,536249295,536724315,536843070,536866821,536870475,536870881,536870910,536870911,0,0},
+{0,30,465,4525,31930,174436,768211,2804011,8656936,22964086,53009101,107636401,194129626,313889476,459312151,614429671,759852346,879612196,966105421,1020732721,1050777736,1065084886,1070937811,1072973611,1073567386,1073709892,1073737297,1073741357,1073741792,1073741822,1073741823,0},
+{0,31,496,4991,36456,206367,942648,3572223,11460948,31621023,75973188,160645503,301766028,508019103,773201628,1073741823,1374282018,1639464543,1845717618,1986838143,2071510458,2115862623,2136022698,2143911423,2146540998,2147277279,2147447190,2147478655,2147483150,2147483615,2147483646,2147483647}
+};
+int n,l,k,ansk;
+stack&lt;int&gt;s;
+void Main1(){
+	int t,i;
+	for(i=0;i&lt;=(1ll&lt;&lt;n);i++){
+		t=__builtin_popcount(i);
+		//cout&lt;&lt;t&lt;&lt;endl;
+		if(t&lt;=l)ansk++;
+		if(ansk==k)break;
+	}
+	while(i){
+		s.push(i%2);
+		i&gt;&gt;=1;
+	}
+	while(s.size()&lt;n)s.push(0);
+	while(!s.empty()){
+		cout&lt;&lt;s.top();
+		s.pop();
+	}
+}
+void Main2(){
+	int t,i=0,j=1,tag=0;
+	int res=0;int all=(1ll&lt;&lt;n);
+	//cout&lt;&lt;(1&lt;&lt;31)-1&lt;&lt;endl;
+	for(j=1;j&lt;=n;j++){
+		if(!ans[j][l])continue;
+		if(k-ans[j][l]&gt;=0){
+			tag=max(tag,ans[j][l]+1);
+			//cout&lt;&lt;k&lt;&lt;" "&lt;&lt;j&lt;&lt;" "&lt;&lt;tag&lt;&lt;endl;
+			i=1&lt;&lt;j;
+		}
+		else break;
+	}
+	//cout&lt;&lt;j&lt;&lt;endl;
+	k-=tag;
+	//cout&lt;&lt;i&lt;&lt;endl;
+	//cout&lt;&lt;tag&lt;&lt;endl;
+	//cout&lt;&lt;k&lt;&lt;endl;
+	for(;i&lt;=(long long)all-1;i++){
+		//cout&lt;&lt;"jfdksljfdl"&lt;&lt;endl;
+		t=__builtin_popcount(i);
+		//cout&lt;&lt;t&lt;&lt;endl;
+		if(t&lt;=l)res++;
+		if(res==k)break;
+	}
+	//cout&lt;&lt;i&lt;&lt;endl;
+	while(i){
+		s.push(i%2);
+		i&gt;&gt;=1;
+	}
+	while(s.size()&lt;n)s.push(0);
+	while(!s.empty()){
+		cout&lt;&lt;s.top();
+		s.pop();
+	}
+}
+signed main(){
+	//freopen("bits.in","r",stdin);
+	//freopen("bits.out","w",stdout);
+	n=read();l=read();k=read();
+	if(k&lt;=50000000)Main1();
+	else Main2();
+	return 0;
+}
+</code></pre>
+<p>当然，正解不是这样</p>
+<p>我们想，把我的ans数组用递推的方式求出来</p>
+<pre><code class="language-cpp">    for(int i=1;i&lt;=n;i++)f[i][0]=1;
+    for(int i=1;i&lt;=l;i++)f[0][i]=1;
+    for(int i=1;i&lt;=n;i++){
+        for(int j=1;j&lt;=min(i,l);j++){
+            if(j&lt;i){
+                f[i][j]=f[i-1][j-1]+f[i-1][j];//这里f[i][j]=i位j个1
+            }
+            else if(j==i)f[i][j]=1;
+        }
+    }
+    for(int i=1;i&lt;=n;i++){
+    	for(int j=1;j&lt;=l;j++)f[i][j]+=f[i][j-1];//这里就是i位不大于j个1了
+	}
+
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/jnlhtc16" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-gbpdc9wp.html"><small>← 上一篇</small><span>test20230226</span></a><a href="luogu-84wpixv7.html"><small>下一篇 →</small><span>test20200308</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>

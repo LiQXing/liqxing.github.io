@@ -1,0 +1,608 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#283b55"><meta name="description" content="数据结构 树状数组 \(problem.1\) 解： \(ax+b&gt;c\) 可化为 \(x&gt;\dfrac{c-b}{a}\) 或 \(x&gt;\dfrac{b-c}{a}\) ，故可化为数轴上的点，又因为 \(-10^6\le k \le10^6\) ,所以建立树状数组，从 \(0\) 到 \(2\times10^6\) #incl"><title>1.17培训笔记（上） · LiQXing</title><link rel="canonical" href="https://liqxing.github.io/p/luogu-l3a48dfo.html"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="LiQXing 的博客" href="../feed.xml"><link rel="stylesheet" href="../assets/vendor/long-cang.css"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="../assets/vendor/APlayer.min.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('liqxing-theme')||'light'}catch(e){}</script></head><body><a class="skip" href="#main">跳到正文</a><div id="reading-progress" aria-hidden="true"></div><header class="top-nav"><button id="menu-toggle" class="menu-toggle" aria-controls="site-menu" aria-expanded="false">☰ MENU</button><a class="nav-brand" href="../index.html">LiQXing</a><nav aria-label="主要导航"><a href="../index.html#posts">文章</a><a href="../archive.html">归档</a><a href="../about.html">关于</a><button id="theme-toggle" class="theme-toggle" aria-label="切换昼夜模式">◐</button></nav></header><div id="menu-backdrop" hidden></div><aside id="site-menu" class="site-menu" aria-label="网站菜单" inert><button id="menu-close" aria-label="关闭菜单">×</button><div class="menu-profile"><span class="profile-mark">L.</span><h2>LiQXing</h2><p>夜雨声烦扰清梦，桃花碎落乱春风。</p></div><div class="menu-stats"><span><b>135</b>文章</span><span><b>6</b>分类</span><span><b>2022</b>开始记录</span></div><nav aria-label="侧栏导航"><a href="../index.html">⌂ <span>首页</span></a><a href="../archive.html">▤ <span>文章归档</span></a><a href="../categories.html">◇ <span>文章分类</span></a><a href="../about.html">○ <span>关于我</span></a><a href="https://www.cnblogs.com/LiQXing/" target="_blank" rel="noopener noreferrer">↗ <span>博客园</span></a><a href="https://www.luogu.com.cn/user/750240/article" target="_blank" rel="noopener noreferrer">↗ <span>洛谷</span></a><a href="https://github.com/LiQXing" target="_blank" rel="noopener noreferrer">⌘ <span>GitHub</span></a><a href="https://msg.cnblogs.com/send/LiQXing" target="_blank" rel="noopener noreferrer">✉ <span>联系</span></a><a href="../feed.xml">◔ <span>RSS 订阅</span></a></nav><p class="menu-foot">愿每一次思考，都有所回响。</p></aside><section class="hero hero-article"><div class="hero-shade"></div><div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="hero-content"><p class="hero-kicker">ALGORITHMS · NOTES · LIFE</p><h1>1.17培训笔记（上）</h1><p class="hero-meta"><time datetime="2023-01-17T17:25:32+08:00">2023-01-17 17:25</time><span>·</span><a href="../categories.html#随笔">随笔</a><span>·</span><span>洛谷</span></p></div></section><main id="main" class="blog-shell article-shell"><article class="article-panel"><div class="source-note">最初发表于 <a href="https://www.luogu.com/article/l3a48dfo" target="_blank" rel="noopener noreferrer">洛谷 ↗</a><span>作者 LiQXing</span></div><div id="cnblogs_post_body" class="article-body"><h1>数据结构</h1>
+<h2>树状数组</h2>
+<p><a href="https://www.luogu.com.cn/problem/P5482" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.1\)</span></a></p>
+<p>解：</p>
+<p><span class="math">\(ax+b&gt;c\)</span>可化为<span class="math">\(x&gt;\dfrac{c-b}{a}\)</span>或<span class="math">\(x&gt;\dfrac{b-c}{a}\)</span>，故可化为数轴上的点，又因为<span class="math">\(-10^6\le k \le10^6\)</span>,所以建立树状数组，从<span class="math">\(0\)</span>到<span class="math">\(2\times10^6\)</span></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 1000000007
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+const int N = 1e6;
+int cnt,k[N + 60],ans,sum,a,b,c,p[N + 60],num1[(N &lt;&lt; 1) + 60],num2[(N &lt;&lt; 1) + 60];
+char op[20];
+inline void add(int x, int val, int c[]){
+	x += N;						
+	for(; x&lt;= (N&lt;&lt;1); x += x&amp;(-x)) c[x]+=val;
+	return ;
+}
+inline int ask(int x, int c[]){
+	x += N;
+	int res=0;
+	for(; x; x -= x&amp;(-x)) res += c[x];
+	return res;
+}
+signed main(){
+	int n=read();
+	while(n--) {
+		scanf("%s ",op);
+		if(op[0] == 'A') {
+			cin &gt;&gt;a &gt;&gt;b &gt;&gt;c;
+			if(a == 0) {
+				if(b &gt; c) {
+					ans++;
+					k[++cnt] = 3;
+				} 
+				else k[++cnt] = 0;
+			} 
+			else if(a &gt; 0) {
+				p[++cnt] = floor((c * 1.0 - b)/a);
+				k[cnt] = 1; 
+				if(p[cnt] &gt; N) k[cnt] = 0;
+				else if(p[cnt] &lt; -N){
+					ans ++;
+					k[cnt] = 3;
+				} 
+				else add(p[cnt], 1, num1);
+			} 
+			else {
+				p[++cnt] = ceil((c * 1.0 - b)/a);
+				k[cnt] = 2;
+				if(p[cnt] &lt; -N) k[cnt] = 0;
+				else if(p[cnt] &gt; N){
+					ans ++;
+					k[cnt] = 3;
+				} 
+				else add(p[cnt], 1, num2);
+			}
+		} 
+		else if(op[0] == 'D') {
+			cin &gt;&gt;a;
+			if(k[a] == 3) ans --;
+			else if(k[a] == 1) add(p[a], -1, num1);
+			else if(k[a] == 2) add(p[a], -1, num2);
+			k[a] = 0;
+		} 
+		else{
+			a=read();
+			cout&lt;&lt;ask(a-1, num1) + (ask(N, num2)- ask(a, num2))+ ans&lt;&lt;endl;
+		}
+	}
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P5463" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.2\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int __int128
+#define inf 1e14
+#define mod 1000000007
+#define N 1500500
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+inline void write(__int128 x){
+    if(x&lt;0){putchar('-');x=-x;}
+    if(x&gt;9)write(x/10);
+    putchar(x%10+'0');
+}
+int a[N],b[N],c[N],m,n;
+inline int lowbit(int x){
+	return x&amp;(-x);
+}
+inline void add(int x,int v){
+    for(;x&lt;=m;x+=lowbit(x))	c[x] +=v;
+}
+inline int sum(int x){
+    int ans =0;
+    for(;x;x-=lowbit(x))ans+=c[x];
+    return ans;
+}
+signed main(){
+	n =read();
+    for(int i=1;i&lt;=n;++i)a[i] =b[i] =read();
+    sort(b+1,b+n+1);
+    m = unique(b+1,b+n+1)-b-1;
+    for (int i=1;i&lt;=n;++i)a[i]=lower_bound(b+1,b+m+1,a[i])-b; 
+    int ans =0;
+    for(int i=1;i&lt;=n;++i){
+    	add(a[i],i);
+    	ans+=(n-i+1)*(sum(m)-sum(a[i]));
+    }	
+    write(ans);
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P1637" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.3\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 1000000007
+#define N 500500
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+struct node{
+	int num,pos;
+}a[N];
+struct st{
+	int sum,l,r;
+}tr[N&lt;&lt;2];
+int n,f[2077][2077],ans,cnt,num[N],bigger[N],smaller[N];
+bool cmp(node x,node y){return x.num&lt;y.num;}
+void build(int k,int l,int r){
+	tr[k].l=l;tr[k].r=r;
+	if(l==r)return;
+	int mid=(l+r)&gt;&gt;1;
+	build(k&lt;&lt;1,l,mid);
+	build(k&lt;&lt;1|1,mid+1,r);
+}
+inline void push_up(int k){
+	tr[k].sum=tr[k&lt;&lt;1].sum+tr[k&lt;&lt;1|1].sum;
+}
+inline void update(int k,int pos){
+    if(tr[k].l==tr[k].r&amp;&amp;tr[k].l==pos){tr[k].sum++;return;}
+    int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+    if(mid&gt;=pos) update(k&lt;&lt;1,pos);
+    if(mid&lt;pos) update(k&lt;&lt;1|1,pos);
+    push_up(k);
+}
+inline int ask(int k,int l,int r){
+	if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r)return tr[k].sum;
+	int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+	int res=0;
+	if(mid&gt;=l)res+=ask(k&lt;&lt;1,l,r);
+	if(mid&lt;r)res+=ask(k&lt;&lt;1|1,l,r);
+    return res; 
+}
+signed main() {
+	n=read();
+	for(int i=1;i&lt;=n;i++){
+		a[i].num=read();
+		a[i].pos=i;
+	}
+	sort(a+1,a+1+n,cmp);
+	for(int i=1;i&lt;=n;i++) {
+        if(a[i].num&gt;a[i-1].num) cnt++;
+        num[a[i].pos]=cnt;//离散化 
+    }
+    build(1,1,n);
+    for(int i=1;i&lt;=n;i++){
+        if(num[i]&gt;1) smaller[i]=ask(1,1,num[i]-1);
+        update(1,num[i]);
+    }
+    for(int i=1;i&lt;=(n&lt;&lt;2);i++)tr[i].sum=0;
+    for(int i=n;i&gt;=1;i--){
+        if(num[i]&lt;n) bigger[i]=ask(1,num[i]+1,n);
+        update(1,num[i]);
+    }
+    for(int i=1;i&lt;=n;i++) ans+=(bigger[i]*smaller[i]);
+	printf("%lld",ans);
+	return 0;
+}
+</code></pre>
+<p><span class="math">\(problem.4\)</span></p>
+<p>题意：给一颗<span class="math">\(n\)</span>个点的树，对每一个点<span class="math">\(x\)</span>，求有几个祖先点权小于<span class="math">\(x\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<h2>线段树</h2>
+<p><span class="math">\(problem.5\)</span></p>
+<p>题意：给一个长为<span class="math">\(n\)</span>的数列，<span class="math">\(m\)</span>次操作，操作有三种</p>
+<p><span class="math">\(1.\)</span>修改数列中一个数</p>
+<p><span class="math">\(2.\)</span>求数列中一段所有数两两乘积的和 <span class="math">\(\mod1e9+7\)</span></p>
+<p><span class="math">\(3.\)</span>求数列中一段所有相邻数两两乘积的和<span class="math">\(\mod1e9+7\)</span></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P4513" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.6\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int n,m,a[500500];
+struct node{
+	int l,r,sum,lmax,rmax,max;
+}tr[500500&lt;&lt;2];
+inline void push_up(int k){
+	tr[k].sum=tr[k*2].sum+tr[k*2+1].sum;
+    tr[k].lmax=max(tr[k*2].lmax,tr[k*2].sum+tr[k*2+1].lmax);
+    tr[k].rmax=max(tr[k*2+1].rmax,tr[k*2].rmax+tr[k*2+1].sum);
+    tr[k].max=max(max(tr[k*2].max,tr[k*2+1].max),tr[k*2].rmax+tr[k*2+1].lmax);
+}
+inline void build(int k,int l,int r){
+	tr[k].l=l;tr[k].r=r;
+	if(l==r){tr[k].sum=tr[k].lmax=tr[k].rmax=tr[k].max=a[l];return;}
+	int mid=(l+r)&gt;&gt;1;
+	build(k&lt;&lt;1,l,mid);
+	build(k&lt;&lt;1|1,mid+1,r);
+	push_up(k);
+}
+inline void change(int k,int x,int r){
+	if(tr[k].l==tr[k].r){tr[k].sum=tr[k].lmax=tr[k].rmax=tr[k].max=r;return;}
+	int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+	if(mid&gt;=x)change(k&lt;&lt;1,x,r);
+	else change(k&lt;&lt;1|1,x,r);
+	push_up(k);
+}
+node ask(int k,int l,int r){
+	if(l&lt;=tr[k].l&amp;&amp;tr[k].r&lt;=r){return tr[k];}
+	int mid=(tr[k].r+tr[k].l)&gt;&gt;1;
+	if(r&lt;=mid) return ask(k&lt;&lt;1,l,r);
+    if(l&gt;mid) return ask(k&lt;&lt;1|1,l,r);      
+    node t,a=ask(k&lt;&lt;1,l,r),b=ask(k&lt;&lt;1|1,l,r);
+    t.lmax=max(a.lmax,a.sum+b.lmax);
+    t.rmax=max(b.rmax,a.rmax+b.sum);
+    t.max=max(max(a.max,b.max),a.rmax+b.lmax);
+    return t;
+}
+signed main(){
+    n=read();m=read();
+    for(int i=1;i&lt;=n;i++) a[i]=read();
+    build(1,1,n);
+    int op,a,b;
+    for(int i=1;i&lt;=m;i++){
+    	op=read();a=read();b=read();
+    	if(op==2){
+    		change(1,a,b);
+    	}
+    	else{
+    		if(a&gt;b)swap(a,b);
+    		printf("%lld\n",ask(1,a,b).max);
+    	}
+    }
+    return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P7706" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.7\)</span></a></p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+#define int long long
+#define inf 1e14
+#define mod 1000000007
+#define N 1500500
+inline int read(){
+	int x=0,f=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if (ch=='-') f=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*f;
+}
+int a[N],b[N],n,m;
+struct node{
+	int l,r,a,b,lmx,rmx,ans;
+}tr[500500&lt;&lt;2];
+node operator + (node x,node y){
+	node g;
+	g.a=max(x.a,y.a);		
+	g.b=min(x.b,y.b);
+	g.lmx=max(x.lmx,max(y.lmx,x.a-y.b));		
+	g.rmx=max(x.rmx,max(y.rmx,y.a-x.b));
+	g.ans=max(x.ans,max(y.ans,max(x.lmx+y.a,x.a+y.rmx)));
+	return g;
+}
+void push_up(int k){
+	tr[k].a=max(tr[k&lt;&lt;1].a,tr[k&lt;&lt;1|1].a);
+	tr[k].b=min(tr[k&lt;&lt;1].b,tr[k&lt;&lt;1|1].b);
+	tr[k].lmx=max(tr[k&lt;&lt;1].lmx,max(tr[k&lt;&lt;1|1].lmx,tr[k&lt;&lt;1].a-tr[k&lt;&lt;1|1].b));
+	tr[k].rmx=max(tr[k&lt;&lt;1].rmx,max(tr[k&lt;&lt;1|1].rmx,tr[k&lt;&lt;1|1].a-tr[k&lt;&lt;1].b));
+	tr[k].ans=max(tr[k&lt;&lt;1].ans,max(tr[k&lt;&lt;1|1].ans,max(tr[k&lt;&lt;1].lmx+tr[k&lt;&lt;1|1].a,tr[k&lt;&lt;1|1].rmx+tr[k&lt;&lt;1].a)));	
+}
+void build(int k,int l,int r){
+	tr[k].l=l;tr[k].r=r;
+	if(l==r){
+		tr[k].a=a[l];
+		tr[k].b=b[l];
+		tr[k].lmx=tr[k].rmx=tr[k].ans=-0x3f3f3f3f;	
+		return;
+	}
+	int mid=(l+r)&gt;&gt;1;
+	build(k&lt;&lt;1,l,mid);
+	build(k&lt;&lt;1|1,mid+1,r);
+	push_up(k);
+}
+void changeA(int k,int x,int y){
+	if(tr[k].l==tr[k].r){
+		tr[k].a=y;
+		return;
+	}
+	int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+	if(x&lt;=mid)changeA(k&lt;&lt;1,x,y);
+	if(x&gt;mid)changeA(k&lt;&lt;1|1,x,y);
+	push_up(k);
+}
+inline void changeB(int k,int x,int y){
+	if(tr[k].l==tr[k].r){
+		tr[k].b=y;
+		return;
+	}
+	int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+	if(x&lt;=mid)changeB(k&lt;&lt;1,x,y);
+	if(x&gt;mid)changeB(k&lt;&lt;1|1,x,y);
+	push_up(k);
+}
+inline node ask(int k,int l,int r){
+	if(tr[k].l&gt;=l&amp;&amp;tr[k].r&lt;=r){
+		return tr[k];
+	}
+	int mid=(tr[k].l+tr[k].r)&gt;&gt;1;
+	if(mid&gt;=r)return ask(k&lt;&lt;1,l,r);
+	if(mid&lt;l)return ask(k&lt;&lt;1|1,l,r);
+	return ask(k&lt;&lt;1,l,r)+ask(k&lt;&lt;1|1,l,r);
+}
+signed main(){
+	n=read();m=read();
+	for(int i=1;i&lt;=n;i++)a[i]=read();
+	for(int i=1;i&lt;=n;i++)b[i]=read();
+	build(1,1,n);
+	int op,x,y,l,r;
+	while(m--){
+		op=read();
+		if(op==1){
+			x=read();y=read();
+			changeA(1,x,y);
+		}
+		if(op==2){
+			x=read();y=read();
+			changeB(1,x,y);
+		}
+		if(op==3){
+			l=read();r=read();
+			printf("%lld\n",ask(1,l,r).ans);
+		}
+	}
+	return 0;
+}
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P1471" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.8\)</span></a></p>
+<pre><code class="language-cpp">#include &lt;cstdio&gt;
+#include &lt;iostream&gt;
+#define Maxn 300010
+using namespace std;
+double sega[Maxn],segb[Maxn],a[250000];
+double mark[Maxn];
+void pushup(int x)
+{
+    sega[x]=sega[x&lt;&lt;1]+sega[x&lt;&lt;1|1];
+    segb[x]=segb[x&lt;&lt;1]+segb[x&lt;&lt;1|1];
+}
+void pushdown(int rt,int x)
+{
+    if (mark[rt])
+    {
+        segb[rt&lt;&lt;1]+=2*mark[rt]*sega[rt&lt;&lt;1]+(x-x/2)*mark[rt]*mark[rt];
+        segb[rt&lt;&lt;1|1]+=2*mark[rt]*sega[rt&lt;&lt;1|1]+(x/2)*mark[rt]*mark[rt];
+        sega[rt&lt;&lt;1]+=(x-x/2)*mark[rt];
+        sega[rt&lt;&lt;1|1]+=(x/2)*mark[rt];
+        mark[rt&lt;&lt;1]+=mark[rt];
+        mark[rt&lt;&lt;1|1]+=mark[rt];
+        mark[rt]=0;
+    }
+}
+void build(int rt,int l,int r)
+{
+    if (l==r){
+    	sega[rt]=a[l];
+    	segb[rt]=a[l]*a[l];
+    }
+    else
+    {
+        int mid=(l+r)/2;
+        build(rt&lt;&lt;1,l,mid);
+        build(rt&lt;&lt;1|1,mid+1,r);
+        pushup(rt);
+    }
+}
+double query_a(int rt,int l,int r,int L,int R)
+{
+    if (l&gt;=L &amp;&amp; r&lt;=R)
+        return sega[rt];
+    else
+    {
+        pushdown(rt,r-l+1);
+        int mid=(r+l)/2;
+        double ret=0;
+        if (mid&gt;=L)
+            ret+=query_a(rt&lt;&lt;1,l,mid,L,R);
+        if (mid&lt;R)
+            ret+=query_a(rt&lt;&lt;1|1,mid+1,r,L,R);
+        return ret;
+    }
+}
+double query_b(int rt,int l,int r,int L,int R)
+{
+    //--L--l--r--R--
+    if (l&gt;=L &amp;&amp; r&lt;=R)
+        return segb[rt];
+    else
+    {
+        pushdown(rt,r-l+1);
+        int mid=(r+l)/2;
+        double ret=0;
+        if (mid&gt;=L)
+            ret+=query_b(rt&lt;&lt;1,l,mid,L,R);
+        if (mid&lt;R)
+            ret+=query_b(rt&lt;&lt;1|1,mid+1,r,L,R);
+        return ret;
+    }
+}
+void update(int rt,int l,int r,int L,int R,double x)
+{
+    if (l&gt;=L &amp;&amp; r&lt;=R)
+        mark[rt]+=x,segb[rt]+=2*x*sega[rt]+x*x*(r-l+1),sega[rt]+=(r-l+1)*x;
+    else
+    {
+        pushdown(rt,r-l+1);
+        int mid=(r+l)/2;
+        if (mid&gt;=L)
+            update(rt&lt;&lt;1,l,mid,L,R,x);
+        if (mid&lt;R)
+            update(rt&lt;&lt;1|1,mid+1,r,L,R,x);
+        pushup(rt);
+    }
+}
+double sqr(double x)
+{
+    return x*x;
+}
+main()
+{
+    int n,m,x,y,c;
+    double z;
+    scanf("%d %d",&amp;n,&amp;m);
+    for(int i=1;i&lt;=n;i++) scanf("%lf",&amp;a[i]);
+    build(1,1,n);
+    for (int i=1;i&lt;=m;i++)
+    {
+        scanf("%d",&amp;c);
+        if (c==2)
+            scanf("%d%d",&amp;x,&amp;y),printf("%.4lf\n",query_a(1,1,n,x,y)/(y-x+1));
+        if (c==1)
+            scanf("%d%d",&amp;x,&amp;y),cin&gt;&gt;z,update(1,1,n,x,y,z);
+        if (c==3)
+        {
+            scanf("%d%d",&amp;x,&amp;y);
+            double sum1=query_b(1,1,n,x,y)/(y-x+1),sum2=query_a(1,1,n,x,y)/(y-x+1);
+            double ans=sum1-sum2*sum2;
+            printf("%.4lf\n",ans);
+        }
+    }
+}
+
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P4344" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.9\)</span></a></p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+inline int read(){
+	int x=0,opt=1;char ch=getchar();
+	while (ch&lt;'0'||ch&gt;'9'){if(ch=='-')opt=-1;ch=getchar();}
+	while (ch&gt;='0'&amp;&amp;ch&lt;='9'){x=x*10+ch-48;ch=getchar();}
+	return x*opt;
+}
+struct node{
+	int l,r,lmax,rmax,sum,tag,len,ans;
+}tr[500500&lt;&lt;2];
+int n,m,l0,r0,l1,r1,opt;
+void pushup(int k){
+	tr[k].sum=tr[k&lt;&lt;1].sum+tr[k&lt;&lt;1|1].sum;
+	if(tr[k&lt;&lt;1].lmax==tr[k&lt;&lt;1].len)tr[k].lmax=tr[k&lt;&lt;1].len+tr[k&lt;&lt;1|1].lmax;
+	else tr[k].lmax=tr[k&lt;&lt;1].lmax;
+	if(tr[k&lt;&lt;1|1].rmax==tr[k&lt;&lt;1|1].len)tr[k].rmax=tr[k&lt;&lt;1|1].len+tr[k&lt;&lt;1].rmax;
+	else tr[k].rmax=tr[k&lt;&lt;1|1].rmax;
+	tr[k].ans=max(max(tr[k&lt;&lt;1].ans,tr[k&lt;&lt;1|1].ans),tr[k&lt;&lt;1].rmax+tr[k&lt;&lt;1|1].lmax);
+}
+void down1(int k){
+	tr[k].ans=tr[k].lmax=tr[k].rmax=tr[k].len;
+	tr[k].sum=0;
+	tr[k].tag=1;
+}
+void down2(int k){
+	tr[k].ans=tr[k].lmax=tr[k].rmax=0;
+	tr[k].sum=tr[k].len;
+	tr[k].tag=2;
+}
+void push_down(int k){
+	if(tr[k].tag==1){
+		down1(k&lt;&lt;1);down1(k&lt;&lt;1|1);
+		tr[k].tag=0;
+	}
+	if(tr[k].tag==2){
+		down2(k&lt;&lt;1);down2(k&lt;&lt;1|1);
+		tr[k].tag=0;
+	}
+}
+void build(int k,int l,int r){
+	tr[k].tag=0;tr[k].l=l;tr[k].r=r;
+	tr[k].len=r-l+1;
+	if(l==r){
+		tr[k].sum=1;
+		tr[k].ans=tr[k].lmax=tr[k].rmax=0;
+		return;
+	}
+	int mid=(l+r)&gt;&gt;1;
+	build(k&lt;&lt;1,l,mid);
+	build(k&lt;&lt;1|1,mid+1,r);
+	pushup(k);
+}
+void change(int k,int x,int y,int z){
+	if(tr[k].l&gt;=x&amp;&amp;tr[k].r&lt;=y){
+		if(z==1)down1(k);
+		if(z==2)down2(k);
+		return;
+	}
+	push_down(k);
+	if(tr[k&lt;&lt;1].r&gt;=x)change(k&lt;&lt;1,x,y,z);
+	if(tr[k&lt;&lt;1|1].l&lt;=y)change(k&lt;&lt;1|1,x,y,z);
+	pushup(k);
+}
+int asksum(int k,int x,int y){
+	if(tr[k].l&gt;=x&amp;&amp;tr[k].r&lt;=y)return tr[k].sum;
+	push_down(k);
+	if(tr[k&lt;&lt;1].r&lt;x)return asksum(k&lt;&lt;1|1,x,y);
+	if(tr[k&lt;&lt;1|1].l&gt;y)return asksum(k&lt;&lt;1,x,y);
+	return asksum(k&lt;&lt;1,x,y)+asksum(k&lt;&lt;1|1,x,y);
+}
+void work(){
+	l1=read();r1=read();
+	int x=asksum(1,l0,r0);
+	if(x==0)return;
+	change(1,l0,r0,1);
+	int l=l1,r=r1+1;
+	while(l+1&lt;r){
+		int mid=(l+r)&gt;&gt;1;
+		if((mid-l1+1)-asksum(1,l1,mid)&lt;=x)l=mid;
+		else r=mid;
+	}
+	change(1,l1,l,2);
+}
+int askans(int k,int x,int y){
+	if(tr[k].l&gt;=x&amp;&amp;tr[k].r&lt;=y)return tr[k].ans;
+	push_down(k);
+	if(tr[k&lt;&lt;1].r&lt;x)return askans(k&lt;&lt;1|1,x,y);
+	if(tr[k&lt;&lt;1|1].l&gt;y)return askans(k&lt;&lt;1,x,y);
+	return max(max(askans(k&lt;&lt;1,x,y),askans(k&lt;&lt;1|1,x,y)),min(tr[k&lt;&lt;1].rmax,tr[k&lt;&lt;1|1].l-x)+min(tr[k&lt;&lt;1|1].lmax,y-tr[k&lt;&lt;1].r));
+}
+void print(int k,int l,int r){
+	if(l==r){
+		cout&lt;&lt;tr[k].sum&lt;&lt;" ";
+		return;
+	}
+	int mid=(l+r)&gt;&gt;1;
+	print(k&lt;&lt;1,l,mid);
+	print(k&lt;&lt;1|1,mid+1,r);
+}
+int main(){
+	n=read();m=read();
+	build(1,1,n);
+	//print(1,1,n);printf("\n");
+	while(m--){
+		opt=read();l0=read();r0=read();
+		switch(opt){
+			case 0:change(1,l0,r0,1);break;
+			case 1:work();break;
+			case 2:printf("%d\n",askans(1,l0,r0));//print(1,1,n);printf("\n");break;
+		}
+	}
+	return 0;
+}
+
+</code></pre>
+<p><a href="https://www.luogu.com.cn/problem/P3215" rel="noopener noreferrer" target="_blank"><span class="math">\(problem.10\)</span></a></p>
+<pre><code class="language-cpp">鸽
+</code></pre>
+</div><div class="article-copyright"><strong>LiQXing</strong><p>除特殊说明外，转载请注明出处。知识共享署名-相同方式共享 4.0 国际许可协议。</p><a href="https://www.luogu.com/article/l3a48dfo" target="_blank" rel="noopener noreferrer">查看洛谷原文 ↗</a></div><nav class="post-neighbors" aria-label="相邻文章"><a href="luogu-fyx1jm0x.html"><small>← 上一篇</small><span>1.16培训笔记（上）</span></a><a href="luogu-9g5gs4fy.html"><small>下一篇 →</small><span>1.17培训笔记（下）</span></a></nav></article><aside class="toc-panel"><details open><summary>文章目录</summary><nav id="toc" aria-label="文章目录"></nav></details></aside></main><dialog id="image-dialog"><button aria-label="关闭图片">×</button><img alt=""></dialog><script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script><script defer src="../assets/vendor/highlight.min.js"></script><footer class="footer"><a class="footer-name" href="../index.html">LiQXing</a><p>夜雨声烦扰清梦，桃花碎落乱春风。</p><div><a href="https://www.cnblogs.com/LiQXing/">博客园</a><span>·</span><a href="https://www.luogu.com.cn/user/750240/article">洛谷</a><span>·</span><a href="https://github.com/LiQXing/liqxing.github.io">GitHub</a><span>·</span><a href="../feed.xml">RSS</a></div><small>美化灵感：<a href="https://github.com/BNDong/Cnblogs-Theme-SimpleMemory">SimpleMemory</a> / <a href="https://www.cnblogs.com/lingyunvoid/">凌云_void</a></small></footer><a class="back-top" href="#" aria-label="返回顶部">↑</a><a class="music-fallback" href="https://music.163.com/#/playlist?id=7002443469" target="_blank" rel="noopener noreferrer">♫ 我的歌单 ↗</a><!-- Owner's original playlist configuration --><div id="aplayer" class="aplayer" data-order="random" data-id="7002443469" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="true" data-volume="0.6" data-listfolded="true"></div><script defer src="../assets/vendor/jquery.min.js"></script><script defer src="../assets/vendor/APlayer.min.js"></script><script defer src="../script.js"></script><script defer src="https://cdn.jsdelivr.net/gh/kaygb/kaygb@master/js/v3.js"></script><!-- 必须使用原地址 --><script defer src="../assets/vendor/Meting.min.js"></script><script defer src="https://blog-static.cnblogs.com/files/blogs/693306/layer.js"></script></body></html>
