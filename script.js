@@ -1,6 +1,15 @@
 (()=>{
   'use strict';
   const $=s=>document.querySelector(s),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  // Older generated pages gain the store entrance without rewriting article files.
+  const homeLink=$('.nav-brand'),base=homeLink.getAttribute('href').replace(/index\.html$/,'');
+  const mainNav=$('.top-nav>nav'),sideNav=$('#site-menu>nav');
+  if(!mainNav.querySelector('a[href$="shop.html"]')){
+    const link=document.createElement('a');link.href=base+'shop.html';link.textContent='小店';mainNav.insertBefore(link,$('#theme-toggle'));
+  }
+  if(!sideNav.querySelector('a[href$="shop.html"]')){
+    const link=document.createElement('a');link.href=base+'shop.html';link.append('◇ ');const label=document.createElement('span');label.textContent='我的小店';link.append(label);sideNav.insertBefore(link,sideNav.querySelector('a[href$="about.html"]').nextSibling);
+  }
   const menu=$('#site-menu'),toggle=$('#menu-toggle'),backdrop=$('#menu-backdrop');
   function setMenu(open){menu.classList.toggle('open',open);menu.inert=!open;toggle.setAttribute('aria-expanded',String(open));backdrop.hidden=!open;document.body.classList.toggle('menu-open',open);(open?$('#menu-close'):toggle).focus();}
   toggle.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));$('#menu-close').addEventListener('click',()=>setMenu(false));backdrop.addEventListener('click',()=>setMenu(false));

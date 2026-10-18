@@ -35,3 +35,7 @@ python scripts/build.py
 美化参考 [BNDong / Cnblogs-Theme-SimpleMemory](https://github.com/BNDong/Cnblogs-Theme-SimpleMemory) 与用户提供的 [凌云_void](https://www.cnblogs.com/lingyunvoid/) CSS。文章沿用作者在原主题中设置的知识共享署名-相同方式共享 4.0 国际许可说明，具体文章中的特殊说明优先。
 
 当前未运行自动化或浏览器测试；浏览器连接在本机初始化失败。发布结果通过 GitHub Pages 部署状态确认。
+
+## 我的小店
+
+入口为 `shop.html`，全站导航与侧栏均已加入。小店使用独立的 `shop.css` 与 `shop.js`，与博客共享昼夜模式偏好。商品按咨询报价展示，通过原有博客园私信联系；需求文字只在当前页面生成，不保存、不自动发送。当前未接入在线支付、订单系统或自动交付。商品、价格与办理规则确认后可在 `shop.html` 中编辑。运行博客生成脚本会保留小店文件，并在导航和站点地图中保留入口。
