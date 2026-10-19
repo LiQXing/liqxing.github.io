@@ -47,7 +47,7 @@ def download_archive(archive, report=lambda value, text: None):
                         output.write(block)
                         checksum.update(block)
                         received += len(block)
-                        report(min(.49, .49 * received / total), "�������عٷ��Ƽ����ݡ�")
+                        report(min(.49, .49 * received / total), "正在下载官方推荐数据…")
             if checksum.hexdigest() != SOURCE_SHA256:
                 raise ValueError("MovieLens download SHA256 mismatch; please retry")
             return
@@ -56,7 +56,7 @@ def download_archive(archive, report=lambda value, text: None):
             if attempt == 2:
                 raise
             logging.warning("GroupLens download attempt %s failed; retrying", attempt + 1, exc_info=True)
-            report(0., "����Դ������ʱ�жϣ��������ԡ�")
+            report(0., "数据源连接暂时中断，正在重试…")
             time.sleep(2 ** attempt)
         except Exception:
             archive.unlink(missing_ok=True)
@@ -98,7 +98,7 @@ def build_data(archive, target, assets, report=lambda value, text: None):
                     for uid, count in zip(ids, frequencies):
                         counts[int(uid)] = counts.get(int(uid), 0) + int(count)
                     offset = end
-                    report(.5 + .48 * offset / size, f"����׼���Ƽ����� {offset / size:.0%}")
+                    report(.5 + .48 * offset / size, f"正在准备推荐数据 {offset / size:.0%}")
             if offset != size or len(counts) != int(stats["users"]):
                 raise ValueError("MovieLens record count does not match the trained release")
             items.flush()
@@ -129,12 +129,12 @@ def ensure_assets(assets, target, report=lambda value, text: None):
         return target
     target.mkdir(parents=True, exist_ok=True)
     archive = target / "movielens-download.zip"
-    report(0., "�״����������ڴ� GroupLens ׼���Ƽ����ݣ����Ժ�")
+    report(0., "首次启动，正在从 GroupLens 准备推荐数据，请稍候。")
     download_archive(archive, report)
     build_data(archive, target, assets, report)
     archive.unlink()
     temporary = marker.with_suffix(".tmp")
     temporary.write_text(json.dumps(expected), encoding="utf-8")
     temporary.replace(marker)
-    report(1., "�Ƽ������Ѿ���")
+    report(1., "推荐数据已就绪")
     return target

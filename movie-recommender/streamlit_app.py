@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape
 import json
 import tempfile
+import requests
 from cloud_bootstrap import ensure_assets
 import pandas as pd
 import streamlit as st
@@ -26,6 +27,7 @@ st.title("光影推荐")
 st.caption("基于 Spark MLlib ALS 的电影推荐系统 · MovieLens 25M · 在线推荐")
 @st.cache_resource(show_spinner=False)
 def prepare_cloud_data():
+    # This release includes the current GroupLens CA chain and a SHA256 pin.
     progress = st.progress(0., text="正在准备推荐数据…")
     try:
         return ensure_assets(ROOT / "model", Path(tempfile.gettempdir()) / "liqxing-movielens25m-v1",
@@ -35,10 +37,16 @@ def prepare_cloud_data():
 
 try:
     ARTIFACTS = prepare_cloud_data()
-except Exception:
+except Exception as exc:
     import logging
     logging.exception("MovieLens cloud preparation failed")
-    st.error("推荐数据准备失败，请稍后点击重试。如果持续失败，请联系站点维护者。")
+    if isinstance(exc, requests.exceptions.SSLError):
+        st.error("官方数据源的证书验证未通过，请将下方故障标识发给站点维护者。")
+    elif isinstance(exc, (requests.exceptions.Timeout, requests.exceptions.ConnectionError)):
+        st.error("暂时无法连接官方数据源，自动重试后仍未成功。请稍后重试。")
+    else:
+        st.error("推荐数据准备失败，请将下方故障标识发给站点维护者。")
+    st.caption(f"故障标识：{type(exc).__name__} · 服务版本：20261019.2")
     if st.button("重新准备数据"):
         st.cache_resource.clear()
         st.rerun()
