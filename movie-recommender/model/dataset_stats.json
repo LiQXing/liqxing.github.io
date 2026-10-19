@@ -1,0 +1,9 @@
+{
+  "input_rows": 25000095,
+  "clean_rows": 25000095,
+  "dropped_rows": 0,
+  "users": 162541,
+  "rated_movies": 59047,
+  "density": 0.002604839052572928,
+  "ratings_csv_bytes": 678260987
+}

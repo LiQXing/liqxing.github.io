@@ -1,0 +1,66 @@
+{
+  "dataset": "MovieLens 25M",
+  "split": {
+    "test": 2573618,
+    "val": 2490465,
+    "train": 19936012
+  },
+  "selected_model": {
+    "rank": 16,
+    "regParam": 0.1,
+    "maxIter": 8,
+    "fit_seconds": 14.800566099998832,
+    "validation_rmse": 0.8117384945216216,
+    "validation_coverage": 0.9981087869132873
+  },
+  "regression": {
+    "ALS": {
+      "n": 2566194,
+      "rmse": 0.8369184340304567,
+      "mae": 0.6441004953976407
+    },
+    "ItemMean": {
+      "n": 2566194,
+      "rmse": 0.9659096344704361,
+      "mae": 0.7437673753013838
+    },
+    "GlobalMean": {
+      "n": 2566194,
+      "rmse": 1.0604320065940485,
+      "mae": 0.8331216808255857
+    },
+    "test_coverage": 0.9971153450123522
+  },
+  "ranking": {
+    "ALS": {
+      "precision_at_10": 0.013,
+      "recall_at_10": 0.023011241093594034,
+      "ndcg_at_10": 0.01932856930976783,
+      "users": 500,
+      "catalog_coverage": 0.043223891023402024
+    },
+    "Popular": {
+      "precision_at_10": 0.030000000000000002,
+      "recall_at_10": 0.045413086268474144,
+      "ndcg_at_10": 0.04474082799597893,
+      "users": 500,
+      "catalog_coverage": 0.00890674118057981
+    },
+    "candidate_movies": 11452,
+    "evaluation_seconds": 0.13203059999796096,
+    "test_positive_rows": 1221225,
+    "eligible_positive_rows": 1189569
+  },
+  "protocol": {
+    "split": "per-user chronological 80/10/10, timestamp then movieId; floor boundaries",
+    "seed": 2026,
+    "positive_threshold": 4.0,
+    "k": 10,
+    "min_item_ratings": 50,
+    "ranking_cohort": "deterministic xxhash64(userId,2026) order, users with at least one eligible test positive",
+    "candidate_set": "all training movies meeting min_item_ratings, excluding each user's train and validation history",
+    "regression": "unclipped predictions, same warm test rows for all regression baselines",
+    "serving_history": "exclude ALL observed ratings from recommendation; not used for offline scoring"
+  },
+  "training_and_evaluation_seconds": 105.86561480000091
+}

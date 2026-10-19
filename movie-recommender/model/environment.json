@@ -1,0 +1,13 @@
+{
+  "python": "3.13.9 (tags/v3.13.9:8183fa5, Oct 14 2025, 14:09:13) [MSC v.1944 64 bit (AMD64)]",
+  "spark": "4.0.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "logical_cpus": 24,
+  "physical_cpus": 16,
+  "ram_gib": 31.72,
+  "master": "local[12]",
+  "driver_memory": "8g",
+  "java": "openjdk version \"21.0.10\" 2026-01-20 LTS\nOpenJDK Runtime Environment Microsoft-13106404 (build 21.0.10+7-LTS)\nOpenJDK 64-Bit Server VM Microsoft-13106404 (build 21.0.10+7-LTS, mixed mode, sharing)",
+  "virtualization": "Windows 本机 JVM local 模式，未使用虚拟机或容器",
+  "cpu": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel"
+}

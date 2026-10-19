@@ -39,3 +39,8 @@ python scripts/build.py
 ## 我的小店
 
 入口为 `shop.html`，全站导航与侧栏均已加入。小店使用独立的 `shop.css` 与 `shop.js`，与博客共享昼夜模式偏好。商品按咨询报价展示，通过原有博客园私信联系；需求文字只在当前页面生成，不保存、不自动发送。当前未接入在线支付、订单系统或自动交付。商品、价格与办理规则确认后可在 `shop.html` 中编辑。运行博客生成脚本会保留小店文件，并在导航和站点地图中保留入口。
+
+
+## 电影推荐
+
+个人网站的电影推荐子页面位于 [movie-recommender/](https://liqxing.github.io/movie-recommender/)。首页导航和侧栏已加入入口。保留用户 ID 推荐和选择电影推荐，推理应用使用 Streamlit Community Cloud 托管，完成首次云端部署后将应用地址填入 `movie-recommender/app-config.json`。详见 [部署说明](movie-recommender/README.md)。

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c1220">
+  <meta name="description" content="光影推荐：从你喜欢的电影出发，寻找下一部值得看的电影。基于 Spark ALS 的个性化推荐。">
+  <title>光影推荐 · LiQXing</title>
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://liqxing.github.io/movie-recommender/">
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:#0c1220;color:#e6edf7}
+    *{box-sizing:border-box}body{margin:0}a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible{outline:3px solid #6fe0ce;outline-offset:5px}
+    header{max-width:1440px;margin:auto;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #29344a}header>a{font-weight:700}nav{display:flex;gap:24px;font-size:14px;color:#a4b3c9}
+    main{max-width:1440px;margin:auto;padding:52px 5%}.eyebrow{font-size:12px;letter-spacing:3px;color:#6fe0ce}h1{font-size:clamp(34px,5vw,58px);margin:14px 0 18px;letter-spacing:-2px}.intro{color:#a4b3c9;font-size:17px;line-height:1.9;max-width:750px}.tags{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.tags span{border:1px solid #29344a;border-radius:30px;padding:7px 12px;font-size:12px;color:#a4b3c9}
+    .panel{background:#141d30;border:1px solid #29344a;border-radius:18px;overflow:hidden;margin-top:30px}.panel-head{padding:18px 22px;display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #29344a;font-size:14px}.panel-head a{color:#6fe0ce}.status{display:flex;align-items:center;gap:9px}.dot{width:7px;height:7px;background:#eebc79;border-radius:50%}.ready .dot{background:#6fe0ce}
+    .pending{padding:48px 28px;max-width:840px;margin:auto;line-height:1.9}.pending h2{font-size:24px;margin-top:0}.pending p{color:#a4b3c9}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}.button{display:inline-block;padding:11px 18px;border:1px solid #3a4b65;border-radius:8px;font-size:14px}.button.primary{background:#6fe0ce;border-color:#6fe0ce;color:#0c1220;font-weight:650}
+    iframe{display:block;width:100%;height:1000px;border:0;background:#0c1220}[hidden]{display:none!important}.footnote{color:#8091aa;font-size:13px;line-height:1.9;margin:24px 0}footer{max-width:1440px;margin:auto;padding:30px 5%;border-top:1px solid #29344a;color:#8091aa;font-size:13px}code{color:#e6edf7;overflow-wrap:anywhere}@media(max-width:600px){main{padding-top:28px}.pending{padding:30px 20px}.panel-head{padding:16px}nav{gap:14px}iframe{height:1100px}}
+  </style>
+</head>
+<body>
+  <header><a href="../">LiQXing</a><nav aria-label="主要导航"><a href="../">返回博客</a><a href="https://github.com/LiQXing/liqxing.github.io/tree/main/movie-recommender" target="_blank" rel="noopener noreferrer">项目源码 ↗</a></nav></header>
+  <main>
+    <p class="eyebrow">MOVIE DISCOVERY / SPARK ALS</p>
+    <h1>光影推荐</h1>
+    <p class="intro">下一部，看点你喜欢的。选择几部喜欢的电影，探索新的观影方向；也可以输入 MovieLens 用户 ID，根据历史评分获得个性化推荐。</p>
+    <div class="tags"><span>喜欢的电影 → 下一部推荐</span><span>用户 ID → 个性化片单</span><span>中文译名与类型筛选</span><span>MovieLens 25M</span></div>
+    <section class="panel" aria-label="电影推荐应用">
+      <div class="panel-head"><span class="status" id="status" role="status"><i class="dot" aria-hidden="true"></i><span id="status-text">云端应用待部署</span></span><a id="standalone" target="_blank" rel="noopener noreferrer" hidden>独立窗口打开 ↗</a></div>
+      <div class="pending" id="pending"><h2 id="pending-title">推荐页面已就绪，云端应用尚未连接</h2><p id="pending-description">首次发布需要站点维护者在 Streamlit Community Cloud 创建应用。完成后，这里会直接显示可操作的推荐界面。</p><p>维护者部署信息：<br>仓库：<code>LiQXing/liqxing.github.io</code><br>分支：<code>main</code><br>入口：<code>movie-recommender/streamlit_app.py</code><br>Python：<code>3.13</code></p><div class="actions"><a class="button primary" href="https://share.streamlit.io/" target="_blank" rel="noopener noreferrer">前往云端部署 ↗</a><a class="button" href="https://github.com/LiQXing/liqxing.github.io/blob/main/movie-recommender/README.md" target="_blank" rel="noopener noreferrer">部署说明</a></div></div>
+      <iframe id="application" title="光影推荐：电影推荐系统" allow="clipboard-write" hidden></iframe>
+    </section>
+    <p class="footnote">云端首次启动可能需要等待数据准备，休眠后的应用也需要唤醒。推荐使用历史评分训练得到的模型，预测评分仅供参考。数据来源：<a href="https://grouplens.org/datasets/movielens/25m/" target="_blank" rel="noopener noreferrer">GroupLens MovieLens 25M</a>。</p>
+    <noscript><p>请启用 JavaScript 加载推荐界面；部署完成后也可以通过应用的独立链接访问。</p></noscript>
+  </main>
+  <footer>LiQXing · 光影推荐</footer>
+  <script>
+    (async function(){
+      try{
+        const response=await fetch('./app-config.json',{cache:'no-store'});
+        if(!response.ok)throw new Error('config unavailable');
+        const config=await response.json();
+        if(!config.appUrl)return;
+        const url=new URL(config.appUrl);
+        if(url.protocol!=='https:'||!url.hostname.endsWith('.streamlit.app'))throw new Error('invalid application URL');
+        const standalone=document.getElementById('standalone');standalone.href=url.href;standalone.hidden=false;
+        url.searchParams.set('embed','true');url.searchParams.set('embed_options','dark_theme');
+        const frame=document.getElementById('application');frame.src=url.href;frame.hidden=false;
+        document.getElementById('pending').hidden=true;document.getElementById('status-text').textContent='云端推荐界面';document.getElementById('status').classList.add('ready');
+      }catch(error){document.getElementById('pending-title').textContent='暂时无法加载应用配置';document.getElementById('pending-description').textContent='请稍后刷新页面，或查看项目仓库中的部署说明。';}
+    })();
+  </script>
+</body>
+</html>

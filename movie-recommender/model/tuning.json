@@ -1,0 +1,18 @@
+[
+  {
+    "rank": 16,
+    "regParam": 0.1,
+    "maxIter": 8,
+    "fit_seconds": 14.800566099998832,
+    "validation_rmse": 0.8117384945216216,
+    "validation_coverage": 0.9981087869132873
+  },
+  {
+    "rank": 32,
+    "regParam": 0.1,
+    "maxIter": 8,
+    "fit_seconds": 24.877055600001768,
+    "validation_rmse": 0.8174274950079791,
+    "validation_coverage": 0.9981087869132873
+  }
+]
