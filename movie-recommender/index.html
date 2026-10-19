@@ -44,8 +44,12 @@
         const url=new URL(config.appUrl);
         if(url.protocol!=='https:'||!url.hostname.endsWith('.streamlit.app'))throw new Error('invalid application URL');
         const standalone=document.getElementById('standalone');standalone.href=url.href;standalone.hidden=false;
-        url.searchParams.set('embed','true');url.searchParams.set('embed_options','dark_theme');
-        const frame=document.getElementById('application');frame.src=url.href;frame.hidden=false;
+        // Use the application's verified serving URL when the cloud wrapper
+        // constrains its nested iframe to the browser's default 150px height.
+        const embedUrl=config.embedUrl?new URL(config.embedUrl):new URL(url);
+        if(embedUrl.origin!==url.origin)throw new Error('invalid embed origin');
+        embedUrl.searchParams.set('embed','true');embedUrl.searchParams.set('embed_options','dark_theme');
+        const frame=document.getElementById('application');frame.src=embedUrl.href;frame.hidden=false;
         document.getElementById('pending').hidden=true;document.getElementById('status-text').textContent='云端推荐界面';document.getElementById('status').classList.add('ready');
       }catch(error){document.getElementById('pending-title').textContent='暂时无法加载应用配置';document.getElementById('pending-description').textContent='请稍后刷新页面，或查看项目仓库中的部署说明。';}
     })();
