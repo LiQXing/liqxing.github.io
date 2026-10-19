@@ -6,16 +6,61 @@ archive is verified and streamed into a private, ephemeral server-side cache.
 from pathlib import Path
 import hashlib
 import json
+import logging
 import shutil
+import time
 import zipfile
 
+import certifi
 import numpy as np
 import pandas as pd
 import requests
 
 SOURCE_URL = "https://files.grouplens.org/datasets/movielens/ml-25m.zip"
 SOURCE_MD5 = "6b51fb2759a8657d3bfcbfc42b592ada"
+SOURCE_SHA256 = "8b21cfb7eb1706b4ec0aac894368d90acf26ebdfb6aced3ebd4ad5bd1eb9c6aa"
 SCHEMA_VERSION = 1
+
+
+def download_archive(archive, report=lambda value, text: None):
+    """Verify TLS with the publisher's current chain, then pin release bytes."""
+    archive = Path(archive)
+    # The publisher currently uses a newer emSign/InCommon chain which some
+    # Linux CA stores cannot build. Keep normal roots and add the CA-published
+    # chain only for this fixed GroupLens download. Never use verify=False.
+    chain = Path(__file__).resolve().parent / "certificates/grouplens-chain.pem"
+    bundle = archive.parent / "grouplens-ca-bundle.pem"
+    bundle.write_bytes(Path(certifi.where()).read_bytes() + b"\n" + chain.read_bytes())
+    for attempt in range(3):
+        checksum = hashlib.sha256()
+        try:
+            with requests.get(SOURCE_URL, stream=True, timeout=(20, 120), verify=str(bundle)) as response:
+                response.raise_for_status()
+                if not response.url.startswith("https://files.grouplens.org/"):
+                    raise ValueError("Unexpected official dataset download redirect")
+                total = int(response.headers.get("Content-Length", 261978986))
+                received = 0
+                with archive.open("wb") as output:
+                    for block in response.iter_content(1024 * 1024):
+                        if not block:
+                            continue
+                        output.write(block)
+                        checksum.update(block)
+                        received += len(block)
+                        report(min(.49, .49 * received / total), "�������عٷ��Ƽ����ݡ�")
+            if checksum.hexdigest() != SOURCE_SHA256:
+                raise ValueError("MovieLens download SHA256 mismatch; please retry")
+            return
+        except requests.RequestException:
+            archive.unlink(missing_ok=True)
+            if attempt == 2:
+                raise
+            logging.warning("GroupLens download attempt %s failed; retrying", attempt + 1, exc_info=True)
+            report(0., "����Դ������ʱ�жϣ��������ԡ�")
+            time.sleep(2 ** attempt)
+        except Exception:
+            archive.unlink(missing_ok=True)
+            raise
 
 
 def build_data(archive, target, assets, report=lambda value, text: None):
@@ -53,7 +98,7 @@ def build_data(archive, target, assets, report=lambda value, text: None):
                     for uid, count in zip(ids, frequencies):
                         counts[int(uid)] = counts.get(int(uid), 0) + int(count)
                     offset = end
-                    report(.5 + .48 * offset / size, f"正在准备推荐数据 {offset / size:.0%}")
+                    report(.5 + .48 * offset / size, f"����׼���Ƽ����� {offset / size:.0%}")
             if offset != size or len(counts) != int(stats["users"]):
                 raise ValueError("MovieLens record count does not match the trained release")
             items.flush()
@@ -76,7 +121,7 @@ def build_data(archive, target, assets, report=lambda value, text: None):
 def ensure_assets(assets, target, report=lambda value, text: None):
     assets, target = Path(assets), Path(target)
     marker = target / "ready.json"
-    expected = {"schema": SCHEMA_VERSION, "dataset_md5": SOURCE_MD5}
+    expected = {"schema": SCHEMA_VERSION, "dataset_md5": SOURCE_MD5, "dataset_sha256": SOURCE_SHA256}
     required = ["als_factors.npz", "catalog.csv", "history_index.npz", "history_items.npy",
                 "history_ratings.npy", "metrics.json", "dataset_stats.json", "popular_movies.csv",
                 "rating_distribution.csv", "genre_stats.csv", "tuning.json", "environment.json"]
@@ -84,27 +129,12 @@ def ensure_assets(assets, target, report=lambda value, text: None):
         return target
     target.mkdir(parents=True, exist_ok=True)
     archive = target / "movielens-download.zip"
-    report(0., "首次启动，正在从 GroupLens 准备推荐数据，请稍候。")
-    checksum = hashlib.md5()
-    with requests.get(SOURCE_URL, stream=True, timeout=(30, 180)) as response:
-        response.raise_for_status()
-        total = int(response.headers.get("Content-Length", 261978986))
-        received = 0
-        with archive.open("wb") as output:
-            for block in response.iter_content(1024 * 1024):
-                if not block:
-                    continue
-                output.write(block)
-                checksum.update(block)
-                received += len(block)
-                report(min(.49, .49 * received / total), "正在下载官方推荐数据…")
-    if checksum.hexdigest() != SOURCE_MD5:
-        archive.unlink(missing_ok=True)
-        raise ValueError("MovieLens download checksum mismatch; please retry")
+    report(0., "�״����������ڴ� GroupLens ׼���Ƽ����ݣ����Ժ�")
+    download_archive(archive, report)
     build_data(archive, target, assets, report)
     archive.unlink()
     temporary = marker.with_suffix(".tmp")
     temporary.write_text(json.dumps(expected), encoding="utf-8")
     temporary.replace(marker)
-    report(1., "推荐数据已就绪")
+    report(1., "�Ƽ������Ѿ���")
     return target
