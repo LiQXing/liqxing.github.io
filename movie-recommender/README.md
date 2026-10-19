@@ -2,6 +2,8 @@
 
 GitHub Pages 入口：<https://liqxing.github.io/movie-recommender/>。
 
+已连接的云端应用：<https://liqxingappio-ijwrtfv4rdappamp4ns8pe.streamlit.app/>。
+
 页面通过 iframe 嵌入公开的 Streamlit 应用。GitHub Pages 提供静态子页面，Python 推荐推理运行在 Streamlit Community Cloud。两者需要分别发布；仅推送仓库不会创建云端 Python 应用。
 
 ## 第一次部署
@@ -13,7 +15,7 @@ GitHub Pages 入口：<https://liqxing.github.io/movie-recommender/>。
 5. 将生成的真实 `https://xxx.streamlit.app/` 地址填入同目录 `app-config.json` 的 `appUrl`，例如 `{"appUrl":"https://你的实际子域名.streamlit.app/"}`，提交到 main。
 6. 打开 GitHub Pages 入口，界面将自动嵌入。若嵌入加载受网络或浏览器限制，点击“独立窗口打开”。
 
-`appUrl` 初始为 null，页面会明确显示“云端应用待部署”，不会将尚不存在的地址冒充已上线应用。
+`appUrl` 已配置为上方的云端应用地址。以后更换应用地址时，修改该字段即可；设为 null 时页面会显示“云端应用待部署”。
 
 ## 功能
 
